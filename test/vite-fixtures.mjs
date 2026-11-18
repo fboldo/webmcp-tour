@@ -5,6 +5,7 @@ import { extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const FIXTURES = fileURLToPath(new URL("./fixtures/", import.meta.url));
+const DIST_IIFE = fileURLToPath(new URL("../dist/webmcp-tour.js", import.meta.url));
 // No 'unsafe-inline' anywhere: the overlay must work under this.
 export const CSP =
   "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; " +
@@ -16,6 +17,16 @@ export function fixtures() {
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
         const path = new URL(req.url ?? "/", "http://x").pathname;
+        if (path === "/fx/webmcp-tour.js") {
+          // The built script-tag artifact: `pnpm build` must have run.
+          try {
+            res.setHeader("content-type", "text/javascript");
+            return res.end(await readFile(DIST_IIFE));
+          } catch {
+            res.statusCode = 404;
+            return res.end();
+          }
+        }
         if (!path.startsWith("/fx/") || path.includes("..")) return next();
         try {
           const body = await readFile(join(FIXTURES, path.slice(4)));

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>webmcp-tour demo</title>
+<link rel="stylesheet" href="demo.css">
+<script src="/dist/webmcp-tour.js"></script>
+<script type="module" src="demo.js"></script>
+</head>
+<body>
+<header class="top">
+  <strong>Acme Cloud</strong>
+  <nav aria-label="Account">
+    <a href="#profile">Profile</a>
+    <a href="#billing">Billing</a>
+    <a href="#notifications">Notifications</a>
+    <a href="#security">Security</a>
+  </nav>
+  <button type="button" id="help" data-tour-id="help-chat">Help</button>
+</header>
+
+<main>
+  <h1>Settings</h1>
+
+  <section id="profile">
+    <h2>Profile</h2>
+    <label>Display name <input type="text" value="Sam Rivera"></label>
+    <label>Email <input type="email" value="sam@example.com"></label>
+    <label>Theme
+      <select><option>System</option><option>Light</option><option>Dark</option></select>
+    </label>
+    <p><button type="button" class="primary">Save changes</button> <button type="button">Cancel</button></p>
+  </section>
+
+  <section id="billing">
+    <h2>Billing</h2>
+    <p>Current plan: <strong>Team</strong>, 5 seats.</p>
+    <p>
+      <button type="button" class="primary" data-tour-id="billing-plan"
+        data-tour-description="Opens the plan picker. Pick Team or Business, then confirm on the next screen.">Change plan</button>
+      <button type="button" data-tour-id="invoices"
+        data-tour-description="Downloads every invoice as a ZIP of PDFs.">Download invoices</button>
+    </p>
+    <h3>API keys</h3>
+    <table>
+      <thead><tr><th>Name</th><th>Created</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>CI deploy</td><td>2026-03-02</td><td><button type="button">Revoke</button></td></tr>
+        <tr><td>Staging</td><td>2026-06-14</td><td><button type="button">Revoke</button></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="notifications">
+    <h2>Notifications</h2>
+    <label><input type="checkbox" checked data-tour-id="email-digest"
+      data-tour-description="Sends one summary email a day instead of one email per event."> Daily email digest</label>
+    <label><input type="checkbox"> Product news</label>
+  </section>
+
+  <section id="security">
+    <h2>Security</h2>
+    <details>
+      <summary>Advanced</summary>
+      <p><button type="button" data-tour-id="two-factor"
+        data-tour-description="Starts two-factor setup with an authenticator app."
+        data-tour-reveal="Open Security → Advanced first.">Set up two-factor</button></p>
+    </details>
+    <p>
+      <button type="button" class="danger" data-tour-exclude>Delete account</button>
+      <small>Kept off-limits with <code>data-tour-exclude</code>: the tour never points at it.</small>
+    </p>
+  </section>
+</main>
+
+<aside class="panel" data-tour-exclude aria-label="Tour control panel">
+  <h2>Control panel</h2>
+  <p class="hint">Drives <code>window.webmcpTour</code>.</p>
+  <fieldset>
+    <legend>Declared targets</legend>
+    <div id="targets"></div>
+  </fieldset>
+  <form id="step">
+    <label>Locate by
+      <select name="by"><option>text</option><option>selector</option><option>target</option></select>
+    </label>
+    <label>Value <input name="value" value="Change plan" autocomplete="off"></label>
+    <label>Index <input name="index" type="number" min="0" placeholder="(for ambiguous)"></label>
+    <label>Title <input name="title" maxlength="80" placeholder="optional"></label>
+    <label>Message <textarea name="message" rows="2" maxlength="500" placeholder="default: the target's description"></textarea></label>
+    <label>Placement
+      <select name="placement"><option>auto</option><option>above</option><option>below</option></select>
+    </label>
+    <p><button type="submit">Show</button> <button type="button" id="dismiss">Dismiss</button></p>
+  </form>
+  <h3>Result</h3>
+  <pre id="result" aria-live="polite">—</pre>
+</aside>
+</body>
+</html>
