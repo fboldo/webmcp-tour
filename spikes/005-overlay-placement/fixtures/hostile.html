@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spike 005 — hostile page</title>
+<link rel="stylesheet" href="/fixtures/preflight.css">
+<link rel="stylesheet" href="/fixtures/page.css">
+<script type="module" src="/fixtures/harness.js"></script>
+</head>
+<body>
+<header class="sticky">Sticky header (z-index 50) — <button class="btn" id="t-header">Account</button></header>
+<main>
+  <section>
+    <h2>Plain target</h2>
+    <p>Normal flow. <button class="btn" id="t-plain">Change plan</button></p>
+  </section>
+
+  <section>
+    <h2>Nested scroll containers</h2>
+    <div class="outer" id="outer">
+      <div class="pad">outer padding — scroll me</div>
+      <div class="inner" id="inner">
+        <div class="pad">inner padding — scroll me</div>
+        <button class="btn" id="t-scroll">Billing settings</button>
+        <div class="pad"></div>
+      </div>
+      <div class="pad"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Transformed ancestor (translate + scale .75 + rotate −4°)</h2>
+    <div class="transformed"><p>Inside a transform: <button class="btn" id="t-transform">Export</button></p></div>
+  </section>
+
+  <section>
+    <h2>contain: paint + filter + will-change ancestor</h2>
+    <div class="contained"><p>Containing-block trap: <button class="btn" id="t-contained">Invite</button></p></div>
+  </section>
+
+  <section>
+    <h2>Modal dialog</h2>
+    <dialog id="dlg">
+      <h3>Confirm plan change</h3>
+      <p>This dialog is opened with showModal(); everything outside it is inert.</p>
+      <p><button class="btn" id="t-dialog">Confirm</button> <button class="btn" id="dlg-close">Cancel</button></p>
+    </dialog>
+  </section>
+
+  <div class="spacer"></div>
+  <section><p>Bottom of page: <button class="btn" id="t-bottom">Delete account</button></p></section>
+  <div class="spacer"></div>
+</main>
+<div class="banner" id="banner">Cookie banner — position:fixed; z-index: 2147483647</div>
+</body>
+</html>

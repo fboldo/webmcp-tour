@@ -1,0 +1,7 @@
+/* Real-world-style hostile rules, unlayered. */
+div:empty { display: none !important; }           /* "hide empty divs" resets */
+div { max-width: 100%; }
+span { display: block; }                           /* CMS themes do this */
+button { background: hotpink !important; padding: 20px !important; border-radius: 0; }
+[popover] { inset: 0; margin: auto; padding: 40px; border: 5px dashed red; }
+* { transition: all 1s linear; }

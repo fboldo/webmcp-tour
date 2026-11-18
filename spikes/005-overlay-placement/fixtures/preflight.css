@@ -1,0 +1,9 @@
+/* Tailwind v3 preflight (abridged) — compiled output is UNLAYERED. */
+*, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: #e5e7eb; }
+html { line-height: 1.5; -webkit-text-size-adjust: 100%; font-family: ui-sans-serif, system-ui, sans-serif; }
+body { margin: 0; line-height: inherit; }
+h1, h2, h3, p { margin: 0; font-size: inherit; font-weight: inherit; }
+button, input { font-family: inherit; font-size: 100%; font-weight: inherit; line-height: inherit; color: inherit; margin: 0; padding: 0; }
+button, [type='button'] { -webkit-appearance: button; background-color: transparent; background-image: none; text-transform: none; cursor: pointer; }
+img, svg, video { display: block; max-width: 100%; height: auto; }
+[hidden] { display: none; }
