@@ -1,5 +1,5 @@
 import { candidateContext, nearNames } from "./context.js";
-import { composedContains, OVERLAY_HOST_ATTR, searchRoots } from "./dom.js";
+import { allElements, composedContains, OVERLAY_HOST_ATTR, searchRoots } from "./dom.js";
 import { accName, newCache } from "./name.js";
 import { clip, norm } from "./normalize.js";
 import { reveal } from "./occlusion.js";
@@ -64,13 +64,18 @@ function setup(opts: ResolverOptions) {
     return false;
   };
   const allowed = (el: Element): boolean => !excluded(el) && (!scope || composedContains(scope, el));
-  return { doc, root: (scope ?? doc) as ParentNode, allowed };
+  const skip = (el: Element): boolean => el.matches(excludedSel) || el === overlayHost;
+  return { doc, root: (scope ?? doc) as ParentNode, allowed, skip };
 }
 
-export function describe(by: Matched["by"], el: Element): Matched {
-  const name = clip(norm(accName(el, newCache()).name), 80);
+export function describe(by: Matched["by"], el: Element, opts: ResolverOptions = {}): Matched {
+  const { skip } = setup(opts);
+  const cache = newCache(skip);
+  const name = clip(norm(accName(el, cache).name), 80);
   const html = el as HTMLElement;
-  const text = clip(norm(html.innerText ?? el.textContent), 120);
+  // Excluded content inside the element must not leak through its text.
+  const hasExcluded = [...allElements(el)].some((e) => e !== el && skip(e));
+  const text = clip(norm(hasExcluded ? accName(el, cache).name : (html.innerText ?? el.textContent)), 120);
   const role = roleOf(el);
   return { by, tag: el.tagName.toLowerCase(), ...(role ? { role } : {}), name, text, disabled: el.matches(":disabled,[aria-disabled=true]") };
 }
@@ -98,7 +103,7 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
   const { index } = input;
   if (index !== undefined && !(Number.isInteger(index) && index >= 0)) return invalid("index must be a non-negative integer.");
 
-  const { doc, root, allowed } = setup(opts);
+  const { doc, root, allowed, skip } = setup(opts);
 
   if (by === "target") {
     const src = opts.targets ?? domTargets(doc);
@@ -108,7 +113,7 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
       return { ok: false, error: "target_not_found", available };
     }
     if (!isVisible(t.element)) return { ok: false, error: "not_visible", ...(t.reveal ? { reveal: t.reveal } : {}) };
-    return { ok: true, element: t.element, matched: describe("target", t.element) };
+    return { ok: true, element: t.element, matched: describe("target", t.element, opts) };
   }
 
   const roots = searchRoots(root);
@@ -124,10 +129,10 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
   } else {
     q = norm(value);
     if (!q) return invalid("text must contain letters or digits.");
-    candidates = inDocumentOrder(roots, textHits(root, q, allowed).map((h) => h.target));
+    candidates = inDocumentOrder(roots, textHits(root, q, allowed, skip).map((h) => h.target));
   }
 
-  if (!candidates.length) return { ok: false, error: "not_found", near: nearNames(root, q, allowed) };
+  if (!candidates.length) return { ok: false, error: "not_found", near: nearNames(root, q, allowed, skip) };
   let chosen: Element | undefined;
   if (index !== undefined) {
     chosen = candidates[index];
@@ -136,12 +141,12 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
   if (!chosen) {
     const cache = newCache();
     const list: Candidate[] = candidates.slice(0, MAX_CANDIDATES).map((el, i) => {
-      const m = describe(by, el);
+      const m = describe(by, el, opts);
       return { index: i, tag: m.tag, ...(m.role ? { role: m.role } : {}), name: m.name || clip(norm(accName(el, cache).name), 80), disabled: m.disabled, ...candidateContext(el) };
     });
     return { ok: false, error: "ambiguous", candidates: list, count: candidates.length };
   }
-  return { ok: true, element: chosen, matched: describe(by, chosen) };
+  return { ok: true, element: chosen, matched: describe(by, chosen, opts) };
 }
 
 /** `locate`, then scroll the match into view and report occlusion. */

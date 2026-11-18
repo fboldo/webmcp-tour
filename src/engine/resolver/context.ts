@@ -40,9 +40,9 @@ export function candidateContext(el: Element): Pick<Candidate, "heading" | "row"
 const opt = <K extends string>(k: K, v: string | undefined) => (v === undefined ? {} : ({ [k]: v } as Record<K, string>));
 
 /** Visible interactive names to suggest on `not_found`; capped in count and length. */
-export function nearNames(root: ParentNode, q: string, allowed: (el: Element) => boolean, max = 8): string[] {
+export function nearNames(root: ParentNode, q: string, allowed: (el: Element) => boolean, skip?: (el: Element) => boolean, max = 8): string[] {
   const words = q.split(" ").filter((w) => w.length > 1);
-  const cache = newCache();
+  const cache = newCache(skip);
   const seen = new Map<string, number>();
   let scanned = 0;
   for (const el of allElements(root)) {

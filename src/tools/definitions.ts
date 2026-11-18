@@ -66,11 +66,12 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       name: n.showStep,
       title: "Show me where",
       description:
-        "Highlight any element on the page and show a short explanation beside it, so the user can see which control you mean and act on it themselves. " +
-        "Point at the element any way you like: a declared `target` id, a CSS `selector`, or its visible `text` (button label, link text, aria-label). " +
-        "This only searches what is currently rendered in this document. `message` is required unless the target is declared with its own description. " +
-        "If several elements match, the result lists them; call again with `index`. " +
-        "This only points: it never clicks, submits, or changes anything. Do not tell the user an action succeeded just because you highlighted it.",
+        "Highlight an element on the page with a short explanation beside it, so the user sees which control you mean and acts on it themselves. " +
+        "Point at it by a declared `target` id, its visible `text` (label, link text, aria-label), or a CSS `selector`. " +
+        "Prefer `text` or `target`; use `selector` only for something you saw in the page snapshot. " +
+        "`message` is required unless the target has its own description. If several elements match, call again with `index`. " +
+        "If the control the user needs is not on the page, say so; do not highlight a nearby element as a guess. " +
+        "This only points: it never clicks or changes anything, so do not say an action succeeded because you highlighted it.",
       inputSchema: {
         type: "object",
         properties: {
@@ -84,7 +85,10 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
         },
       },
       annotations: ro,
-      execute: safe((input) => tour.show(input as StepInput)),
+      execute: safe(async (input) => {
+        const r = await tour.show(input as StepInput);
+        return r.ok ? { ...r, note: `The highlight stays until dismissed. Call ${n.dismiss} when the user moves on.` } : r;
+      }),
     },
     {
       name: n.listTargets,
