@@ -1,8 +1,9 @@
 name: CI
 
+# Manual only while the account has no Actions minutes; scripts/local-ci.sh is
+# the gate meanwhile. Restore push + pull_request when billing is back.
 on:
-  push:
-  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read

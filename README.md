@@ -18,6 +18,8 @@ pnpm size        # gzip budget gate: engine ESM ≤ 10 KB
 pnpm check       # all of the above, as CI runs it
 ```
 
+CI: GitHub Actions is manual-only for now. `scripts/local-ci.sh <pr>` runs `pnpm check` on a clean clone of the PR and posts the result as the `local-ci` commit status.
+
 TypeScript is pinned to 6.x: tsup's `.d.ts` build needs the TypeScript compiler API, which TypeScript 7 no longer ships.
 
 ## License
