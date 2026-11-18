@@ -14,6 +14,10 @@ Playwright MCP reaches WebMCP tools only in Chrome launched with the feature on.
 
 The tools show up as `webmcp_<name>` (for example `webmcp_tour_show_step`) after a page snapshot. The snapshot lists the raw names (`tour_show_step`); call the prefixed ones. Each call is capped at 30 s, so a long `tour_wait_for_interaction` ends early: call it again or ask the user.
 
+## Examples
+
+Three runnable apps in [`examples/`](examples): a script tag, a Vite bundle, and an engine embed with your own tool. Start with `pnpm example:script-tag`.
+
 ## Development
 
 Uses **pnpm** (version pinned in `package.json` → `packageManager`; `corepack enable` picks it up) and Node ≥ 22.18.

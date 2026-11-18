@@ -1,2 +1,4 @@
+packages:
+  - examples/bundled
 allowBuilds:
   esbuild: true

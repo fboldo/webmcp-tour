@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northwind plans · embed example</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/shared/app.css">
+<script>if (location.search.includes("polyfill")) document.write('<script src="/vendor/polyfill.js"><\/script>');</script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="top"><strong>Northwind</strong> <span class="note">Plans</span></header>
+<main>
+  <h1>Your plan</h1>
+  <section class="card">
+    <p>Current plan: <strong id="current">Team</strong></p>
+    <table>
+      <thead><tr><th>Plan</th><th>Price</th><th>Seats</th></tr></thead>
+      <tbody>
+        <tr><td>Starter</td><td>$0</td><td>2</td></tr>
+        <tr><td>Team</td><td>$12 / seat</td><td>25</td></tr>
+        <tr><td>Business</td><td>$29 / seat</td><td>Unlimited</td></tr>
+      </tbody>
+    </table>
+    <p class="note">The page has no plan picker of its own: the agent's own tool, <code>change_plan</code>, stages a change and points at the confirm button.</p>
+  </section>
+
+  <section class="card" id="review" hidden aria-live="polite">
+    <h2>Review change</h2>
+    <p id="summary"></p>
+    <button type="button" class="primary" id="confirm" data-tour-id="confirm-plan"
+      data-tour-description="Applies the new plan to your workspace. Billing changes on your next invoice.">Confirm plan change</button>
+    <button type="button" id="cancel">Cancel</button>
+  </section>
+
+  <section class="card">
+    <h2>Billing</h2>
+    <button type="button" data-tour-id="invoices" data-tour-description="Downloads every invoice as a ZIP of PDFs.">Download invoices</button>
+    <button type="button">Update card</button>
+  </section>
+</main>
+</body>
+</html>

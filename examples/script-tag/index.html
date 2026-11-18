@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northwind settings · script-tag example</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/shared/app.css">
+<!-- ?polyfill: install the W3C WebMCP polyfill first, for browsers without native WebMCP. -->
+<script>if (location.search.includes("polyfill")) document.write('<script src="/vendor/polyfill.js"><\/script>');</script>
+<!-- The one line this example is about: registers the tools and sets window.webmcpTour. -->
+<script src="/dist/webmcp-tour.js"></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <strong>Northwind</strong>
+  <span class="note">Workspace settings</span>
+</header>
+
+<main>
+  <h1>Settings</h1>
+  <div role="tablist" aria-label="Settings sections">
+    <button role="tab" id="tab-billing" aria-controls="billing" aria-selected="true">Billing</button>
+    <button role="tab" id="tab-team" aria-controls="team" aria-selected="false" tabindex="-1">Team</button>
+    <button role="tab" id="tab-security" aria-controls="security" aria-selected="false" tabindex="-1">Security</button>
+    <button role="tab" id="tab-notifications" aria-controls="notifications" aria-selected="false" tabindex="-1">Notifications</button>
+  </div>
+
+  <div role="tabpanel" id="billing" aria-labelledby="tab-billing">
+    <h2>Billing</h2>
+    <p>Current plan: <strong>Team</strong>, 5 seats, billed monthly.</p>
+    <p>
+      <!-- Declared targets: stable ids and author-written descriptions. -->
+      <button type="button" class="primary" data-tour-id="billing-plan"
+        data-tour-description="Opens the plan picker. Choose Team or Business, then confirm on the next screen.">Change plan</button>
+      <button type="button" data-tour-id="invoices"
+        data-tour-description="Downloads every invoice as a ZIP of PDFs.">Download invoices</button>
+    </p>
+    <!-- Undeclared: the agent still finds these by their visible text. -->
+    <h3>Payment method</h3>
+    <p>Visa ending 4242 <button type="button">Update card</button></p>
+    <p><label>Billing email <input type="email" value="finance@northwind.example"></label>
+      <button type="button">Save billing email</button></p>
+  </div>
+
+  <div role="tabpanel" id="team" aria-labelledby="tab-team" hidden>
+    <h2>Team</h2>
+    <p><button type="button" class="primary" data-tour-id="invite-member"
+      data-tour-description="Sends an invite by email. New members join as Viewer until you change their role.">Invite member</button></p>
+    <table>
+      <thead><tr><th>Member</th><th>Role</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Sam Rivera</td><td>Owner</td><td></td></tr>
+        <tr><td>Ana Costa</td><td>Admin</td><td><button type="button">Remove</button></td></tr>
+        <tr><td>Lee Park</td><td>Viewer</td><td><button type="button">Remove</button></td></tr>
+      </tbody>
+    </table>
+    <p class="note">The two “Remove” buttons are undeclared and identical: the agent has to pick one with <code>index</code>.</p>
+  </div>
+
+  <div role="tabpanel" id="security" aria-labelledby="tab-security" hidden>
+    <h2>Security</h2>
+    <p><button type="button">Sign out of all devices</button></p>
+    <details>
+      <summary>Advanced</summary>
+      <p><button type="button" data-tour-id="two-factor"
+        data-tour-description="Starts two-factor setup with an authenticator app."
+        data-tour-reveal="Open Security, then expand Advanced.">Set up two-factor</button></p>
+    </details>
+    <p>
+      <button type="button" class="danger" data-tour-exclude>Delete workspace</button>
+      <span class="note">Marked <code>data-tour-exclude</code>: the tour never points at it.</span>
+    </p>
+  </div>
+
+  <div role="tabpanel" id="notifications" aria-labelledby="tab-notifications" hidden>
+    <h2>Notifications</h2>
+    <label><input type="checkbox" checked data-tour-id="email-digest"
+      data-tour-description="Sends one summary email a day instead of one email per event."> Daily email digest</label>
+    <label><input type="checkbox"> Product news</label>
+    <label><input type="checkbox" checked> Security alerts</label>
+  </div>
+</main>
+
+<script>if (location.search.includes("polyfill")) import("/shared/tool-console.js");</script>
+</body>
+</html>

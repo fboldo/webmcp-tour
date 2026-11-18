@@ -49,7 +49,10 @@
     "test:watch": "vitest",
     "size": "node scripts/check-size.mjs",
     "check": "pnpm typecheck && pnpm build && pnpm test && pnpm size",
-    "demo": "pnpm build && node scripts/serve-demo.mjs"
+    "demo": "pnpm build && node scripts/serve-demo.mjs",
+    "example:script-tag": "pnpm build && node examples/serve.mjs script-tag",
+    "example:embed": "pnpm build && node examples/serve.mjs embed",
+    "example:bundled": "pnpm build && pnpm --filter webmcp-tour-example-bundled dev"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
