@@ -1,0 +1,177 @@
+{"t":22,"host":"chrome-noflag","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":null,"navigatorModelContext":null,"sameObject":null,"methods":[],"registerToolLength":null}
+{"t":23,"host":"chrome-noflag","event":"no-api"}
+{"t":16,"host":"chrome-flag","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":17,"host":"chrome-flag","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":24,"host":"chrome-flag","event":"event:toolchange","toolName":null}
+{"t":24,"host":"chrome-flag","event":"register:resolved","value":"undefined"}
+{"t":25,"host":"chrome-flag","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":25,"host":"chrome-flag","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":2041,"host":"chrome-flag","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2043,"host":"chrome-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":2243,"host":"chrome-flag","event":"execute:end","ok":true,"id":1,"sleptMs":202,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2296,"host":"chrome-flag","event":"execute:start","id":2,"input":{"sleepMs":60000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2297,"host":"chrome-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":3298,"host":"chrome-flag","event":"execute:abort","id":2,"afterMs":1002,"reason":"AbortError: signal is aborted without reason"}
+{"t":3299,"host":"chrome-flag","event":"execute:end","ok":true,"id":2,"sleptMs":1003,"aborted":{"afterMs":1002,"reason":"AbortError: signal is aborted without reason"},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":3300,"host":"chrome-flag","event":"event:toolcancel","toolName":"spike_probe"}
+{"t":24,"host":"chrome-noflag-polyfill","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":true,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":26,"host":"chrome-noflag-polyfill","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":35,"host":"chrome-noflag-polyfill","event":"event:toolchange","toolName":null}
+{"t":36,"host":"chrome-noflag-polyfill","event":"register:resolved","value":"undefined"}
+{"t":36,"host":"chrome-noflag-polyfill","event":"register:duplicate-rejected","name":"InvalidStateError","message":"A tool named spike_probe is already registered"}
+{"t":37,"host":"chrome-noflag-polyfill","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":2050,"host":"chrome-noflag-polyfill","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2051,"host":"chrome-noflag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":2251,"host":"chrome-noflag-polyfill","event":"execute:end","ok":true,"id":1,"sleptMs":201,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2253,"host":"chrome-noflag-polyfill","event":"execute:start","id":2,"input":{"sleepMs":60000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2253,"host":"chrome-noflag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":3253,"host":"chrome-noflag-polyfill","event":"execute:abort","id":2,"afterMs":1000,"reason":"AbortError: signal is aborted without reason"}
+{"t":3254,"host":"chrome-noflag-polyfill","event":"event:toolcancel","toolName":"spike_probe"}
+{"t":3254,"host":"chrome-noflag-polyfill","event":"execute:end","ok":true,"id":2,"sleptMs":1001,"aborted":{"afterMs":1000,"reason":"AbortError: signal is aborted without reason"},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":23,"host":"chrome-flag-polyfill","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":true,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":24,"host":"chrome-flag-polyfill","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":26,"host":"chrome-flag-polyfill","event":"event:toolchange","toolName":null}
+{"t":26,"host":"chrome-flag-polyfill","event":"register:resolved","value":"undefined"}
+{"t":26,"host":"chrome-flag-polyfill","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":28,"host":"chrome-flag-polyfill","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":2036,"host":"chrome-flag-polyfill","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2037,"host":"chrome-flag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":2237,"host":"chrome-flag-polyfill","event":"execute:end","ok":true,"id":1,"sleptMs":201,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2244,"host":"chrome-flag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":2243,"host":"chrome-flag-polyfill","event":"execute:start","id":2,"input":{"sleepMs":60000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":3245,"host":"chrome-flag-polyfill","event":"execute:abort","id":2,"afterMs":1002,"reason":"AbortError: signal is aborted without reason"}
+{"t":3246,"host":"chrome-flag-polyfill","event":"execute:end","ok":true,"id":2,"sleptMs":1003,"aborted":{"afterMs":1002,"reason":"AbortError: signal is aborted without reason"},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":3246,"host":"chrome-flag-polyfill","event":"event:toolcancel","toolName":"spike_probe"}
+{"t":15,"host":"playwright-mcp-noflag","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":null,"navigatorModelContext":null,"sameObject":null,"methods":[],"registerToolLength":null}
+{"t":16,"host":"playwright-mcp-noflag","event":"no-api"}
+{"t":27,"host":"playwright-mcp-noflag-polyfill","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":true,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":28,"host":"playwright-mcp-noflag-polyfill","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":30,"host":"playwright-mcp-noflag-polyfill","event":"event:toolchange","toolName":null}
+{"t":31,"host":"playwright-mcp-noflag-polyfill","event":"register:resolved","value":"undefined"}
+{"t":31,"host":"playwright-mcp-noflag-polyfill","event":"register:duplicate-rejected","name":"InvalidStateError","message":"A tool named spike_probe is already registered"}
+{"t":32,"host":"playwright-mcp-noflag-polyfill","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":23,"host":"playwright-mcp-flag","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":24,"host":"playwright-mcp-flag","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":25,"host":"playwright-mcp-flag","event":"event:toolchange","toolName":null}
+{"t":26,"host":"playwright-mcp-flag","event":"register:resolved","value":"undefined"}
+{"t":26,"host":"playwright-mcp-flag","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":29,"host":"playwright-mcp-flag","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":1105,"host":"playwright-mcp-flag","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":1106,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":1306,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":1,"sleptMs":201,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2337,"host":"playwright-mcp-flag","event":"execute:start","id":2,"input":{"sleepMs":4000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2338,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":6338,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":2,"sleptMs":4001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":7363,"host":"playwright-mcp-flag","event":"execute:start","id":3,"input":{"sleepMs":6000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":7363,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":13363,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":3,"sleptMs":6001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":19,"host":"playwright-mcp-default","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":null,"navigatorModelContext":null,"sameObject":null,"methods":[],"registerToolLength":null}
+{"t":20,"host":"playwright-mcp-default","event":"no-api"}
+{"t":18,"host":"playwright-mcp-flag","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":19,"host":"playwright-mcp-flag","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":20,"host":"playwright-mcp-flag","event":"event:toolchange","toolName":null}
+{"t":21,"host":"playwright-mcp-flag","event":"register:resolved","value":"undefined"}
+{"t":21,"host":"playwright-mcp-flag","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":22,"host":"playwright-mcp-flag","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":1095,"host":"playwright-mcp-flag","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":1097,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":1297,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":1,"sleptMs":202,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2323,"host":"playwright-mcp-flag","event":"execute:start","id":2,"input":{"sleepMs":30000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2324,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":37,"host":"chrome-noflag","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":null,"navigatorModelContext":null,"sameObject":null,"methods":[],"registerToolLength":null}
+{"t":38,"host":"chrome-noflag","event":"no-api"}
+{"t":21,"host":"chrome-flag","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":22,"host":"chrome-flag","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":31,"host":"chrome-flag","event":"event:toolchange","toolName":null}
+{"t":31,"host":"chrome-flag","event":"register:resolved","value":"undefined"}
+{"t":32,"host":"chrome-flag","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":32,"host":"chrome-flag","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":2042,"host":"chrome-flag","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2043,"host":"chrome-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":2243,"host":"chrome-flag","event":"execute:end","ok":true,"id":1,"sleptMs":201,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2295,"host":"chrome-flag","event":"execute:start","id":2,"input":{"sleepMs":60000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2296,"host":"chrome-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":3298,"host":"chrome-flag","event":"execute:abort","id":2,"afterMs":1003,"reason":"AbortError: signal is aborted without reason"}
+{"t":3299,"host":"chrome-flag","event":"execute:end","ok":true,"id":2,"sleptMs":1004,"aborted":{"afterMs":1003,"reason":"AbortError: signal is aborted without reason"},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":3300,"host":"chrome-flag","event":"event:toolcancel","toolName":"spike_probe"}
+{"t":3303,"host":"chrome-flag","event":"execute:start","id":3,"input":{"sleepMs":310000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":3304,"host":"chrome-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":20,"host":"chrome-flags-page","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":20,"host":"chrome-flags-page","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":21,"host":"chrome-flags-page","event":"event:toolchange","toolName":null}
+{"t":22,"host":"chrome-flags-page","event":"register:resolved","value":"undefined"}
+{"t":22,"host":"chrome-flags-page","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":23,"host":"chrome-flags-page","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":25,"host":"chrome-flags-page","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":26,"host":"chrome-flags-page","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":29,"host":"chrome-flags-page","event":"event:toolchange","toolName":null}
+{"t":30,"host":"chrome-flags-page","event":"register:resolved","value":"undefined"}
+{"t":31,"host":"chrome-flags-page","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":33,"host":"chrome-flags-page","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":32324,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":2,"sleptMs":30001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":32337,"host":"playwright-mcp-flag","event":"execute:start","id":3,"input":{"sleepMs":65000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":32338,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":62349,"host":"playwright-mcp-flag","event":"execute:start","id":4,"input":{"sleepMs":130000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":62349,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":20,"host":"playwright-mcp-flag-initpage","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":21,"host":"playwright-mcp-flag-initpage","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":28,"host":"playwright-mcp-flag-initpage","event":"event:toolchange","toolName":null}
+{"t":28,"host":"playwright-mcp-flag-initpage","event":"register:resolved","value":"undefined"}
+{"t":29,"host":"playwright-mcp-flag-initpage","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":29,"host":"playwright-mcp-flag-initpage","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":1097,"host":"playwright-mcp-flag-initpage","event":"execute:start","id":1,"input":{"sleepMs":35000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":1098,"host":"playwright-mcp-flag-initpage","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":92362,"host":"playwright-mcp-flag","event":"execute:start","id":5,"input":{"sleepMs":310000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":92363,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":97338,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":3,"sleptMs":65001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":29,"host":"playwright-mcp-flag","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":false,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":29,"host":"playwright-mcp-flag","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":31,"host":"playwright-mcp-flag","event":"event:toolchange","toolName":null}
+{"t":31,"host":"playwright-mcp-flag","event":"register:resolved","value":"undefined"}
+{"t":32,"host":"playwright-mcp-flag","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":33,"host":"playwright-mcp-flag","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":1113,"host":"playwright-mcp-flag","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":1114,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":1314,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":1,"sleptMs":201,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":36099,"host":"playwright-mcp-flag-initpage","event":"execute:end","ok":true,"id":1,"sleptMs":35001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2331,"host":"playwright-mcp-flag","event":"execute:start","id":2,"input":{"sleepMs":4000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2331,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":37121,"host":"playwright-mcp-flag-initpage","event":"execute:start","id":2,"input":{"sleepMs":95000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":37122,"host":"playwright-mcp-flag-initpage","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":6331,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":2,"sleptMs":4001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":7344,"host":"playwright-mcp-flag","event":"execute:start","id":3,"input":{"sleepMs":6000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":7344,"host":"playwright-mcp-flag","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":13344,"host":"playwright-mcp-flag","event":"execute:end","ok":true,"id":3,"sleptMs":6001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":132122,"host":"playwright-mcp-flag-initpage","event":"execute:end","ok":true,"id":2,"sleptMs":95001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":313304,"host":"chrome-flag","event":"execute:end","ok":true,"id":3,"sleptMs":310001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":25,"host":"chrome-noflag-polyfill","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":true,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":27,"host":"chrome-noflag-polyfill","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":39,"host":"chrome-noflag-polyfill","event":"event:toolchange","toolName":null}
+{"t":39,"host":"chrome-noflag-polyfill","event":"register:resolved","value":"undefined"}
+{"t":40,"host":"chrome-noflag-polyfill","event":"register:duplicate-rejected","name":"InvalidStateError","message":"A tool named spike_probe is already registered"}
+{"t":42,"host":"chrome-noflag-polyfill","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":2044,"host":"chrome-noflag-polyfill","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2045,"host":"chrome-noflag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":2245,"host":"chrome-noflag-polyfill","event":"execute:end","ok":true,"id":1,"sleptMs":201,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2247,"host":"chrome-noflag-polyfill","event":"execute:start","id":2,"input":{"sleepMs":60000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2248,"host":"chrome-noflag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":3248,"host":"chrome-noflag-polyfill","event":"execute:abort","id":2,"afterMs":1001,"reason":"AbortError: signal is aborted without reason"}
+{"t":3249,"host":"chrome-noflag-polyfill","event":"event:toolcancel","toolName":"spike_probe"}
+{"t":3249,"host":"chrome-noflag-polyfill","event":"execute:end","ok":true,"id":2,"sleptMs":1002,"aborted":{"afterMs":1001,"reason":"AbortError: signal is aborted without reason"},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":132,"host":"chrome-flag-polyfill","event":"shape","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36","isSecureContext":true,"polyfillRequested":true,"documentModelContext":"ModelContext","navigatorModelContext":null,"sameObject":true,"methods":["executeTool","getTools","ontoolactivated","ontoolcancel","ontoolchange","registerTool"],"registerToolLength":1}
+{"t":136,"host":"chrome-flag-polyfill","event":"register:returned","isPromise":true,"value":"Promise"}
+{"t":185,"host":"chrome-flag-polyfill","event":"event:toolchange","toolName":null}
+{"t":186,"host":"chrome-flag-polyfill","event":"register:resolved","value":"undefined"}
+{"t":186,"host":"chrome-flag-polyfill","event":"register:duplicate-rejected","name":"InvalidStateError","message":"Duplicate tool name"}
+{"t":202,"host":"chrome-flag-polyfill","event":"getTools","tools":[{"name":"spike_probe","title":"Spike probe (title field)","annotations":{"consequentialHint":false,"debugging":false,"readOnlyHint":true,"untrustedContentHint":true},"keys":["annotations","description","inputSchema","name","origin","title","window","annotations","description","inputSchema","name","origin","title","window"]}]}
+{"t":2166,"host":"chrome-flag-polyfill","event":"execute:start","id":1,"input":{"sleepMs":200},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2167,"host":"chrome-flag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":2367,"host":"chrome-flag-polyfill","event":"execute:end","ok":true,"id":1,"sleptMs":201,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2417,"host":"chrome-flag-polyfill","event":"execute:start","id":2,"input":{"sleepMs":60000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":2418,"host":"chrome-flag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":3418,"host":"chrome-flag-polyfill","event":"execute:abort","id":2,"afterMs":1001,"reason":"AbortError: signal is aborted without reason"}
+{"t":3419,"host":"chrome-flag-polyfill","event":"execute:end","ok":true,"id":2,"sleptMs":1002,"aborted":{"afterMs":1001,"reason":"AbortError: signal is aborted without reason"},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":3419,"host":"chrome-flag-polyfill","event":"event:toolcancel","toolName":"spike_probe"}
+{"t":3423,"host":"chrome-flag-polyfill","event":"execute:start","id":3,"input":{"sleepMs":310000},"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}
+{"t":3424,"host":"chrome-flag-polyfill","event":"event:toolactivated","toolName":"spike_probe"}
+{"t":313424,"host":"chrome-flag-polyfill","event":"execute:end","ok":true,"id":3,"sleptMs":310001,"aborted":null,"typeofSecond":"object","secondKeys":["signal","signal"],"secondCtor":"Object","hasSignal":true,"signalAbortedAtStart":false}

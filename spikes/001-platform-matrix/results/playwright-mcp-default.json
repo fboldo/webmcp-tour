@@ -1,0 +1,14 @@
+{
+ "variant": "default",
+ "when": "2026-11-18T19:01:57.127Z",
+ "config": "stock CLI: --browser chrome --headless --isolated",
+ "listChanged": 1,
+ "calls": [],
+ "server": {
+  "name": "Playwright",
+  "version": "1.66.0-alpha-2026-11-18"
+ },
+ "toolsBefore": [],
+ "navigateResponse": "### Ran Playwright code\n```js\nawait page.goto('http://localhost:8401/?host=playwright-mcp-default');\n```\n### Page\n- Page URL: http://localhost:8401/?host=playwright-mcp-default\n- Page Title: Spike 001 — WebMCP platform probe\n- Console: 1 errors, 0 warnings\n### Snapshot\n- [Snapshot](.playwright-mcp/page-2026-11-18T19-01-57-743Z.yml)\n### Events\n- New console entries: .playwright-mcp/console-2026-11-18T19-01-57-667Z.log#L1",
+ "webmcpTools": []
+}
