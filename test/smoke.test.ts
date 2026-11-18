@@ -4,7 +4,7 @@ import { VERSION } from "../src/index.js";
 describe("smoke", () => {
   it("runs in a real browser with layout", () => {
     expect(typeof window).toBe("object");
-    expect(navigator.userAgent).toMatch(/Chrome/);
+    expect(navigator.userAgent).toMatch(/Chrome|Firefox/);
 
     const button = document.createElement("button");
     button.textContent = "Change plan";

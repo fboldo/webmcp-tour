@@ -1,0 +1,6 @@
+/* Aggressive, unlayered reset in the style of utility-framework preflights. */
+*, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; border-color: #ddd; }
+body { margin: 0; line-height: inherit; font-family: system-ui, sans-serif; }
+h2, h3, p { margin: 0; font-size: inherit; font-weight: inherit; }
+button { font: inherit; color: inherit; margin: 0; padding: 0; background: transparent; cursor: pointer; }
+[hidden] { display: none; }
