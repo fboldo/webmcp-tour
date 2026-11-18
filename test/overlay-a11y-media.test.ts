@@ -1,4 +1,4 @@
-// Ported from spike 005: forced-colors, reduced motion, 400% zoom.
+// Forced-colors, reduced motion, 400% zoom.
 import { afterEach, describe, expect, it } from "vitest";
 import { cardPlaced, cleanup, emulateMedia, geom, openFixture, overlaps, parts, ringOnTarget } from "./helpers.js";
 
