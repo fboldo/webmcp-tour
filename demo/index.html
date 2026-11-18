@@ -106,7 +106,6 @@
   <ol id="transcript" role="log" aria-live="polite" aria-label="Conversation and tool calls"></ol>
   <p id="samples" class="samples"></p>
   <form id="ask">
-    <label>Your question <input name="q" autocomplete="off" placeholder="How do I change my plan?" required></label>
     <label>Mode
       <select name="mode" id="mode">
         <option value="auto">Auto (on-device model, else OpenRouter if a key is set, else scripted)</option>
@@ -127,7 +126,13 @@
       <p><button type="button" id="or-forget">Forget key</button></p>
       <p class="hint" id="or-note">The key stays in this browser and is sent only to openrouter.ai. Use a key with a spending limit.</p>
     </details>
-    <p><button type="submit" class="primary">Ask</button> <button type="button" id="stop" hidden>Stop</button> <button type="button" id="download" hidden>Download model</button></p>
+    <p><button type="button" id="download" hidden>Download model</button></p>
+    <div class="composer">
+      <label for="q" class="visually-hidden">Your question</label>
+      <input id="q" name="q" autocomplete="off" placeholder="Ask how to do something…" required>
+      <button type="button" id="stop" class="composer-btn" aria-label="Stop" title="Stop" hidden><span aria-hidden="true">■</span></button>
+      <button type="submit" class="composer-btn send" aria-label="Ask" title="Ask"><span aria-hidden="true">↑</span></button>
+    </div>
   </form>
 </aside>
 </body>
