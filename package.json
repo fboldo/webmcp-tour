@@ -1,0 +1,60 @@
+{
+  "name": "webmcp-tour",
+  "version": "0.0.0",
+  "description": "Agent-callable guided-tour tools for WebMCP: highlight an element and explain it, the user clicks it themselves.",
+  "license": "MIT",
+  "author": "Filipe Boldo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fboldo/webmcp-tour.git"
+  },
+  "keywords": [
+    "webmcp",
+    "mcp",
+    "model-context",
+    "guided-tour",
+    "onboarding",
+    "agent"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "./dist/auto*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./auto": {
+      "types": "./dist/auto.d.ts",
+      "default": "./dist/auto.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/webmcp-tour.js",
+  "jsdelivr": "./dist/webmcp-tour.js",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "packageManager": "pnpm@11.20.0",
+  "scripts": {
+    "build": "node -e \"fs.rmSync('dist',{recursive:true,force:true})\" && tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "size": "node scripts/check-size.mjs",
+    "check": "pnpm typecheck && pnpm test && pnpm build && pnpm size"
+  },
+  "devDependencies": {
+    "@vitest/browser-playwright": "^5.1.0",
+    "playwright": "^1.65.1",
+    "tsup": "^9.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}
