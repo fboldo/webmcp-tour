@@ -1,21 +1,22 @@
-import type { StepInput, Tour } from "../tour/index.js";
+import type { StepInput, Tour, WaitInput } from "../tour/index.js";
 import { MAX_MESSAGE, MAX_TITLE } from "../tour/index.js";
 
 /**
  * Tool names. Bridges rename tools (Playwright MCP exposes `webmcp_tour_show_step`),
  * so descriptions refer to siblings by role and interpolate these.
- * `tour_wait_for_interaction` joins this list in M3.
  */
 export interface ToolNames {
   showStep: string;
   listTargets: string;
   dismiss: string;
+  waitForInteraction: string;
 }
 
 export const DEFAULT_NAMES: Readonly<ToolNames> = {
   showStep: "tour_show_step",
   listTargets: "tour_list_targets",
   dismiss: "tour_dismiss",
+  waitForInteraction: "tour_wait_for_interaction",
 };
 
 /** Failure envelopes carry `isError: true`: hosts that honour it (Playwright MCP) report an MCP error; others ignore it. */
@@ -46,10 +47,10 @@ export function toolNames(names: Partial<ToolNames> = {}): ToolNames {
 const wrap = (r: { ok: boolean } & Record<string, unknown>): ToolResult => (r.ok ? r : { ...r, isError: true }) as ToolResult;
 
 const safe =
-  (fn: (input: Record<string, unknown>) => unknown): ToolDefinition["execute"] =>
-  async (input) => {
+  (fn: (input: Record<string, unknown>, options?: { signal?: AbortSignal }) => unknown): ToolDefinition["execute"] =>
+  async (input, options) => {
     try {
-      return wrap((await fn(input ?? {})) as Parameters<typeof wrap>[0]);
+      return wrap((await fn(input ?? {}, options)) as Parameters<typeof wrap>[0]);
     } catch {
       return wrap({ ok: false, error: "internal", message: "The tour failed unexpectedly; check the page and try again." });
     }
@@ -105,6 +106,27 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       inputSchema: { type: "object", properties: {} },
       annotations: ro,
       execute: safe(() => tour.dismiss()),
+    },
+    {
+      name: n.waitForInteraction,
+      title: "Wait for the user",
+      description:
+        `Wait until the user interacts with the highlighted element, or with one you name by \`target\`, \`selector\` or \`text\`. Use it after ${n.showStep} to pause while the user does the step themselves. ` +
+        "It returns the kind of interaction and the element, never field values. " +
+        "A `timeout` or `superseded` status is not a failure: the user has not acted, and the highlight stays, so call again or ask them. " +
+        "If this call fails, never returns, or returns after the page has changed, check the page: the user most likely clicked the control.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          target: str("At most one of target, selector, text. None means the highlighted element."),
+          selector: str(),
+          text: str(),
+          index: { type: "integer", minimum: 0, description: "Pick among listed candidates (0-based)." },
+          events: { type: "array", items: { type: "string", enum: ["click", "change"] }, description: "Default: click for buttons and links, change for fields." },
+        },
+      },
+      annotations: ro,
+      execute: safe((input, options) => tour.waitForInteraction(input as WaitInput, options)),
     },
   ];
 }

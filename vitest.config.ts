@@ -1,6 +1,7 @@
 import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
 import { corpusAvailable, runCorpus } from "./test/corpus/commands.js";
+import { waitInput, windowListeners } from "./test/wait-commands.js";
 import { fixtures } from "./test/vite-fixtures.mjs";
 
 export default defineConfig({
@@ -16,6 +17,8 @@ export default defineConfig({
       commands: {
         corpusAvailable,
         runCorpus,
+        waitInput,
+        windowListeners,
         // Media emulation applies to the whole page, nested fixture iframes included.
         async emulateMedia(
           ctx,

@@ -39,7 +39,7 @@ export function registerAutoTools(options: AutoOptions = {}): AutoHandle {
   if (!mc) return none;
 
   const tour = createTour();
-  const [show, list, dismiss] = defineTools(tour, options.names) as [ToolDefinition, ToolDefinition, ToolDefinition];
+  const [show, list, dismiss, wait] = defineTools(tour, options.names) as [ToolDefinition, ToolDefinition, ToolDefinition, ToolDefinition];
   const own = new Set<AbortController>();
   let listing: AbortController | undefined;
   let blocked = false; // the list tool's name is taken: don't retry on every change
@@ -76,6 +76,7 @@ export function registerAutoTools(options: AutoOptions = {}): AutoHandle {
   const ready = (async () => {
     await register(show);
     await register(dismiss);
+    await register(wait);
   })().then(sync);
   let chain = ready;
   const queue = () => void (chain = chain.then(sync));

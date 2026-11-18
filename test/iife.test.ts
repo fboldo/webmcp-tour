@@ -78,7 +78,7 @@ describe("dist/webmcp-tour.js", () => {
   it("registers the tools on a page with the API, once even if the script loads twice", async () => {
     const { win, doc } = await load({}, true);
     // Registration is async and the fixture declares targets, so list_targets follows.
-    await vi.waitFor(async () => expect(await toolNames(win)).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step"]));
+    await vi.waitFor(async () => expect(await toolNames(win)).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]));
     const warns: unknown[] = [];
     win.console.warn = (...a: unknown[]) => void warns.push(a);
     const again = doc.createElement("script");
@@ -86,7 +86,7 @@ describe("dist/webmcp-tour.js", () => {
     await new Promise((r) => { again.onload = r; doc.head.append(again); });
     await new Promise((r) => setTimeout(r, 300));
     expect(warns).toEqual([]); // a second registration attempt would have warned about the duplicate names
-    expect(await toolNames(win)).toHaveLength(3);
+    expect(await toolNames(win)).toHaveLength(4);
     const mc = (win.document as any).modelContext;
     const tool = (await mc.getTools()).find((t: { name: string }) => t.name === "tour_show_step");
     expect(JSON.parse(await mc.executeTool(tool, { text: "Save changes", message: "Click." }))).toMatchObject({ ok: true });

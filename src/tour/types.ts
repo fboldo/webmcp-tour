@@ -27,6 +27,40 @@ export type StepResult =
   /** No document to draw in (server-side render). */
   | { ok: false; error: "unavailable"; message: string };
 
+export type WaitEvent = "click" | "change";
+
+/** What `tour.waitForInteraction` takes: at most one of `target`, `selector`, `text`; none means the highlighted element. */
+export interface WaitInput {
+  target?: string;
+  selector?: string;
+  text?: string;
+  index?: number;
+  /** Default by element: `click` for buttons and links, `change` for fields. Never `input`. */
+  events?: WaitEvent[];
+}
+
+export interface WaitOptions {
+  /** Teardown signal. The tools pass the host's execution-time signal. */
+  signal?: AbortSignal;
+  /** Internal deadline, default 20 s. */
+  timeoutMs?: number;
+}
+
+/**
+ * Never carries a field value. A timeout or a supersede is a success: the user has not
+ * acted (yet) and the highlight stays. A CDP-driven agent click is trusted, so
+ * `interacted` means an interaction happened, not that a person did it.
+ */
+export type WaitResult =
+  | { ok: true; status: "interacted"; event: WaitEvent; target: { tag: string; name: string } }
+  | { ok: true; status: "timeout" | "superseded" }
+  | ResolveError
+  /** No locator given and nothing is highlighted. */
+  | { ok: false; error: "no_step"; message: string }
+  /** The signal aborted, so nobody is listening for this. */
+  | { ok: false; error: "cancelled"; message: string }
+  | { ok: false; error: "unavailable"; message: string };
+
 export interface DismissResult {
   ok: true;
   dismissed: true;
@@ -68,6 +102,11 @@ export type TourEvents = OverlayEvents & { targets: Record<string, never> };
 export interface Tour {
   /** Resolve the step's element, point at it, and return the tool-shaped envelope. Replaces the current step. */
   show(step: StepInput): Promise<StepResult>;
+  /**
+   * Resolve when the user interacts with the highlighted element (or the one named).
+   * A new wait, or a new `show`, settles the pending one with `superseded`.
+   */
+  waitForInteraction(input?: WaitInput, options?: WaitOptions): Promise<WaitResult>;
   /** Remove the current highlight. Idempotent. */
   dismiss(): DismissResult;
   on<K extends keyof TourEvents>(type: K, fn: (e: TourEvents[K]) => void): () => void;
@@ -77,7 +116,7 @@ export interface Tour {
   targets(): { targets: TargetInfo[]; total: number };
   /**
    * Tool definitions to register under your own names and timing:
-   * `show_step`, `list_targets`, `dismiss`, in that order. Registers nothing itself.
+   * `show_step`, `list_targets`, `dismiss`, `wait_for_interaction`, in that order. Registers nothing itself.
    * Throws on bad names. Each `execute` returns an envelope and never throws.
    */
   tools(options?: { names?: Partial<ToolNames> }): ToolDefinition[];
