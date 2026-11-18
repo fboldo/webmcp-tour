@@ -12,10 +12,9 @@ export default defineConfig([
     treeshake: true,
   },
   {
-    // Script-tag build: dist/webmcp-tour.js, global `webmcpTour`.
+    // Script-tag build: dist/webmcp-tour.js, sets `window.webmcpTour` (see src/iife.ts).
     entry: { "webmcp-tour": "src/iife.ts" },
     format: ["iife"],
-    globalName: "webmcpTour",
     platform: "browser",
     target: "es2022",
     minify: true,

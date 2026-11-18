@@ -1,0 +1,24 @@
+* { box-sizing: border-box; }
+body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: #1c1c28; background: #f6f7fb; padding-right: 340px; }
+.top { display: flex; gap: 1.5rem; align-items: center; padding: .75rem 1.5rem; background: #fff; border-bottom: 1px solid #dde; position: sticky; top: 0; z-index: 5; }
+.top nav { display: flex; gap: 1rem; flex: 1; }
+.top a { color: #3a3ac8; text-decoration: none; }
+main { max-width: 640px; margin: 0 auto; padding: 1rem 1.5rem 60vh; }
+section { background: #fff; border: 1px solid #dde; border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; }
+h1, h2, h3 { margin: .25rem 0 .75rem; }
+h2 { font-size: 1.15rem; }
+h3 { font-size: 1rem; }
+label { display: block; margin: .5rem 0; }
+label input[type=text], label input[type=email], label input[type=number], select, textarea { display: block; width: 100%; padding: .35rem .5rem; font: inherit; }
+label:has(> input[type=checkbox]) { display: flex; gap: .5rem; align-items: center; }
+button { font: inherit; padding: .4rem .8rem; border: 1px solid #b9bbd0; border-radius: 6px; background: #fff; cursor: pointer; }
+button.primary { background: #3a3ac8; border-color: #3a3ac8; color: #fff; }
+button.danger { color: #b00020; border-color: #b00020; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: .35rem; border-bottom: 1px solid #eef; }
+.panel { position: fixed; top: 0; right: 0; bottom: 0; width: 330px; overflow: auto; padding: 1rem; background: #fff; border-left: 1px solid #dde; z-index: 6; }
+.panel h2 { margin-top: 0; }
+.panel fieldset { border: 1px solid #dde; border-radius: 6px; margin: 0 0 1rem; }
+#targets { display: flex; flex-wrap: wrap; gap: .4rem; }
+#result { margin: 0; padding: .6rem; background: #f0f1f8; border-radius: 6px; font: 12px/1.4 ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; max-height: 40vh; overflow: auto; }
+.hint, small { color: #666; }

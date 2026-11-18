@@ -12,10 +12,11 @@ Uses **pnpm** (version pinned in `package.json` → `packageManager`; `corepack 
 pnpm install
 pnpm exec playwright install chromium   # once: Vitest runs tests in real Chromium
 pnpm typecheck
-pnpm test        # Vitest browser mode, Playwright provider, headless Chromium
-pnpm build       # tsup → dist/index.js, dist/auto.js (ESM), dist/webmcp-tour.js (IIFE, global webmcpTour)
-pnpm size        # gzip budget gate: engine ESM ≤ 10 KB
+pnpm build       # tsup → dist/index.js, dist/auto.js (ESM), dist/webmcp-tour.js (IIFE, sets window.webmcpTour)
+pnpm test        # Vitest browser mode (Chromium + Firefox); the IIFE test needs the build
+pnpm size        # gzip budget gate: engine ESM ≤ 10 KB (minified)
 pnpm check       # all of the above, as CI runs it
+pnpm demo        # build, then serve http://127.0.0.1:4173/demo/ (PORT overrides)
 ```
 
 CI: the GitHub Actions workflow is manual-only for now; run `pnpm check` locally before merging.

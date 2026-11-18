@@ -48,7 +48,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "size": "node scripts/check-size.mjs",
-    "check": "pnpm typecheck && pnpm test && pnpm build && pnpm size"
+    "check": "pnpm typecheck && pnpm build && pnpm test && pnpm size",
+    "demo": "pnpm build && node scripts/serve-demo.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",

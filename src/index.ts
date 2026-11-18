@@ -4,3 +4,11 @@ export { VERSION } from "./engine/index.js";
 // Resolver (M1).
 export { resolve } from "./engine/resolver/index.js";
 export type { ResolveInput, ResolveResult, ResolverOptions } from "./engine/resolver/index.js";
+
+// Tour API (M1).
+export { createTour, MAX_MESSAGE, MAX_TITLE } from "./tour/index.js";
+export type { DismissResult, StepInput, StepResult, TargetDefinition, Tour, TourEvents, TourOptions } from "./tour/index.js";
+
+// Overlay.
+export { Overlay } from "./engine/index.js";
+export type { OverlayOptions, OverlayStep, ShowResult } from "./engine/index.js";
