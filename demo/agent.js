@@ -4,7 +4,10 @@
 //   "native"      Chrome's Prompt API with `tools` (behind chrome://flags/#prompt-api-tool-use).
 //   "constraint"  the model returns { tool, args, answer } under a JSON Schema
 //                 `responseConstraint`; we call the tool and feed the result back, in a loop.
+//   "openrouter"  OpenAI-compatible tool calling against OpenRouter (demo/openrouter.js), needs a user key.
 //   "scripted"    no model at all: canned question -> tool-call mappings, labelled as such.
+
+import { runOpenRouter } from "./openrouter.js";
 
 export const FINAL = "final_answer";
 export const MAX_STEPS = 6;
@@ -218,12 +221,18 @@ export async function runScripted({ modelContext, tools, question, emit, signal 
   return { answer };
 }
 
+function runRemote(opts) {
+  const { openrouter = {}, fetch: fetchImpl, ...rest } = opts;
+  return runOpenRouter({ ...rest, ...openrouter, fetch: fetchImpl, agent: { callTool, systemPrompt, FINAL } });
+}
+
 /**
  * Picks a path and runs it. `mode`: "auto" (JSON-constraint when a model is available, else scripted),
- * "native", "constraint" or "scripted". A model path that fails to start falls back to the next one,
+ * "native", "constraint", "openrouter" or "scripted". `openrouter` = { apiKey, model }; Auto only uses it
+ * when a key is present, after the on-device model. A model path that fails to start falls back to the next one,
  * with a status event saying so. Resolves `{ answer, mode }`.
  */
-export async function ask({ question, mode = "auto", LanguageModel, modelContext, emit, signal, maxSteps }) {
+export async function ask({ question, mode = "auto", LanguageModel, modelContext, emit, signal, maxSteps, openrouter, fetch }) {
   const tools = await listTools(modelContext);
   if (!tools.length) {
     const answer = "No WebMCP tools are registered on this page, so there is nothing to call.";
@@ -231,22 +240,26 @@ export async function ask({ question, mode = "auto", LanguageModel, modelContext
     return { answer, mode: "none" };
   }
   emit({ type: "user", text: question });
-  const state = mode === "scripted" ? "forced" : await detectModel(LanguageModel);
+  const hasKey = !!openrouter?.apiKey;
+  const state = mode === "scripted" || mode === "openrouter" ? "forced" : await detectModel(LanguageModel);
   const useModel = state === "available";
-  if (!useModel && mode !== "scripted") emit({ type: "status", text: `Prompt API model not usable here (${state}); using the scripted demo agent.` });
-  const common = { LanguageModel, modelContext, tools, question, emit, signal, maxSteps };
-  const order = !useModel ? ["scripted"] : mode === "native" ? ["native", "constraint"] : mode === "constraint" || mode === "auto" ? ["constraint"] : ["scripted"];
+  const remote = mode === "openrouter" || (mode === "auto" && hasKey);
+  if (mode === "openrouter" && !hasKey) emit({ type: "error", text: "Enter an OpenRouter API key to use this mode; using the scripted demo agent." });
+  else if (!useModel && !remote && mode !== "scripted") emit({ type: "status", text: `Prompt API model not usable here (${state}); using the scripted demo agent.` });
+  const common = { LanguageModel, modelContext, tools, question, emit, signal, maxSteps, openrouter, fetch };
+  const local = !useModel ? [] : mode === "native" ? ["native", "constraint"] : mode === "scripted" || mode === "openrouter" ? [] : ["constraint"];
+  const order = [...local, ...(remote && hasKey ? ["openrouter"] : []), "scripted"];
   for (const path of order) {
     try {
       emit({ type: "status", text: `Mode: ${path}` });
-      const run = path === "native" ? runNative : path === "constraint" ? runConstraint : runScripted;
+      const run = path === "native" ? runNative : path === "constraint" ? runConstraint : path === "openrouter" ? runRemote : runScripted;
       return { ...(await run(common)), mode: path };
     } catch (e) {
       if (signal?.aborted) {
         emit({ type: "status", text: "Stopped." });
         return { answer: "", mode: path };
       }
-      emit({ type: "error", text: `${path} failed to run: ${lastErr(e)}` });
+      emit({ type: "error", text: `${path} failed to run: ${hasKey ? lastErr(e).split(openrouter.apiKey).join("[key]") : lastErr(e)}` });
     }
   }
   return runScripted(common).then((r) => ({ ...r, mode: "scripted" }));

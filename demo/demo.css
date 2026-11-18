@@ -39,3 +39,7 @@ th, td { text-align: left; padding: .35rem; border-bottom: 1px solid #eef; }
 .assistant form label { margin: .25rem 0; }
 @media (max-width: 1100px) { body { padding: 0; } .assistant { position: static; width: auto; margin: 1rem; border: 1px solid #b9bbd0; border-radius: 10px; } #transcript { max-height: 40vh; } }
 .assistant form input { margin-bottom: .25rem; }
+
+#openrouter-box { margin: .25rem 0; font-size: 13px; }
+#openrouter-box summary { cursor: pointer; }
+#openrouter-box .hint { margin: .25rem 0; }
