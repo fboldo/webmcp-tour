@@ -5,8 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>webmcp-tour demo</title>
 <link rel="stylesheet" href="demo.css">
+<!-- Where the browser has no WebMCP, the W3C polyfill supplies document.modelContext (a no-op when native exists). -->
+<script src="/node_modules/@w3c/webmcp-polyfill/dist/polyfill.js"></script>
 <script src="/dist/webmcp-tour.js"></script>
 <script type="module" src="demo.js"></script>
+<script type="module" src="assistant.js"></script>
 </head>
 <body>
 <header class="top">
@@ -96,6 +99,24 @@
   </form>
   <h3>Result</h3>
   <pre id="result" aria-live="polite">—</pre>
+</aside>
+<aside class="assistant" data-tour-exclude aria-labelledby="assistant-title">
+  <h2 id="assistant-title">Ask the assistant</h2>
+  <p id="assistant-mode" class="mode" role="status">Checking for an on-device model…</p>
+  <ol id="transcript" role="log" aria-live="polite" aria-label="Conversation and tool calls"></ol>
+  <p id="samples" class="samples"></p>
+  <form id="ask">
+    <label>Your question <input name="q" autocomplete="off" placeholder="How do I change my plan?" required></label>
+    <label>Mode
+      <select name="mode" id="mode">
+        <option value="auto">Auto (model if available, else scripted)</option>
+        <option value="constraint">Model, JSON-constrained tool calls</option>
+        <option value="native">Model, native tool use (needs flag)</option>
+        <option value="scripted">Scripted demo (no model)</option>
+      </select>
+    </label>
+    <p><button type="submit" class="primary">Ask</button> <button type="button" id="stop" hidden>Stop</button> <button type="button" id="download" hidden>Download model</button></p>
+  </form>
 </aside>
 </body>
 </html>

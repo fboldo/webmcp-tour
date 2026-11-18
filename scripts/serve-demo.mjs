@@ -16,7 +16,9 @@ createServer(async (req, res) => {
   }
   if (path.endsWith("/")) path += "index.html";
   const file = normalize(join(root, path));
-  if (!(file.startsWith(join(root, "demo") + "/") || file.startsWith(join(root, "dist") + "/"))) {
+  // The W3C polyfill is served from node_modules for the demo only; it is not part of the package.
+  const polyfill = join(root, "node_modules/@w3c/webmcp-polyfill/dist/polyfill.js");
+  if (!(file.startsWith(join(root, "demo") + "/") || file.startsWith(join(root, "dist") + "/") || file === polyfill)) {
     res.statusCode = 404;
     return res.end("not found");
   }

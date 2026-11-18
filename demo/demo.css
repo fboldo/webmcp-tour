@@ -1,5 +1,5 @@
 * { box-sizing: border-box; }
-body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: #1c1c28; background: #f6f7fb; padding-right: 340px; }
+body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: #1c1c28; background: #f6f7fb; padding: 0 340px 0 400px; }
 .top { display: flex; gap: 1.5rem; align-items: center; padding: .75rem 1.5rem; background: #fff; border-bottom: 1px solid #dde; position: sticky; top: 0; z-index: 5; }
 .top nav { display: flex; gap: 1rem; flex: 1; }
 .top a { color: #3a3ac8; text-decoration: none; }
@@ -22,3 +22,20 @@ th, td { text-align: left; padding: .35rem; border-bottom: 1px solid #eef; }
 #targets { display: flex; flex-wrap: wrap; gap: .4rem; }
 #result { margin: 0; padding: .6rem; background: #f0f1f8; border-radius: 6px; font: 12px/1.4 ui-monospace, monospace; white-space: pre-wrap; word-break: break-word; max-height: 40vh; overflow: auto; }
 .hint, small { color: #666; }
+.assistant { position: fixed; top: 0; left: 0; bottom: 0; width: 390px; display: flex; flex-direction: column; padding: .75rem 1rem; background: #fff; border-right: 1px solid #dde; z-index: 6; }
+.assistant h2 { margin: 0 0 .25rem; }
+.assistant > * { flex: none; }
+.assistant > #transcript { flex: 1 1 auto; }
+.assistant .mode { margin: 0 0 .5rem; padding: .25rem .5rem; border-radius: 6px; background: #eef; font-size: 13px; }
+.assistant .mode.scripted { background: #fff3cd; }
+#transcript { list-style: none; margin: 0 0 .5rem; padding: 0; flex: 1 1 auto; min-height: 4rem; overflow: auto; font-size: 13px; }
+#transcript li { margin: .25rem 0; padding: .3rem .5rem; border-radius: 6px; background: #f0f1f8; white-space: pre-wrap; word-break: break-word; }
+#transcript li.user { background: #e3e3fb; }
+#transcript li.answer { background: #e3f4e6; }
+#transcript li.error { background: #fde4e4; }
+#transcript li.call, #transcript li.result { font: 12px/1.4 ui-monospace, monospace; }
+#transcript li.status { background: none; color: #666; font-style: italic; }
+.samples button { font-size: 12px; padding: .15rem .5rem; margin: 0 .25rem .25rem 0; }
+.assistant form label { margin: .25rem 0; }
+@media (max-width: 1100px) { body { padding: 0; } .assistant { position: static; width: auto; margin: 1rem; border: 1px solid #b9bbd0; border-radius: 10px; } #transcript { max-height: 40vh; } }
+.assistant form input { margin-bottom: .25rem; }
