@@ -15,7 +15,7 @@ export const CSS = `
 ${ALL}{
 --_surface:var(--tour-surface,Canvas);
 --_text:var(--tour-text,CanvasText);
---_muted:var(--tour-muted,GrayText);
+--_muted:var(--tour-muted,color-mix(in srgb,CanvasText 72%,Canvas));
 --_radius:var(--tour-radius,8px);
 --_shadow:var(--tour-shadow,0 6px 24px rgb(0 0 0/.25));
 --_dim:var(--tour-overlay-opacity,.35);
@@ -48,12 +48,19 @@ border:1px solid color-mix(in srgb,var(--_text) 35%,transparent);
 border-radius:6px;padding:2px 8px;margin:0;cursor:pointer}
 [part~=close]{grid-column:2;grid-row:1;border:0;line-height:1;font-size:18px;padding:0 4px}
 [part~=goto]{grid-column:1/-1;justify-self:start;margin-top:6px}
+[part~=live]{position:fixed;top:0;left:0;contain:strict;width:1px;height:1px;margin:0;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 [part~=title]:empty,[part~=message]:empty{display:none}
 /* JS fixed-position path: the engine writes top/left/width/height. */
 [part][data-fixed]{position-anchor:none;position-area:none;position-try-fallbacks:none}
 [part~=spotlight][data-fixed]{right:auto;bottom:auto}
 [part~=popover][data-fixed]{margin:0;max-height:calc(100vh - 20px)}
 [part][data-clipped]{visibility:hidden}
+/* Small viewports and 400% zoom: actions first, so they never land below the fold. */
+@media (max-width:480px),(max-height:420px){
+[part~=popover]{padding:8px 10px;gap:2px;font-size:13px}
+[part~=goto]{grid-row:2;margin-top:2px}
+[part~=title]{grid-row:3}
+[part~=message]{grid-row:4}}
 @media (prefers-reduced-motion:reduce){${ALL}{transition:none}}
 @media (forced-colors:active){
 [part~=spotlight]{outline:3px solid Highlight;outline-offset:2px;box-shadow:none}

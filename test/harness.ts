@@ -17,10 +17,12 @@ const q = new URLSearchParams(location.search);
 const positioning = q.get("positioning");
 const hook = q.get("hook");
 const attribution = q.get("attribution");
+const describeTarget = q.has("describe");
 window.overlay = new Overlay({
   ...(q.has("headless") ? { render: false } : {}),
   ...(positioning === "anchor" || positioning === "fixed" ? { positioning } : {}),
   ...(attribution ? { attribution } : {}),
+  ...(describeTarget ? { describeTarget } : {}),
   ...(hook === "throw"
     ? {
         renderPopover: () => {

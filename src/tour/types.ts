@@ -58,6 +58,8 @@ export interface TourOptions {
   render?: boolean;
   /** Provenance label on the card. Default "From your assistant". */
   attribution?: string;
+  /** Also point the target's `aria-describedby` at a hidden copy of the message while the step shows. Default off. */
+  describeTarget?: boolean;
 }
 
 /** `targets` fires when `defineTarget` adds or removes a target. `data-tour-id` elements are read at call time and fire nothing. */

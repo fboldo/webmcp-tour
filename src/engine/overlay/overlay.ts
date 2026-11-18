@@ -13,7 +13,9 @@ import type {
   ShowResult,
 } from "./types.js";
 
-type Parts = { host: HTMLElement; root: ShadowRoot; ring: HTMLElement; card: HTMLElement };
+type Parts = { host: HTMLElement; root: ShadowRoot; ring: HTMLElement; card: HTMLElement; live: HTMLElement };
+const ANNOUNCE_DELAY = 50;
+let describedSeq = 0;
 
 function supportsAnchor(): boolean {
   return (
@@ -54,6 +56,8 @@ export class Overlay {
   #ro: ResizeObserver | undefined;
   #mo: MutationObserver | undefined;
   #anchorOk: boolean | undefined;
+  #announce = 0; // pending live-region timer
+  #desc: { node: HTMLElement; id: string; original: string | null } | undefined;
 
   constructor(options: OverlayOptions = {}) {
     this.#opts = options;
@@ -62,6 +66,22 @@ export class Overlay {
   /** The element currently pointed at, if any. */
   get target(): Element | undefined {
     return this.#target;
+  }
+
+  /**
+   * Put the (empty) host and its persistent live region in the page now, so
+   * assistive tech has registered the region before the first announcement.
+   * No-op when headless. `show` mounts it too, so calling this is optional.
+   */
+  mount(): void {
+    if (this.#opts.render === false || typeof document === "undefined") return;
+    const place = (): void => {
+      const p = (this.#parts ??= this.#build());
+      const m = document.body ?? document.documentElement;
+      if (p.host.parentNode !== m && !this.#modal) m.append(p.host);
+    };
+    if (document.body || document.readyState !== "loading") place();
+    else document.addEventListener("DOMContentLoaded", place, { once: true });
   }
 
   /** The shadow host, once something has been shown (undefined when headless). */
@@ -103,6 +123,7 @@ export class Overlay {
     if (this.#opts.render !== false) {
       const p = (this.#parts ??= this.#build());
       this.#fill(target, title, message);
+      this.#describe(target, message);
       // The overlay lives inside the modal so it is not inert.
       const mount = modal ?? document.body ?? document.documentElement;
       if (p.host.parentNode !== mount) mount.append(p.host);
@@ -124,6 +145,8 @@ export class Overlay {
       positioning = this.#fixed ? "fixed" : "anchor";
     }
     this.#watchModals(true);
+    window.addEventListener("keydown", this.#key);
+    this.#say(step.announcement ?? message);
     this.#emit("show", { target, title, message, placement: this.#placement });
     return { shown: true, positioning };
   }
@@ -136,6 +159,7 @@ export class Overlay {
   destroy(): void {
     this.#end("hide");
     this.#parts?.host.remove();
+    clearTimeout(this.#announce);
     this.#parts = this.#defaults = this.#card = undefined;
     for (const s of Object.values(this.#listeners)) s.clear();
   }
@@ -164,9 +188,14 @@ export class Overlay {
     goto.type = "button";
     goto.textContent = "Take me there";
     card.append(attribution, close, title, message, goto);
+    const live = part("div", "live");
+    live.setAttribute("role", "status");
+    live.setAttribute("aria-live", "polite");
+    live.setAttribute("aria-atomic", "true");
+    root.append(live);
     card.addEventListener("click", this.#click);
     this.#defaults = { attribution, title, message, card };
-    return { host, root, ring, card };
+    return { host, root, ring, card, live };
   }
 
   #fill(target: Element, title: string, message: string): void {
@@ -199,9 +228,64 @@ export class Overlay {
       if (!(n instanceof Element)) continue;
       const parts = n.getAttribute("part") ?? "";
       if (/(^|\s)close(\s|$)/.test(parts)) return void this.#end("hide");
-      if (/(^|\s)goto(\s|$)/.test(parts)) return (this.#target as HTMLElement | undefined)?.focus?.();
+      if (/(^|\s)goto(\s|$)/.test(parts)) return this.#goto();
     }
   };
+
+  /** User-triggered focus move. A target that cannot take focus gets tabindex=-1 until it blurs. */
+  #goto(): void {
+    const t = this.#target as HTMLElement | undefined;
+    if (!t?.focus) return;
+    t.focus();
+    if (!t.matches(":focus") && !t.hasAttribute("tabindex")) {
+      t.setAttribute("tabindex", "-1");
+      t.addEventListener("blur", () => t.removeAttribute("tabindex"), { once: true });
+      t.focus();
+    }
+  }
+
+  /** Escape dismisses from inside the card, or when nothing else claimed the key. */
+  #key = (e: KeyboardEvent): void => {
+    if (e.key !== "Escape" || e.isComposing || !this.#target) return;
+    if (e.defaultPrevented && !e.composedPath().includes(this.#card!)) return;
+    this.#end("hide");
+  };
+
+  /** Announce through the persistent region: clear, then set after a beat so repeats are heard. */
+  #say(text: string): void {
+    const live = this.#parts?.live;
+    clearTimeout(this.#announce);
+    if (!live) return;
+    live.textContent = "";
+    if (text) this.#announce = window.setTimeout(() => (live.textContent = text), ANNOUNCE_DELAY);
+  }
+
+  /** Optional: aria-describedby on the target, pointing at a light-DOM copy of the message (IDREFs do not cross shadow roots). */
+  #describe(target: Element, message: string): void {
+    if (!this.#opts.describeTarget || !message) return;
+    const node = document.createElement("span");
+    const id = `webmcp-tour-desc-${++describedSeq}`;
+    node.id = id;
+    node.textContent = message;
+    node.setAttribute("data-webmcp-tour-root", ""); // never resolvable
+    Object.assign(node.style, { position: "fixed", width: "1px", height: "1px", overflow: "hidden", clipPath: "inset(50%)", whiteSpace: "pre" });
+    const tree = target.getRootNode();
+    (tree instanceof ShadowRoot ? tree : (target.ownerDocument.body ?? target.ownerDocument.documentElement)).append(node);
+    const original = target.getAttribute("aria-describedby");
+    target.setAttribute("aria-describedby", original ? `${original} ${id}` : id);
+    this.#desc = { node, id, original };
+  }
+
+  #undescribe(target: Element): void {
+    const d = this.#desc;
+    if (!d) return;
+    this.#desc = undefined;
+    d.node.remove();
+    // Take back only our token: the page may have edited the attribute since.
+    const rest = (target.getAttribute("aria-describedby") ?? "").split(/\s+/).filter((t) => t && t !== d.id).join(" ");
+    if (rest) target.setAttribute("aria-describedby", rest);
+    else target.removeAttribute("aria-describedby");
+  }
 
   #mode(p: Parts, card: HTMLElement): void {
     for (const e of [p.ring, card]) {
@@ -261,6 +345,9 @@ export class Overlay {
     this.#modal = null;
     this.#track(false);
     this.#watchModals(false);
+    window.removeEventListener("keydown", this.#key);
+    this.#undescribe(target);
+    this.#say("");
     if (this.#raf) cancelAnimationFrame(this.#raf);
     this.#raf = 0;
     const p = this.#parts;

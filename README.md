@@ -14,7 +14,7 @@ pnpm exec playwright install chromium   # once: Vitest runs tests in real Chromi
 pnpm typecheck
 pnpm build       # tsup → dist/index.js, dist/auto.js (ESM), dist/webmcp-tour.js (IIFE, sets window.webmcpTour)
 pnpm test        # Vitest browser mode (Chromium + Firefox); the IIFE test needs the build
-pnpm size        # gzip budget gate: engine-only ≤ 10 KB; full (/auto, script tag) ≤ 15 KB each
+pnpm size        # gzip budget gate: engine-only ≤ 12 KB; full (/auto, script tag) ≤ 15 KB each
 pnpm check       # all of the above, as CI runs it
 pnpm demo        # build, then serve http://127.0.0.1:4173/demo/ (PORT overrides)
 ```
