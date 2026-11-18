@@ -1,12 +1,13 @@
 import { Overlay } from "../engine/overlay/index.js";
-import type { OverlayOptions } from "../engine/overlay/index.js";
-import { locate, reveal } from "../engine/resolver/index.js";
+import type { OverlayEvents, OverlayOptions } from "../engine/overlay/index.js";
+import { listTargets, locate, reveal } from "../engine/resolver/index.js";
 import type { ResolverOptions } from "../engine/resolver/index.js";
+import { defineTools } from "../tools/definitions.js";
+import { MAX_MESSAGE, MAX_TITLE } from "./limits.js";
 import { Targets } from "./targets.js";
 import type { DismissResult, StepInput, StepResult, Tour, TourEvents, TourOptions } from "./types.js";
 
-export const MAX_TITLE = 80;
-export const MAX_MESSAGE = 500;
+export { MAX_MESSAGE, MAX_TITLE };
 const KEY = Symbol.for("webmcp-tour");
 const PLACEMENTS = ["auto", "above", "below"];
 
@@ -69,7 +70,14 @@ function build(options: TourOptions): Tour {
       return { ok: true, dismissed: true };
     },
 
-    on: <K extends keyof TourEvents>(type: K, fn: (e: TourEvents[K]) => void) => overlay.on(type, fn),
+    on<K extends keyof TourEvents>(type: K, fn: (e: TourEvents[K]) => void): () => void {
+      if (type === "targets") return targets.onChange(fn as () => void);
+      return overlay.on(type as keyof OverlayEvents, fn as never);
+    },
+
+    targets: () => listTargets({ targets, overlayHost: overlay.host, scope, exclude }),
+
+    tools: (opts) => defineTools(tour, opts?.names),
 
     defineTarget: (def) => targets.define(def),
 

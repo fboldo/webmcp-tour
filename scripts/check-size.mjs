@@ -1,9 +1,9 @@
 // Size budget gate: fails when a built file exceeds its gzip budget.
-// ESM entries are measured minified (what a consumer's bundler ships); the
-// published file stays readable.
+// ESM entries are measured bundled with the shared chunks they import and
+// minified (what a consumer's bundler ships); the published file stays readable.
 import { readFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
-import { transformSync } from "esbuild";
+import { buildSync } from "esbuild";
 
 const KB = 1024;
 const budgets = [
@@ -23,7 +23,10 @@ for (const { file, max, minify } of budgets) {
     failed = true;
     continue;
   }
-  if (minify) source = transformSync(source.toString(), { minify: true, format: "esm", target: "es2022" }).code;
+  if (minify) {
+    const { outputFiles } = buildSync({ entryPoints: [file], bundle: true, write: false, minify: true, format: "esm", target: "es2022", logLevel: "error" });
+    source = outputFiles[0].text;
+  }
   const size = gzipSync(source, { level: 9 }).length;
   const ok = size <= max;
   if (!ok) failed = true;
