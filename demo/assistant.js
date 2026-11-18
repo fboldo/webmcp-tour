@@ -1,6 +1,7 @@
 // "Ask the assistant" panel: wires demo/agent.js to the page's WebMCP tools and Chrome's Prompt API.
 // Everything is feature-detected; a failure here must never break the page.
 import { ask, detectModel } from "./agent.js";
+import { createKeyStore, DEFAULT_MODEL, MODELS } from "./openrouter.js";
 
 const $ = (id) => document.getElementById(id);
 const modeLine = $("assistant-mode");
@@ -54,6 +55,33 @@ try {
   });
   await refresh();
 
+  // OpenRouter settings. The key is read from the field/store at ask time and goes nowhere but the request.
+  const keys = createKeyStore(globalThis.localStorage);
+  const keyInput = $("or-key");
+  const modelSel = $("or-model");
+  const other = $("or-other");
+  const remember = $("or-remember");
+  for (const m of MODELS) modelSel.append(new Option(m.label, m.id));
+  modelSel.append(new Option("Other… (type a model id)", ""));
+  modelSel.value = DEFAULT_MODEL;
+  keyInput.value = keys.get();
+  remember.checked = keys.remembered();
+  const syncModel = () => ($("or-other-label").hidden = modelSel.value !== "");
+  const syncKey = () => keys.set(keyInput.value, remember.checked);
+  syncKey();
+  modelSel.addEventListener("change", syncModel);
+  keyInput.addEventListener("input", syncKey);
+  remember.addEventListener("change", syncKey);
+  $("or-forget").addEventListener("click", () => {
+    keys.forget();
+    keyInput.value = "";
+    remember.checked = false;
+  });
+  const syncMode = () => {
+    if (form.mode.value === "openrouter") $("openrouter-box").open = true;
+  };
+  form.mode.addEventListener("change", syncMode);
+
   download.addEventListener("click", async () => {
     download.disabled = true;
     try {
@@ -80,7 +108,7 @@ try {
     running = new AbortController();
     stop.hidden = false;
     try {
-      await ask({ question, mode: forced === "scripted" ? "scripted" : form.mode.value, LanguageModel: LM, modelContext: mc, emit: show, signal: running.signal });
+      await ask({ question, mode: forced === "scripted" ? "scripted" : form.mode.value, LanguageModel: LM, modelContext: mc, emit: show, signal: running.signal, openrouter: { apiKey: keys.get(), model: (modelSel.value || other.value.trim()) || DEFAULT_MODEL } });
     } catch (err) {
       line("error", String(err?.message ?? err));
     } finally {

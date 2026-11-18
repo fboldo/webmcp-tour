@@ -11,7 +11,7 @@ export type AgentEvent =
   | { type: "user" | "answer" | "error" | "status"; text: string }
   | { type: "call"; tool: string; args: Record<string, unknown> }
   | { type: "result"; tool: string; result: Record<string, unknown> };
-export type Mode = "auto" | "native" | "constraint" | "scripted";
+export type Mode = "auto" | "native" | "constraint" | "openrouter" | "scripted";
 export const FINAL: string;
 export const MAX_STEPS: number;
 export function detectModel(LanguageModel: unknown): Promise<string>;
@@ -27,4 +27,6 @@ export function ask(options: {
   emit: (event: AgentEvent) => void;
   signal?: AbortSignal;
   maxSteps?: number;
+  openrouter?: { apiKey?: string; model?: string };
+  fetch?: typeof fetch;
 }): Promise<{ answer: string; mode: string }>;

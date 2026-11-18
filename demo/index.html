@@ -109,12 +109,24 @@
     <label>Your question <input name="q" autocomplete="off" placeholder="How do I change my plan?" required></label>
     <label>Mode
       <select name="mode" id="mode">
-        <option value="auto">Auto (model if available, else scripted)</option>
+        <option value="auto">Auto (on-device model, else OpenRouter if a key is set, else scripted)</option>
         <option value="constraint">Model, JSON-constrained tool calls</option>
         <option value="native">Model, native tool use (needs flag)</option>
+        <option value="openrouter">OpenRouter (your API key)</option>
         <option value="scripted">Scripted demo (no model)</option>
       </select>
     </label>
+    <details id="openrouter-box">
+      <summary>OpenRouter settings</summary>
+      <label>API key <input type="password" id="or-key" autocomplete="off" spellcheck="false" placeholder="sk-or-…"></label>
+      <label>Model
+        <select id="or-model"></select>
+      </label>
+      <label id="or-other-label" hidden>Model id <input type="text" id="or-other" autocomplete="off" spellcheck="false" placeholder="vendor/model-name"></label>
+      <label><input type="checkbox" id="or-remember"> Remember on this device</label>
+      <p><button type="button" id="or-forget">Forget key</button></p>
+      <p class="hint" id="or-note">The key stays in this browser and is sent only to openrouter.ai. Use a key with a spending limit.</p>
+    </details>
     <p><button type="submit" class="primary">Ask</button> <button type="button" id="stop" hidden>Stop</button> <button type="button" id="download" hidden>Download model</button></p>
   </form>
 </aside>
