@@ -27,7 +27,7 @@ type Slot = { [KEY]?: AutoHandle };
  * document: a second call (a script tag plus a bundle) returns the first handle.
  * No-op, with one `console.info`, where WebMCP is unavailable. Never throws.
  *
- * `tour_list_targets` is registered only while declared targets exist. A
+ * `tour_list_targets` is registered only while declared targets or pages exist. A
  * `defineTarget` call, or any DOM mutation followed by 200 ms of quiet,
  * re-checks. There are no unload listeners (they would cost bfcache).
  */
@@ -62,7 +62,8 @@ export function registerAutoTools(options: AutoOptions = {}): AutoHandle {
 
   const sync = async (): Promise<void> => {
     if (stopped || blocked) return;
-    const want = tour.targets().total > 0;
+    const { total, page, pages } = tour.targets();
+    const want = total > 0 || !!page || !!pages;
     if (want && !listing) {
       listing = await register(list);
       blocked = !listing;

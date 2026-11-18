@@ -67,7 +67,7 @@ describe("registration", () => {
     expect(by.tour_show_step!.annotations).toMatchObject({ readOnlyHint: true, untrustedContentHint: false, consequentialHint: false });
     expect(by.tour_dismiss!.annotations).toMatchObject({ readOnlyHint: true, untrustedContentHint: false, consequentialHint: false });
     expect(by.tour_list_targets!.annotations).toMatchObject({ readOnlyHint: true, untrustedContentHint: true, consequentialHint: false });
-    expect(Object.keys((by.tour_show_step!.inputSchema as any).properties)).toEqual(["target", "selector", "text", "index", "title", "message", "placement"]);
+    expect(Object.keys((by.tour_show_step!.inputSchema as any).properties)).toEqual(["target", "selector", "text", "page", "index", "title", "message", "placement"]);
     // Siblings are named by interpolation, never hard-coded; nothing repeats "read-only" (bridges prepend it).
     expect(by.tour_list_targets!.description).toContain("tour_show_step");
     for (const t of tools) {
@@ -212,7 +212,7 @@ describe("calling the tools", () => {
   it("show_step guides the agent: absent controls, locator preference, renamed dismiss in the note", async () => {
     await start(PLAIN);
     const d = (await ctx().getTools()).find((t) => t.name === "tour_show_step")!.description;
-    expect(d).toContain("not on the page, say so; do not highlight a nearby element as a guess");
+    expect(d).toContain("check tour_list_targets for this page and others; do not highlight a guess");
     expect(d).toContain("Prefer `text` or `target`; use `selector` only for something you saw in the page snapshot");
     expect(d.length).toBeLessThan(700);
     const failed = await call("tour_show_step", { text: "No such control", message: "x" });

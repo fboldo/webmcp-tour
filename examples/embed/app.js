@@ -3,7 +3,7 @@ import { createTour, getModelContext } from "/dist/index.js";
 
 const PLANS = { starter: "Starter", team: "Team", business: "Business" };
 const $ = (id) => document.getElementById(id);
-const tour = createTour({ attribution: "From Northwind assistant" });
+const tour = createTour({ labels: { attribution: "From Northwind assistant" } });
 let pending = null;
 
 function stage(plan) {

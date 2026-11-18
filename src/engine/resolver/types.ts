@@ -12,7 +12,7 @@ export interface ResolveInput {
 
 /** A declared-target lookup (the default one reads `data-tour-id`). */
 export interface TargetSource {
-  get(id: string): { element: Element; reveal?: string | undefined; description?: string | undefined; label?: string | undefined } | null | undefined;
+  get(id: string): { element: Element; reveal?: string | undefined; description?: string | undefined; label?: string | undefined; page?: string | undefined } | null | undefined;
   ids(): string[];
 }
 
@@ -54,6 +54,9 @@ export interface TargetInfo {
   reveal?: string;
   /** Rendered right now; when false, `reveal` says what to do first. */
   visible: boolean;
+  /** Where it lives, when not on the current page (`onThisPage` is then false). */
+  page?: { id: string; title: string };
+  onThisPage?: false;
 }
 
 export interface Candidate {

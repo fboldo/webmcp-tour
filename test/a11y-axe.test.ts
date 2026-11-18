@@ -28,7 +28,7 @@ beforeEach(() => {
   document.documentElement.lang = "en";
   document.title = "Account";
   document.body.innerHTML = PAGE;
-  tour = createTour();
+  tour = createTour({ takeMeThere: true });
 });
 afterEach(async () => {
   (globalThis as Record<symbol, Tour | undefined>)[KEY]?.destroy();
@@ -91,7 +91,9 @@ describe("announcement", () => {
 describe("keyboard only", () => {
   it("Tab reaches Take me there then Dismiss; Enter on Take me there focuses the target; Escape dismisses", async () => {
     await tour.show({ text: "Save changes", message: "Click to save." });
-    q<HTMLElement>("close").focus(); // source order: close, then goto
+    q<HTMLElement>("close").focus(); // source order: close, Got it, Take me there
+    await userEvent.tab();
+    expect(root().activeElement).toBe(q("gotit"));
     await userEvent.tab();
     expect(root().activeElement).toBe(q("goto"));
     await userEvent.keyboard("{Enter}");

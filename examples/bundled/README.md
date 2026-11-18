@@ -6,11 +6,11 @@ A small Vite SPA (Dashboard, Projects, Settings) with client-side routes. `src/m
 pnpm example:bundled    # http://localhost:5173/   (add ?polyfill for in-page testing)
 ```
 
-Targets come and go with the route: `tour_list_targets` is registered only while the current route declares targets, so it is absent on the Dashboard and present on Projects and Settings. Switch routes and ask the agent to list its tools again.
+The app declares its three routes with `pages` and passes `navigate` (the SPA router), so the agent knows where controls live. Ask for "Create API token" from the Dashboard: the agent gets `other_page`, a card offers **Go to Settings** / **Not now**, and only the user's click navigates. After Go, ask again and the control is highlighted; the agent stays alive because the page never reloads (a full page load would restart an embedded agent).
 
 ## Try asking
 
-1. "How do I start a new project?" (go to Projects first, or let the agent say where it is)
+1. "How do I start a new project?" (from the Dashboard: expect the Go to Projects card)
 2. "Show me where to create an API token." (it sits under Developer options on Settings: expect a reveal hint)
 3. "Where do I turn off the daily email digest?"
 4. "Point me at the View report button."

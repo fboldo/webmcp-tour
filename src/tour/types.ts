@@ -1,8 +1,29 @@
-import type { OverlayEvents, Placement, RenderStep } from "../engine/overlay/index.js";
+import type { Labels, OverlayEvents, Placement, RenderStep } from "../engine/overlay/index.js";
 import type { Matched, ResolveError, Reveal, TargetInfo } from "../engine/resolver/index.js";
 import type { ToolDefinition, ToolNames } from "../tools/definitions.js";
 
-/** What `tour.show` takes: exactly one of `target`, `selector`, `text`. */
+/** A page of the app, for suggesting navigation. */
+export interface PageDefinition {
+  id: string;
+  /** Where Go sends the user (relative or absolute), via the `navigate` option. */
+  url: string;
+  /** Shown in the suggestion card and in target lists. */
+  title: string;
+  /** Short; shown to the agent in `tour_list_targets`. */
+  description?: string;
+  /**
+   * Decides whether this is the current page. A string is a `location.pathname` prefix, a RegExp is tested against the pathname,
+   * a function gets `location`. Default: the `url` path equals `location.pathname`. The first matching page wins.
+   */
+  match?: string | RegExp | ((location: Location) => boolean);
+}
+
+export interface PageInfo {
+  id: string;
+  title: string;
+}
+
+/** What `tour.show` takes: exactly one of `target`, `selector`, `text`, `page`. */
 export interface StepInput {
   /** Declared target id (`data-tour-id` or `defineTarget`). */
   target?: string;
@@ -10,6 +31,8 @@ export interface StepInput {
   selector?: string;
   /** Visible text, label or aria-label of the element. */
   text?: string;
+  /** Page id: suggest going there (a card with Go / Not now). Never navigates by itself. */
+  page?: string;
   /** 0-based pick among tied candidates, in document order. */
   index?: number;
   /** Plain text, at most 80 characters. */
@@ -21,7 +44,12 @@ export interface StepInput {
 
 export type StepResult =
   | { ok: true; matched: Matched & Reveal }
+  /** The page locator: a suggestion card is showing. */
+  | { ok: true; suggested: PageInfo }
   | ResolveError
+  /** The target is declared for another page: a suggestion card is showing instead of a highlight. */
+  | { ok: false; error: "other_page"; page: PageInfo; message: string }
+  | { ok: false; error: "page_not_found"; available: string[] }
   /** A modal dialog the target is not inside is open, so the page behind it is inert. */
   | { ok: false; error: "obscured"; message: string }
   /** No document to draw in (server-side render). */
@@ -53,6 +81,10 @@ export interface WaitOptions {
  */
 export type WaitResult =
   | { ok: true; status: "interacted"; event: WaitEvent; target: { tag: string; name: string } }
+  /** "Got it": the user read the step and wants to continue. */
+  | { ok: true; status: "acknowledged" }
+  /** A page suggestion: the user pressed Go (`navigating`) or Not now / close (`dismissed`). */
+  | { ok: true; status: "navigating" | "dismissed" }
   | { ok: true; status: "timeout" | "superseded" }
   | ResolveError
   /** No locator given and nothing is highlighted. */
@@ -68,9 +100,11 @@ export interface DismissResult {
 
 export interface TargetDefinition {
   id: string;
-  /** Resolved at lookup time; the first match is used. Give this or `element`. */
+  /** Resolved at lookup time; the first match is used. Give this or `element`; or neither, with `page`. */
   selector?: string;
   element?: Element;
+  /** Page id the target lives on. Not the current page: the target is listed as off-page and `show` suggests going there. */
+  page?: string;
   /** Accessible-name override for target lists. */
   label?: string;
   /** Default popover message when `show` gets none. */
@@ -90,13 +124,21 @@ export interface TourOptions {
   renderPopover?: (step: RenderStep, defaultEl: HTMLElement) => HTMLElement;
   /** `false` = headless: no DOM is created, only `show` / `dismiss` events fire. */
   render?: boolean;
-  /** Provenance label on the card. Default "From your assistant". */
+  /** Provenance label on the card. Default "From your assistant". Deprecated: use `labels.attribution`. */
   attribution?: string;
+  /** Every user-facing string (and the card's aria labels). `goToPage` and `otherPage` take `{page}`. English defaults. */
+  labels?: Partial<Labels>;
+  /** Also show "Take me there" (scroll, focus, pulse) next to "Got it". Default off. */
+  takeMeThere?: boolean;
+  /** The app's pages, so the agent can suggest going to another one. */
+  pages?: PageDefinition[];
+  /** Called only when the user presses Go on a suggestion. Default `location.assign`; give your router's push for an SPA. */
+  navigate?: (url: string) => void;
   /** Also point the target's `aria-describedby` at a hidden copy of the message while the step shows. Default off. */
   describeTarget?: boolean;
 }
 
-/** `targets` fires when `defineTarget` adds or removes a target. `data-tour-id` elements are read at call time and fire nothing. */
+/** `targets` fires when `defineTarget` or `definePage` adds or removes something. `data-tour-id` elements are read at call time and fire nothing. */
 export type TourEvents = OverlayEvents & { targets: Record<string, never> };
 
 export interface Tour {
@@ -112,8 +154,15 @@ export interface Tour {
   on<K extends keyof TourEvents>(type: K, fn: (e: TourEvents[K]) => void): () => void;
   /** Declare a target in code. Returns a function that removes it. Throws on bad input. */
   defineTarget(def: TargetDefinition): () => void;
-  /** Declared targets that can be pointed at, as `tour_list_targets` reports them (capped; `total` counts all). */
-  targets(): { targets: TargetInfo[]; total: number };
+  /** Declare a page. Returns a function that removes it. Throws on bad input. */
+  definePage(def: PageDefinition): () => void;
+  /** The current page, if one matches. */
+  page(): PageInfo | undefined;
+  /**
+   * Declared targets, as `tour_list_targets` reports them (capped; `total` counts all): those here, then those on other pages.
+   * `page` is the current page; `pages` the others.
+   */
+  targets(): { targets: TargetInfo[]; total: number; page?: PageInfo; pages?: (PageInfo & { description?: string })[] };
   /**
    * Tool definitions to register under your own names and timing:
    * `show_step`, `list_targets`, `dismiss`, `wait_for_interaction`, in that order. Registers nothing itself.

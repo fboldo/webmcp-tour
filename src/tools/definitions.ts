@@ -66,18 +66,20 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       name: n.showStep,
       title: "Show me where",
       description:
-        "Highlight an element on the page with a short explanation beside it, so the user sees which control you mean and acts on it themselves. " +
+        "Highlight an element with a short explanation beside it, so the user sees which control you mean and acts on it themselves. " +
         "Point at it by a declared `target` id, its visible `text` (label, link text, aria-label), or a CSS `selector`. " +
         "Prefer `text` or `target`; use `selector` only for something you saw in the page snapshot. " +
-        "`message` is required unless the target has its own description. If several elements match, call again with `index`. " +
-        "If the control the user needs is not on the page, say so; do not highlight a nearby element as a guess. " +
-        "This only points: it never clicks or changes anything, so do not say an action succeeded because you highlighted it.",
+        "`message` is required unless the target has its own description. " +
+        "`page` (a page id) asks the user to go to another page; so does a target on another page (`other_page`). Nothing navigates unless they press Go. " +
+        `If a control is not found, check ${n.listTargets} for this page and others; do not highlight a guess. ` +
+        "This only points: it never clicks or changes anything.",
       inputSchema: {
         type: "object",
         properties: {
-          target: str("Exactly one of target, selector, text."),
+          target: str("Exactly one of target, selector, text, page."),
           selector: str(),
           text: str(),
+          page: str("A page id from the target list."),
           index: { type: "integer", minimum: 0, description: "Pick among listed candidates (0-based)." },
           title: str(`Plain text, max ${MAX_TITLE} characters.`),
           message: str(`Plain text, max ${MAX_MESSAGE} characters.`),
@@ -87,7 +89,8 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       annotations: ro,
       execute: safe(async (input) => {
         const r = await tour.show(input as StepInput);
-        return r.ok ? { ...r, note: `The highlight stays until dismissed. Call ${n.dismiss} when the user moves on.` } : r;
+        if (!r.ok) return r;
+        return { ...r, note: "suggested" in r ? "A card asks the user whether to go. Nothing navigates unless they press Go." : `The highlight stays until dismissed. Call ${n.dismiss} when the user moves on.` };
       }),
     },
     {
@@ -95,12 +98,13 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       title: "List guided targets",
       description:
         "List the guided-tour targets the page author declared: stable ids, each with a label and a short description of what the control does. " +
+        "Includes the current `page` and targets on other pages (`onThisPage: false`). " +
         `If the list is empty, do not stop: point at the element directly with ${n.showStep}, by its visible text or a CSS selector.`,
       inputSchema: { type: "object", properties: {} },
       annotations: { ...ro, untrustedContentHint: true },
       execute: safe(() => {
-        const { targets, total } = tour.targets();
-        return { ok: true, targets, count: total, ...(total > targets.length ? { truncated: true } : {}) };
+        const { targets, total, page, pages } = tour.targets();
+        return { ok: true, ...(page ? { page } : {}), ...(pages ? { pages } : {}), targets, count: total, ...(total > targets.length ? { truncated: true } : {}) };
       }),
     },
     {
@@ -117,6 +121,7 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       description:
         `Wait until the user interacts with the highlighted element, or with one you name by \`target\`, \`selector\` or \`text\`. Use it after ${n.showStep} to pause while the user does the step themselves. ` +
         "It returns the kind of interaction and the element, never field values. " +
+        "`acknowledged` means the user read the step (Got it) and wants to continue; `navigating` or `dismissed` is their answer to a page suggestion. " +
         "A `timeout` or `superseded` status is not a failure: the user has not acted, and the highlight stays, so call again or ask them. " +
         "If this call fails, never returns, or returns after the page has changed, check the page: the user most likely clicked the control.",
       inputSchema: {

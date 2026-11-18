@@ -5,4 +5,4 @@
 export const VERSION = "0.0.0";
 
 export { Overlay } from "./overlay/index.js";
-export type { OverlayOptions, OverlayStep, ShowResult } from "./overlay/index.js";
+export type { Labels, OverlayOptions, OverlayStep, ShowResult } from "./overlay/index.js";
