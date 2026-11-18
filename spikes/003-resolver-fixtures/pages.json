@@ -1,0 +1,100 @@
+[
+ {
+  "name": "github-repo",
+  "kind": "GitHub repo page (logged out)",
+  "url": "https://github.com/w3c-oss/webmcp-polyfill"
+ },
+ {
+  "name": "github-issues",
+  "kind": "GitHub issue list (table-like list, logged out)",
+  "url": "https://github.com/webmachinelearning/webmcp/issues"
+ },
+ {
+  "name": "shadcn-settings",
+  "kind": "SaaS settings form (shadcn/ui example)",
+  "url": "https://v3.shadcn.com/examples/forms"
+ },
+ {
+  "name": "shadcn-tasks",
+  "kind": "table-heavy admin (shadcn/ui tasks example)",
+  "url": "https://ui.shadcn.com/examples/tasks"
+ },
+ {
+  "name": "mdn-docs",
+  "kind": "docs site (MDN)",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/API/Element/checkVisibility"
+ },
+ {
+  "name": "wikipedia-article",
+  "kind": "prose-heavy article (Wikipedia)",
+  "url": "https://en.wikipedia.org/wiki/Guided_tour"
+ },
+ {
+  "name": "wikipedia-createaccount",
+  "kind": "form page (Wikipedia create account)",
+  "url": "https://en.wikipedia.org/wiki/Special:CreateAccount"
+ },
+ {
+  "name": "shoelace-button",
+  "kind": "shadow DOM web components (Shoelace docs)",
+  "url": "https://shoelace.style/components/button",
+  "setup": [
+   {
+    "click": "text=No, thanks"
+   },
+   {
+    "wait": 800
+   }
+  ]
+ },
+ {
+  "name": "angular-material-table",
+  "kind": "icon-font ligatures + data table (Angular Material)",
+  "url": "https://material.angular.dev/components/table/examples"
+ },
+ {
+  "name": "hackernews",
+  "kind": "table layout, many repeated links (Hacker News)",
+  "url": "https://news.ycombinator.com/"
+ },
+ {
+  "name": "npm-package",
+  "kind": "package page with tabs + search (npm)",
+  "url": "https://www.npmjs.com/package/playwright"
+ },
+ {
+  "name": "govuk-summary-list",
+  "kind": "repeated 'Change'/'Delete' links with visually-hidden context (GOV.UK Design System)",
+  "url": "https://design-system.service.gov.uk/components/summary-list/card-with-actions/index.html"
+ },
+ {
+  "name": "internet-tables",
+  "set": "holdout",
+  "kind": "table with repeated edit/delete links (the-internet test app)",
+  "url": "https://the-internet.herokuapp.com/tables"
+ },
+ {
+  "name": "react-docs",
+  "set": "holdout",
+  "kind": "docs site (react.dev)",
+  "url": "https://react.dev/reference/react/useState"
+ },
+ {
+  "name": "vercel-pricing",
+  "set": "holdout",
+  "kind": "SaaS pricing page, repeated CTAs",
+  "url": "https://vercel.com/pricing"
+ },
+ {
+  "name": "material-web",
+  "set": "holdout",
+  "kind": "Lit web components docs (shadow DOM)",
+  "url": "https://material-web.dev/components/checkbox/"
+ },
+ {
+  "name": "saucedemo-login",
+  "set": "holdout",
+  "kind": "login form with placeholder-only fields",
+  "url": "https://www.saucedemo.com/"
+ }
+]

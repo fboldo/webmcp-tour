@@ -1,0 +1,5015 @@
+[
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Sign in",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Sign in"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 39.69999999925494,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "sign in",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "navigation menu",
+    "landmark": "header",
+    "pos": "1071,18",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Sign up",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Sign up"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 47.900000002235174,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "sign up",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "navigation menu",
+    "landmark": "header",
+    "pos": "1149,18",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Pricing",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Pricing"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 39.19999999925494,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "pricing",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "pricing",
+    "heading": "navigation menu",
+    "landmark": "global",
+    "pos": "481,20",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Pull requests",
+  "cat": "substring-count-badge",
+  "expect": {
+   "role": "link",
+   "nameRe": "^Pull requests"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 38.099999997764826,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "pull requests (3)",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "pull requests 3 (3)",
+    "heading": "repository navigation",
+    "landmark": "repository",
+    "pos": "191,128",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Go to file",
+  "cat": "aria-label-field",
+  "expect": {
+   "role": "combobox",
+   "name": "Go to file"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 42.80000000074506,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "role": "combobox",
+    "name": "go to file",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "heading": "repository navigation",
+    "pos": "623,261",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Fork",
+  "cat": "label-in-name",
+  "expect": {
+   "css": "[data-testid=fork-button]"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 39,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "you must be signed in to fork a repository",
+    "tier": "substring",
+    "ratio": 0.5,
+    "source": "content",
+    "disabled": false,
+    "row": "fork9 (9)",
+    "heading": "repository navigation",
+    "landmark": "header",
+    "pos": "1072,188",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Notifications",
+  "cat": "label-in-name",
+  "expect": {
+   "role": "link",
+   "nameRe": "notification settings"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 39.899999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "you must be signed in to change notification settings",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "notifications",
+    "heading": "repository navigation",
+    "landmark": "header",
+    "pos": "961,188",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Code",
+  "cat": "human-ambiguous",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 40.899999998509884,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "code",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "code",
+     "heading": "repository navigation",
+     "landmark": "repository",
+     "pos": "16,128"
+    },
+    {
+     "tag": "button",
+     "name": "code",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "repository navigation",
+     "pos": "842,260"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "README.md",
+  "cat": "aria-label-suffix",
+  "expect": {
+   "role": "link",
+   "name": "README.md, (File)"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 39.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "readme.md, (file)",
+    "tier": "substring",
+    "ratio": 0.53,
+    "source": "aria-label",
+    "disabled": false,
+    "row": "readme.md add toolactivatedevent and toolcancelevent",
+    "heading": "folders and files",
+    "pos": "74,905",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Contributing",
+  "cat": "human-ambiguous",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 40.600000001490116,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "contributing",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "contributing",
+     "heading": "repository files navigation",
+     "landmark": "repository files",
+     "pos": "307,1278"
+    },
+    {
+     "tag": "a",
+     "name": "contributing",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "contributing",
+     "pos": "976,453"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Copy code to clipboard",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 34.400000002235174,
+   "candidates": [
+    {
+     "tag": "clipboard-copy",
+     "role": "button",
+     "name": "copy code to clipboard",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "heading": "install",
+     "pos": "868,1701"
+    },
+    {
+     "tag": "clipboard-copy",
+     "role": "button",
+     "name": "copy code to clipboard",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "heading": "usage",
+     "pos": "868,1910"
+    },
+    {
+     "tag": "clipboard-copy",
+     "role": "button",
+     "name": "copy code to clipboard",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "heading": "script tag",
+     "pos": "868,2706"
+    },
+    {
+     "tag": "clipboard-copy",
+     "role": "button",
+     "name": "copy code to clipboard",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "heading": "next.js",
+     "pos": "868,2951"
+    },
+    {
+     "tag": "clipboard-copy",
+     "role": "button",
+     "name": "copy code to clipboard",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "heading": "frames",
+     "pos": "868,3455"
+    },
+    {
+     "tag": "clipboard-copy",
+     "role": "button",
+     "name": "copy code to clipboard",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "heading": "contributing",
+     "pos": "868,4151"
+    }
+   ],
+   "count": 6
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Report repository",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Report repository"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 38.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "report repository",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "forks",
+    "pos": "976,627",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "Delete repository",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 33.900000002235174,
+   "scanned": 32
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-repo",
+  "q": "GitHub Copilot",
+  "cat": "hidden-menu",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 33.600000001490116,
+   "scanned": 32
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "New issue",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "New issue"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 46.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "new issue",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "issues",
+    "pos": "1166,192",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Search issues",
+  "cat": "form-label",
+  "expect": {
+   "role": "combobox",
+   "name": "Search issues"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 41.19999999925494,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "role": "combobox",
+    "name": "search issues",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "label",
+    "disabled": false,
+    "heading": "issues",
+    "pos": "293,241",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Closed",
+  "cat": "substring-count-badge",
+  "expect": {
+   "role": "link",
+   "nameRe": "^Closed"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 43.900000002235174,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "closed (114)",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "closed 114 (114)",
+    "heading": "issues",
+    "pos": "384,297",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Author",
+  "cat": "label-in-name",
+  "expect": {
+   "role": "button",
+   "name": "Filter by author"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 50.900000002235174,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "filter by author",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "issues",
+    "pos": "520,296",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Filter by labels",
+  "cat": "aria-label",
+  "expect": {
+   "role": "button",
+   "name": "Filter by labels"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 39,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "filter by labels",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "heading": "issues",
+    "pos": "618,296",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Milestones",
+  "cat": "human-ambiguous",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 43.70000000298023,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "milestones",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-labelledby",
+     "disabled": false,
+     "row": "milestones",
+     "heading": "repository navigation",
+     "landmark": "pages",
+     "pos": "16,448"
+    },
+    {
+     "tag": "button",
+     "name": "filter by milestones",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "issues",
+     "pos": "816,296"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Rename Tool#window to Tool#source",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Rename Tool#window to Tool#source"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 41.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "rename tool#window to tool#source",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "rename tool#window to tool#source unread webmachinelearning/",
+    "heading": "rename tool#window to tool#source",
+    "pos": "320,433",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Assigned to me",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Assigned to me"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 40.19999999925494,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "assigned to me",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-labelledby",
+    "disabled": false,
+    "row": "assigned to me",
+    "heading": "repository navigation",
+    "landmark": "issue filters",
+    "pos": "16,216",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Collapse sidebar",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Collapse sidebar"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 39.19999999925494,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "collapse sidebar",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-labelledby",
+    "disabled": false,
+    "row": "collapse sidebar",
+    "heading": "repository navigation",
+    "landmark": "issues sidebar navigation",
+    "pos": "16,752",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "github-issues",
+  "q": "Upgrade to Pro",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 37.900000002235174,
+   "scanned": 52
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Username",
+  "cat": "form-label",
+  "expect": {
+   "label": "Username"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "username",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "profile",
+    "pos": "311,722",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Email",
+  "cat": "form-label",
+  "expect": {
+   "role": "combobox",
+   "name": "Email"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.599999997764826,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "role": "combobox",
+    "name": "email",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "profile",
+    "pos": "311,852",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Bio",
+  "cat": "form-label",
+  "expect": {
+   "label": "Bio"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.5,
+   "matched": {
+    "by": "text",
+    "tag": "textarea",
+    "name": "bio",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "profile",
+    "pos": "311,963",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Update profile",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Update profile"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "update profile",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "profile",
+    "pos": "311,1262",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Add URL",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Add URL"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 3.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "add url",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "profile",
+    "pos": "311,1198",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Notifications",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Notifications"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "notifications",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "settings",
+    "landmark": "nav",
+    "pos": "49,709",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Appearance",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Appearance"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "appearance",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "settings",
+    "landmark": "nav",
+    "pos": "49,673",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "URLs",
+  "cat": "form-label",
+  "expect": {
+   "label": "URLs",
+   "nth": 0
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 2.300000000745058,
+   "candidates": [
+    {
+     "tag": "input",
+     "name": "urls",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "profile",
+     "pos": "311,1118"
+    },
+    {
+     "tag": "input",
+     "name": "urls",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "label",
+     "disabled": false,
+     "heading": "profile",
+     "pos": "311,1154"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Search documentation",
+  "cat": "ellipsis-substring",
+  "expect": {
+   "role": "button",
+   "nameRe": "^Search documentation"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 3.5,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "search documentation... ⌘ k",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "926,52",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Toggle theme",
+  "cat": "sr-only-text",
+  "expect": {
+   "role": "button",
+   "name": "Toggle theme"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "toggle theme",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "nav",
+    "pos": "1224,52",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Delete account",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 1.5,
+   "scanned": 5
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-settings",
+  "q": "Billing",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 1.300000000745058,
+   "scanned": 5
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Add Task",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Add Task"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 15.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "add task",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "welcome back",
+    "pos": "1129,644",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Filter tasks",
+  "cat": "placeholder",
+  "expect": {
+   "placeholder": "Filter tasks..."
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 8.400000002235174,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "filter tasks",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "placeholder",
+    "disabled": false,
+    "heading": "welcome back",
+    "pos": "73,644",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Status",
+  "cat": "human-ambiguous",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 7.300000000745058,
+   "candidates": [
+    {
+     "tag": "button",
+     "name": "status",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "welcome back",
+     "pos": "331,644"
+    },
+    {
+     "tag": "button",
+     "name": "status",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task title status priority",
+     "heading": "welcome back",
+     "pos": "909,697"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Select all",
+  "cat": "aria-label",
+  "expect": {
+   "role": "checkbox",
+   "name": "Select all"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.800000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "role": "checkbox",
+    "name": "select all",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "row": "task title status priority",
+    "heading": "welcome back",
+    "pos": "82,704",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Open menu",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 10.199999999254942,
+   "candidates": [
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-8782 documentation you can't compress the program witho",
+     "heading": "welcome back",
+     "pos": "1159,741"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-7878 documentation try to calculate the exe feed, maybe",
+     "heading": "welcome back",
+     "pos": "1159,790"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-7839 bug we need to bypass the neural tcp card! todo hi",
+     "heading": "welcome back",
+     "pos": "1159,839"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-5562 feature the sas interface is down, bypass the open",
+     "heading": "welcome back",
+     "pos": "1159,888"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-8686 feature i'll parse the wireless ssl protocol, that",
+     "heading": "welcome back",
+     "pos": "1159,937"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-1280 bug use the digital tls panel, then you can transm",
+     "heading": "welcome back",
+     "pos": "1159,986"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-7262 feature the utf8 application is down, parse the ne",
+     "heading": "welcome back",
+     "pos": "1159,1035"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-1138 feature generating the driver won't do anything, w",
+     "heading": "welcome back",
+     "pos": "1159,1084"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-7184 feature we need to program the back-end thx pixel!",
+     "heading": "welcome back",
+     "pos": "1159,1133"
+    },
+    {
+     "tag": "button",
+     "name": "open menu",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "task-5160 documentation calculating the bus won't do anythin",
+     "heading": "welcome back",
+     "pos": "1159,1182"
+    }
+   ],
+   "count": 25
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Open menu",
+  "index": 2,
+  "cat": "index",
+  "expect": {
+   "role": "button",
+   "name": "Open menu",
+   "nth": 2
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 9.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "open menu",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "task-7839 bug we need to bypass the neural tcp card! todo hi",
+    "heading": "welcome back",
+    "pos": "1159,839",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "View",
+  "cat": "exact-vs-substring",
+  "expect": {
+   "role": "button",
+   "name": "View"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 8,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "view",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "welcome back",
+    "pos": "1044,644",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Copy Code",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Copy Code"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 6.5,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "copy code",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "the foundation for your design system",
+    "pos": "1192,471",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Theme",
+  "cat": "form-label",
+  "expect": {
+   "css": "#theme-selector"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 6.200000002980232,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "role": "combobox",
+    "name": "theme",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "label",
+    "disabled": false,
+    "heading": "the foundation for your design system",
+    "pos": "1040,471",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shadcn-tasks",
+  "q": "Export CSV",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 4.5,
+   "scanned": 1
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "Skip to main content",
+  "cat": "offscreen-skip-link",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 21.699999999254942,
+   "scanned": 3022
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "Web APIs",
+  "cat": "human-ambiguous",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 22.200000002980232,
+   "candidates": [
+    {
+     "tag": "button",
+     "name": "web apis",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "landmark": "nav",
+     "pos": "494,106"
+    },
+    {
+     "tag": "a",
+     "name": "web apis",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "web apis",
+     "landmark": "header",
+     "pos": "79,161"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "Filter",
+  "cat": "placeholder",
+  "expect": {
+   "placeholder": "Filter",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 24.5,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "filter sidebar",
+    "tier": "substring",
+    "ratio": 0.43,
+    "source": "content",
+    "disabled": false,
+    "heading": "help improve mdn",
+    "landmark": "nav",
+    "pos": "16,200",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "Theme",
+  "cat": "label-in-name",
+  "expect": {
+   "role": "button",
+   "name": "Switch color theme"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 31.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "switch color theme",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "1013,158",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "English (US)",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "English (US)"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 17.5,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "english (us)",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-labelledby",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "1119,158",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "Browser compatibility",
+  "cat": "toc-vs-heading",
+  "expect": {
+   "css": ".reference-toc a[href='#browser_compatibility']"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 21.400000002235174,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "browser compatibility",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "browser compatibility",
+     "heading": "in this article",
+     "landmark": "nav",
+     "pos": "1027,357"
+    },
+    {
+     "tag": "a",
+     "name": "browser compatibility",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "browser compatibility",
+     "pos": "288,6137"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "checkVisibility()",
+  "cat": "human-ambiguous",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 24.900000002235174,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "checkvisibility()",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "checkvisibility()",
+     "landmark": "header",
+     "pos": "263,161"
+    },
+    {
+     "tag": "a",
+     "name": "checkvisibility()",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "checkvisibility()",
+     "heading": "help improve mdn",
+     "landmark": "nav",
+     "pos": "40,4311"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "Learn",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Learn"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 22,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "learn",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "nav",
+    "pos": "667,106",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "mdn-docs",
+  "q": "Download the PDF",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 15.599999997764826,
+   "scanned": 1520
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "Edit",
+  "cat": "case-ambiguous",
+  "expect": {
+   "css": "#ca-edit a"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 25,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "edit",
+     "heading": "tour guide",
+     "landmark": "views",
+     "pos": "880,130"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "history",
+     "pos": "349,944"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "international standards and professional organisations",
+     "pos": "794,2092"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "world federation of tourist guide associations",
+     "pos": "711,2143"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "international standards",
+     "pos": "491,2311"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "regional implementation",
+     "pos": "520,2615"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "australia",
+     "pos": "359,2666"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "europe",
+     "pos": "343,2860"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "turkey",
+     "pos": "339,3174"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "india",
+     "pos": "322,3947"
+    }
+   ],
+   "count": 17
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "View history",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "View history"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 19.900000002235174,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "view history",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "view history",
+    "heading": "tour guide",
+    "landmark": "views",
+    "pos": "920,130",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "Talk",
+  "cat": "exact-link",
+  "expect": {
+   "css": "#ca-talk a"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 20.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "talk",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "talk",
+    "heading": "tour guide",
+    "landmark": "namespaces",
+    "pos": "319,130",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "Search Wikipedia",
+  "cat": "aria-label-field",
+  "expect": {
+   "css": "#searchInput"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 14,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "search wikipedia",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "335,17",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "Search",
+  "cat": "exact-vs-substring",
+  "expect": {
+   "css": "#searchform button"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 22.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "search",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "738,17",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "43 languages",
+  "cat": "label-as-button",
+  "expect": {
+   "css": "#p-lang-btn-label"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 18.700000002980232,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "role": "button",
+    "name": "43 languages",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "heading": "tour guide",
+    "landmark": "header",
+    "pos": "971,94",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "Donate",
+  "cat": "exact-link",
+  "expect": {
+   "css": "#pt-sitesupport-2 a"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 17.800000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "donate",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "donate",
+    "landmark": "personal tools",
+    "pos": "1038,25",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "Large",
+  "cat": "radio-label",
+  "expect": {
+   "role": "radio",
+   "name": "Large"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 21.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "large",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "label",
+    "disabled": false,
+    "row": "small standard large",
+    "heading": "tour guide",
+    "landmark": "appearance",
+    "pos": "1132,333",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "Wireless tour guide system",
+  "cat": "substring-link",
+  "expect": {
+   "role": "link",
+   "nameRe": "Wireless tour guide system"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 24.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "audio tour § wireless tour guide system",
+    "tier": "substring",
+    "ratio": 0.67,
+    "source": "content",
+    "disabled": false,
+    "heading": "tour guide",
+    "pos": "432,239",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "visitors",
+  "cat": "prose-trap",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 19.5,
+   "scanned": 1406
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-article",
+  "q": "Random article",
+  "cat": "hidden-menu",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 17.199999999254942,
+   "scanned": 1406
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "Username",
+  "cat": "form-label",
+  "expect": {
+   "css": "#wpName2"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.5,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "username",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "create account",
+    "pos": "106,205",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "Password",
+  "cat": "form-label",
+  "expect": {
+   "css": "#wpPassword2"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.800000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "password",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "create account",
+    "pos": "106,279",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "Confirm password",
+  "cat": "form-label",
+  "expect": {
+   "css": "#wpRetype"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.5,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "confirm password",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "create account",
+    "pos": "106,353",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "Email address",
+  "cat": "form-label-substring",
+  "expect": {
+   "css": "#wpEmail"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "email address (optional)",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "create account",
+    "pos": "106,427",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "Create your account",
+  "cat": "exact-button",
+  "expect": {
+   "css": "#wpCreateaccount"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.5,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "create your account",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "create account",
+    "pos": "106,475",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "Create account",
+  "cat": "link-vs-heading",
+  "expect": {
+   "css": "#pt-createaccount-2 a"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.699999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "create account",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "create account",
+    "landmark": "personal tools",
+    "pos": "1091,25",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "Log in",
+  "cat": "exact-link",
+  "expect": {
+   "css": "#pt-login-2 a"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.899999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "log in",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "log in",
+    "landmark": "personal tools",
+    "pos": "1194,25",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "username policy",
+  "cat": "aria-label-icon",
+  "expect": {
+   "css": "#mw-username-help"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.299999997019768,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "username policy",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "heading": "create account",
+    "pos": "283,177",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "wikipedia-createaccount",
+  "q": "Log out",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 4.199999999254942,
+   "scanned": 31
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Primary",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 21.699999999254942,
+   "candidates": [
+    {
+     "tag": "button",
+     "role": "button",
+     "name": "primary",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "variants",
+     "pos": "458,709"
+    },
+    {
+     "tag": "button",
+     "role": "button",
+     "name": "primary",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "outline buttons",
+     "pos": "458,1323"
+    },
+    {
+     "tag": "button",
+     "role": "button",
+     "name": "primary",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "loading",
+     "pos": "458,4454"
+    },
+    {
+     "tag": "button",
+     "role": "button",
+     "name": "primary",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": true,
+     "heading": "disabled",
+     "pos": "458,4756"
+    }
+   ],
+   "count": 4
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Search",
+  "cat": "aria-label",
+  "expect": {
+   "css": "button.search-box"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 17.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "search",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "aside",
+    "pos": "32,174",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Installation",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Installation"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 17.099999997764826,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "installation",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "installation",
+    "heading": "getting started",
+    "landmark": "nav",
+    "pos": "48,311",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Variants",
+  "cat": "toc-vs-heading",
+  "expect": {
+   "css": ".content__toc a[href='#variants']"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 19.700000002980232,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "variants",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "variants",
+    "heading": "tutorials",
+    "pos": "1065,153",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Follow",
+  "cat": "shadow-dom",
+  "expect": {
+   "role": "link",
+   "name": "Follow"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 17.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "follow",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "aside",
+    "pos": "197,124",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Star",
+  "cat": "shadow-dom",
+  "expect": {
+   "role": "link",
+   "name": "Star"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 16.5,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "star",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "aside",
+    "pos": "118,124",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Customizing",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Customizing"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 18.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "customizing",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "customizing",
+    "heading": "getting started",
+    "landmark": "nav",
+    "pos": "48,404",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Danger",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 18.099999997764826,
+   "candidates": [
+    {
+     "tag": "button",
+     "role": "button",
+     "name": "danger",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "variants",
+     "pos": "808,709"
+    },
+    {
+     "tag": "button",
+     "role": "button",
+     "name": "danger",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "outline buttons",
+     "pos": "808,1323"
+    },
+    {
+     "tag": "button",
+     "role": "button",
+     "name": "danger",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "loading",
+     "pos": "808,4454"
+    },
+    {
+     "tag": "button",
+     "role": "button",
+     "name": "danger",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": true,
+     "heading": "disabled",
+     "pos": "808,4756"
+    }
+   ],
+   "count": 4
+  }
+ },
+ {
+  "set": "dev",
+  "page": "shoelace-button",
+  "q": "Uninstall",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 14.099999997764826,
+   "scanned": 291
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "Okay, got it",
+  "cat": "text-transform",
+  "expect": {
+   "role": "button",
+   "name": "Okay, got it"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 27.799999997019768,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "okay, got it",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "pos": "363,728",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "More details",
+  "cat": "text-transform",
+  "expect": {
+   "role": "link",
+   "name": "More details"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 28.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "more details",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "pos": "237,728",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "Select a theme",
+  "cat": "aria-label-icon",
+  "expect": {
+   "role": "button",
+   "name": "Select a theme"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 28.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "select a theme",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "top toolbar",
+    "pos": "1125,8",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "Select a version",
+  "cat": "aria-label-icon",
+  "expect": {
+   "role": "button",
+   "name": "Select a version"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 25.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "select a version",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "top toolbar",
+    "pos": "1042,8",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "Next page",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 16.899999998509884,
+   "candidates": [
+    {
+     "tag": "button",
+     "name": "next page",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "pos": "1156,9253"
+    },
+    {
+     "tag": "button",
+     "name": "next page",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "pos": "1156,12755"
+    },
+    {
+     "tag": "button",
+     "name": "next page",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "aria-label",
+     "disabled": false,
+     "pos": "1116,13257"
+    }
+   ],
+   "count": 3
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "Components",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Components",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 26.5,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "components",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "top toolbar",
+    "pos": "120,8",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "GitHub",
+  "cat": "label-in-name",
+  "expect": {
+   "role": "link",
+   "name": "GitHub Repository"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 25.899999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "github repository",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "top toolbar",
+    "pos": "1165,8",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "Sort Header",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Sort Header"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 30.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "sort header",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "pos": "8,1408",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "angular-material-table",
+  "q": "Hydrogen",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 52.80000000074506,
+   "candidates": [
+    {
+     "tag": "td",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "1 hydrogen 1.0079 h",
+     "pos": "472,243"
+    },
+    {
+     "tag": "td",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "1 hydrogen 1.0079 h",
+     "pos": "377,949"
+    },
+    {
+     "tag": "mat-cell",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "reorder 1 hydrogen 1.0079 h 100",
+     "pos": "498,1655"
+    },
+    {
+     "tag": "td",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "1 hydrogen 1.0079 h",
+     "pos": "472,2417"
+    },
+    {
+     "tag": "td",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "hydrogen 1.0079 h 1",
+     "pos": "315,3195"
+    },
+    {
+     "tag": "td",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "1 hydrogen 1.0079 h",
+     "pos": "472,3957"
+    },
+    {
+     "tag": "td",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "hydrogen 1.0079 h 1 keyboard_arrow_down",
+     "pos": "315,4663"
+    },
+    {
+     "tag": "div",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "1 h hydrogen 1.0079 hydrogen is a chemical element with symb",
+     "pos": "341,4800"
+    },
+    {
+     "tag": "td",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "1 hydrogen 1.0079 h",
+     "pos": "472,5455"
+    },
+    {
+     "tag": "mat-cell",
+     "role": "cell",
+     "name": "hydrogen",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "1 hydrogen 1.0079 h",
+     "pos": "541,6161"
+    }
+   ],
+   "count": 32
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "login",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "login"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 7.5,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "login",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "hacker newsnew | past | comments | ask | show | jobs | submi",
+    "pos": "1143,13",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "submit",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "submit",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 7.700000002980232,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "submit",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "hacker newsnew | past | comments | ask | show | jobs | submi",
+    "pos": "471,12",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "comments",
+  "cat": "exact-vs-substring",
+  "expect": {
+   "role": "link",
+   "name": "comments",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 10.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "comments",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "hacker newsnew | past | comments | ask | show | jobs | submi",
+    "pos": "289,12",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "hide",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 9,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "503 points by speedping 3 hours ago | hide | 177 comments",
+     "pos": "296,61"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "244 points by gmays 2 hours ago | hide | 162 comments",
+     "pos": "280,95"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "307 points by gyre007 3 hours ago | hide | 115 comments",
+     "pos": "287,129"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "409 points by ritzaco 5 hours ago | hide | 123 comments",
+     "pos": "280,163"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "117 points by betelbuddy 3 hours ago | hide | 57 comments",
+     "pos": "299,197"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "132 points by kozmik1 3 hours ago | hide | 79 comments",
+     "pos": "289,231"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "10 points by aray07 37 minutes ago | hide | discuss",
+     "pos": "291,265"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "66 points by raj-shekhar 2 hours ago | hide | 16 comments",
+     "pos": "294,299"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "100 points by birdboat00 3 hours ago | hide | 49 comments",
+     "pos": "297,333"
+    },
+    {
+     "tag": "a",
+     "name": "hide",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "10 points by leumon 16 minutes ago | hide | 1 comment",
+     "pos": "293,367"
+    }
+   ],
+   "count": 30
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "More",
+  "cat": "exact-vs-substring",
+  "expect": {
+   "css": "a.morelink"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "more",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "more",
+    "pos": "135,1068",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "new",
+  "cat": "exact-vs-substring",
+  "expect": {
+   "role": "link",
+   "name": "new",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5.099999997764826,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "new",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "hacker newsnew | past | comments | ask | show | jobs | submi",
+    "pos": "218,12",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "jobs",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "jobs",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.599999997764826,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "jobs",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "hacker newsnew | past | comments | ask | show | jobs | submi",
+    "pos": "435,12",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "Search",
+  "cat": "unlabelled-field",
+  "expect": {
+   "css": "input[name=q]"
+  },
+  "verdict": "wrong_element",
+  "res": {
+   "ok": true,
+   "ms": 4.699999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "form",
+    "name": "search",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "guidelines | faq | lists | api | security | legal | apply to",
+    "pos": "103,1145",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "hackernews",
+  "q": "upvote",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 3.300000000745058,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "1. unauthenticated remote code execution in nginx (cve-2026-",
+     "pos": "121,45"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "2. seven new models at scalable price-performance (microsoft",
+     "pos": "121,79"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "3. inside deutsche bank (inside-db.com)",
+     "pos": "121,113"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "4. dns resolvers are the wrong place to fight piracy (techst",
+     "pos": "121,147"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "5. ai agents ask better questions than kpmg accountants in a",
+     "pos": "121,181"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "6. kvm: x86: unconditionally reset mmu context when emulatin",
+     "pos": "121,215"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "7. the magic of partial evaluation (jimmyhmiller.com)",
+     "pos": "121,249"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "8. show hn: take voyager 1 apart, down to a single memory ch",
+     "pos": "121,283"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "9. u.s. airforce is looking for old storage media (cf or pc ",
+     "pos": "121,317"
+    },
+    {
+     "tag": "a",
+     "name": "",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "title",
+     "disabled": false,
+     "row": "10. genie 4 is now available (blog.google)",
+     "pos": "121,351"
+    }
+   ],
+   "count": 29
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Readme",
+  "cat": "tab",
+  "expect": {
+   "css": "#package-tab-readme"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 10.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "role": "tab",
+    "name": "readme",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "readme",
+    "heading": "playwright",
+    "pos": "57,340",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Code",
+  "cat": "tab-with-badge",
+  "expect": {
+   "css": "#package-tab-code"
+  },
+  "verdict": "spurious_ambiguous",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 11.600000001490116,
+   "candidates": [
+    {
+     "tag": "a",
+     "role": "tab",
+     "name": "code beta",
+     "tier": "substring",
+     "ratio": 0.44,
+     "source": "content",
+     "disabled": false,
+     "row": "code beta",
+     "heading": "playwright",
+     "pos": "255,339"
+    },
+    {
+     "tag": "a",
+     "name": "vs code extension",
+     "tier": "substring",
+     "ratio": 0.24,
+     "source": "content",
+     "disabled": false,
+     "row": "vs code extension test authoring and debugging in vs code in",
+     "heading": "get started",
+     "pos": "70,1072"
+    },
+    {
+     "tag": "a",
+     "name": "install in vs code",
+     "tier": "substring",
+     "ratio": 0.22,
+     "source": "title",
+     "disabled": false,
+     "heading": "setup",
+     "pos": "56,4694"
+    },
+    {
+     "tag": "a",
+     "name": "permalink: vs code extension",
+     "tier": "substring",
+     "ratio": 0.14,
+     "source": "aria-label",
+     "disabled": false,
+     "heading": "vs code extension",
+     "pos": "36,6936"
+    },
+    {
+     "tag": "a",
+     "name": "playwright vs code extension",
+     "tier": "substring",
+     "ratio": 0.14,
+     "source": "content",
+     "disabled": false,
+     "heading": "vs code extension",
+     "pos": "92,6940"
+    },
+    {
+     "tag": "a",
+     "name": "vs code guide",
+     "tier": "substring",
+     "ratio": 0.31,
+     "source": "content",
+     "disabled": false,
+     "heading": "vs code extension",
+     "pos": "246,7347"
+    },
+    {
+     "tag": "a",
+     "name": "vs code extension",
+     "tier": "substring",
+     "ratio": 0.24,
+     "source": "content",
+     "disabled": false,
+     "row": "vs code extension",
+     "heading": "resources",
+     "pos": "72,7984"
+    },
+    {
+     "tag": "a",
+     "name": "code of conduct",
+     "tier": "substring",
+     "ratio": 0.27,
+     "source": "content",
+     "disabled": false,
+     "row": "code of conduct",
+     "heading": "terms & policies",
+     "landmark": "footer",
+     "pos": "922,8750"
+    }
+   ],
+   "count": 8
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Dependents",
+  "cat": "tab-with-count",
+  "expect": {
+   "css": "#package-tab-dependents"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 9.599999997764826,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "role": "tab",
+    "name": "6188 dependents",
+    "tier": "substring",
+    "ratio": 0.67,
+    "source": "content",
+    "disabled": false,
+    "row": "6188 dependents",
+    "heading": "playwright",
+    "pos": "721,339",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Versions",
+  "cat": "tab-with-count",
+  "expect": {
+   "css": "#package-tab-versions"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 9.5,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "role": "tab",
+    "name": "5,789 versions",
+    "tier": "substring",
+    "ratio": 0.57,
+    "source": "content",
+    "disabled": false,
+    "row": "5,789 versions",
+    "heading": "playwright",
+    "pos": "983,339",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Search packages",
+  "cat": "aria-label-field",
+  "expect": {
+   "role": "combobox",
+   "name": "Search packages"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 6.600000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "role": "combobox",
+    "name": "search packages",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "178,154",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Search",
+  "cat": "exact-vs-substring",
+  "expect": {
+   "role": "button",
+   "name": "Search",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 12.899999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "search",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "924,148",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Sign In",
+  "cat": "offscreen-skip-link",
+  "expect": {
+   "css": "#signin"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 10,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "sign in",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "1183,158",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Close notification",
+  "cat": "aria-label-icon",
+  "expect": {
+   "role": "button",
+   "name": "Close notification"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 11.599999997764826,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "close notification",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "site notifications",
+    "pos": "1224,16",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Weekly Downloads",
+  "cat": "non-interactive-target",
+  "expect": {
+   "css": "h3:text-is('Weekly Downloads')"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 9.800000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "div",
+    "role": "button",
+    "name": "showing weekly downloads",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "homepage",
+    "landmark": "package sidebar",
+    "pos": "851,739",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "npm-package",
+  "q": "Add to cart",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 7.5,
+   "scanned": 13
+  }
+ },
+ {
+  "set": "dev",
+  "page": "govuk-summary-list",
+  "q": "Delete choice",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 3.7000000029802322,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "delete choice (university of gloucestershire)",
+     "tier": "substring",
+     "ratio": 0.29,
+     "source": "content",
+     "disabled": false,
+     "row": "delete choice (university of gloucestershire)",
+     "heading": "university of gloucestershire",
+     "pos": "1000,53"
+    },
+    {
+     "tag": "a",
+     "name": "delete choice (university of bristol)",
+     "tier": "substring",
+     "ratio": 0.35,
+     "source": "content",
+     "disabled": false,
+     "row": "delete choice (university of bristol)",
+     "heading": "university of bristol",
+     "pos": "1000,322"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "govuk-summary-list",
+  "q": "Withdraw",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 2.900000002235174,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "withdraw (university of gloucestershire)",
+     "tier": "substring",
+     "ratio": 0.2,
+     "source": "content",
+     "disabled": false,
+     "row": "withdraw (university of gloucestershire)",
+     "heading": "university of gloucestershire",
+     "pos": "1144,53"
+    },
+    {
+     "tag": "a",
+     "name": "withdraw (university of bristol)",
+     "tier": "substring",
+     "ratio": 0.25,
+     "source": "content",
+     "disabled": false,
+     "row": "withdraw (university of bristol)",
+     "heading": "university of bristol",
+     "pos": "1144,322"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "dev",
+  "page": "govuk-summary-list",
+  "q": "Withdraw",
+  "index": 1,
+  "cat": "index",
+  "expect": {
+   "role": "link",
+   "nameRe": "^Withdraw",
+   "nth": 1
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "withdraw (university of bristol)",
+    "tier": "substring",
+    "ratio": 0.25,
+    "source": "content",
+    "disabled": false,
+    "row": "withdraw (university of bristol)",
+    "heading": "university of bristol",
+    "pos": "1144,322",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "govuk-summary-list",
+  "q": "Delete choice (University of Bristol)",
+  "cat": "sr-only-text",
+  "expect": {
+   "role": "link",
+   "nameRe": "Delete choice.*Bristol"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "delete choice (university of bristol)",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "delete choice (university of bristol)",
+    "heading": "university of bristol",
+    "pos": "1000,322",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "govuk-summary-list",
+  "q": "University of Bristol",
+  "cat": "non-interactive-target",
+  "expect": {
+   "css": "h2:text-is('University of Bristol')"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "h2",
+    "name": "university of bristol",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "university of gloucestershire",
+    "pos": "51,320",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "dev",
+  "page": "govuk-summary-list",
+  "q": "Course",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 2.300000000745058,
+   "candidates": [
+    {
+     "tag": "dt",
+     "name": "course",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "university of gloucestershire",
+     "pos": "51,112"
+    },
+    {
+     "tag": "dt",
+     "name": "course",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "university of bristol",
+     "pos": "51,381"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "edit",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 4.400000002235174,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "smith john jsmith@gmail.com $50.00 http://www.jsmith.com edi",
+     "heading": "example 1",
+     "pos": "792,281"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "bach frank fbach@yahoo.com $51.00 http://www.frank.com edit ",
+     "heading": "example 1",
+     "pos": "792,312"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "doe jason jdoe@hotmail.com $100.00 http://www.jdoe.com edit ",
+     "heading": "example 1",
+     "pos": "792,344"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "conway tim tconway@earthlink.net $50.00 http://www.timconway",
+     "heading": "example 1",
+     "pos": "792,375"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "smith john jsmith@gmail.com $50.00 http://www.jsmith.com edi",
+     "heading": "example 2",
+     "pos": "792,549"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "bach frank fbach@yahoo.com $51.00 http://www.frank.com edit ",
+     "heading": "example 2",
+     "pos": "792,581"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "doe jason jdoe@hotmail.com $100.00 http://www.jdoe.com edit ",
+     "heading": "example 2",
+     "pos": "792,612"
+    },
+    {
+     "tag": "a",
+     "name": "edit",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "conway tim tconway@earthlink.net $50.00 http://www.timconway",
+     "heading": "example 2",
+     "pos": "792,644"
+    }
+   ],
+   "count": 8
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "delete",
+  "index": 3,
+  "cat": "index",
+  "expect": {
+   "role": "link",
+   "name": "delete",
+   "nth": 3
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 3.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "delete",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "conway tim tconway@earthlink.net $50.00 http://www.timconway",
+    "heading": "example 1",
+    "pos": "818,375",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "Elemental Selenium",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Elemental Selenium"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.5,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "elemental selenium",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "example 2",
+    "pos": "564,709",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "Sauce Labs",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Sauce Labs"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 4.400000002235174,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "sauce labs",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "example 2",
+    "pos": "720,709",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "Skip to content",
+  "cat": "offscreen-skip-link",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 3.699999999254942,
+   "scanned": 127
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "Last Name",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 1.4000000022351742,
+   "candidates": [
+    {
+     "tag": "span",
+     "name": "last name",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "last name first name email due web site action",
+     "heading": "example 1",
+     "pos": "165,248"
+    },
+    {
+     "tag": "span",
+     "name": "last name",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "last name first name email due web site action",
+     "heading": "example 2",
+     "pos": "165,517"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "jdoe@hotmail.com",
+  "cat": "repeated",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 2.7000000029802322,
+   "candidates": [
+    {
+     "tag": "td",
+     "name": "jdoe@hotmail.com",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "doe jason jdoe@hotmail.com $100.00 http://www.jdoe.com edit ",
+     "heading": "example 1",
+     "pos": "374,337"
+    },
+    {
+     "tag": "td",
+     "name": "jdoe@hotmail.com",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "doe jason jdoe@hotmail.com $100.00 http://www.jdoe.com edit ",
+     "heading": "example 2",
+     "pos": "374,605"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "Example 2",
+  "cat": "non-interactive-target",
+  "expect": {
+   "css": "h4:text-is('Example 2')"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5,
+   "matched": {
+    "by": "text",
+    "tag": "h4",
+    "name": "example 2",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "example 1",
+    "pos": "155,421",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "internet-tables",
+  "q": "Add row",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 2.199999999254942,
+   "scanned": 0
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "saucedemo-login",
+  "q": "Username",
+  "cat": "placeholder",
+  "expect": {
+   "css": "#user-name"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "username",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "login",
+    "pos": "494,154",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "saucedemo-login",
+  "q": "Password",
+  "cat": "placeholder",
+  "expect": {
+   "css": "#password"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 2.5,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "password",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "login",
+    "pos": "494,206",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "saucedemo-login",
+  "q": "Login",
+  "cat": "input-value",
+  "expect": {
+   "css": "#login-button"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 1.7000000029802322,
+   "matched": {
+    "by": "text",
+    "tag": "input",
+    "name": "login",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "login",
+    "pos": "494,298",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "saucedemo-login",
+  "q": "Swag Labs",
+  "cat": "non-interactive-target",
+  "expect": {
+   "css": ".login_logo"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 1.9000000022351742,
+   "matched": {
+    "by": "text",
+    "tag": "div",
+    "name": "swag labs",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "pos": "0,0",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "saucedemo-login",
+  "q": "Forgot password",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 1.2000000029802322,
+   "scanned": 0
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Learn",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Learn",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 25,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "learn",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "nav",
+    "pos": "761,11",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Reference",
+  "cat": "human-ambiguous",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 23.5,
+   "candidates": [
+    {
+     "tag": "a",
+     "name": "reference",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "landmark": "nav",
+     "pos": "831,11"
+    },
+    {
+     "tag": "a",
+     "name": "reference",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "row": "reference usestate(initialstate) set functions, like setsome",
+     "heading": "usestate",
+     "pos": "392,347"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Use Dark Mode",
+  "cat": "aria-label-icon",
+  "expect": {
+   "role": "button",
+   "name": "Use Dark Mode"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 13.800000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "use dark mode",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "nav",
+    "pos": "1116,8",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Open on GitHub",
+  "cat": "aria-label-icon",
+  "expect": {
+   "role": "link",
+   "name": "Open on GitHub"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 13.5,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "open on github",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "nav",
+    "pos": "1212,8",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "useEffect",
+  "cat": "nav-vs-prose",
+  "expect": {
+   "css": "nav a[href='/reference/react/useEffect']"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 20.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "useeffect",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "useeffect",
+    "heading": "react@19.3",
+    "landmark": "nav",
+    "pos": "0,436",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Copy page",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Copy page"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 22.699999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "copy page",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "legacy apis",
+    "pos": "1113,82",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Search",
+  "cat": "substring-kbd",
+  "expect": {
+   "role": "button",
+   "nameRe": "^Search"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 20.799999997019768,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "search ⌘ ctrl k",
+    "tier": "substring",
+    "ratio": 0.4,
+    "source": "content",
+    "disabled": false,
+    "landmark": "nav",
+    "pos": "112,12",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Troubleshooting",
+  "cat": "toc-vs-heading",
+  "expect": {
+   "role": "link",
+   "name": "Troubleshooting",
+   "exact": true,
+   "nth": 0
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 22.300000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "troubleshooting",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "troubleshooting i’ve updated the state, but logging gives me",
+    "heading": "usestate",
+    "pos": "392,696",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Translations",
+  "cat": "aria-label-icon",
+  "expect": {
+   "role": "link",
+   "name": "Translations"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 13.900000002235174,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "translations",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "nav",
+    "pos": "1164,8",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "react-docs",
+  "q": "Sign in",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 15.100000001490116,
+   "scanned": 117
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "Sign Up",
+  "cat": "exact-vs-substring",
+  "expect": {
+   "role": "link",
+   "name": "Sign Up",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 25.200000002980232,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "role": "link",
+    "name": "sign up",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "969,16",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "Log In",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Log In",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 24.200000002980232,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "role": "link",
+    "name": "log in",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "895,16",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "Get a demo",
+  "cat": "case-ambiguous",
+  "expect": "ambiguous",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "ambiguous",
+   "ms": 22.800000000745058,
+   "candidates": [
+    {
+     "tag": "a",
+     "role": "link",
+     "name": "get a demo",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "landmark": "header",
+     "pos": "792,16"
+    },
+    {
+     "tag": "a",
+     "role": "link",
+     "name": "get a demo",
+     "tier": "exact",
+     "ratio": 1,
+     "source": "content",
+     "disabled": false,
+     "heading": "scale your app, control your costs",
+     "pos": "877,866"
+    }
+   ],
+   "count": 2
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "Start a free trial",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Start a free trial",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 22,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "role": "link",
+    "name": "start a free trial",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "scale your app, control your costs",
+    "pos": "467,866",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "Contact Sales",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Contact Sales",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 22.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "role": "link",
+    "name": "contact sales",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "compliance",
+    "pos": "1045,13475",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "Ask AI",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Ask AI"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 20.399999998509884,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "ask ai",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "1051,16",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "Products",
+  "cat": "exact-button",
+  "expect": {
+   "role": "button",
+   "name": "Products",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 20.699999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "products",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "main navigation",
+    "pos": "65,16",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "View as AI agent",
+  "cat": "aria-label-icon",
+  "expect": {
+   "role": "button",
+   "name": "View as AI agent"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 13.199999999254942,
+   "matched": {
+    "by": "text",
+    "tag": "button",
+    "name": "view as ai agent",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "aria-label",
+    "disabled": false,
+    "landmark": "footer",
+    "pos": "1232,15812",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "vercel-pricing",
+  "q": "Cancel subscription",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 13.400000002235174,
+   "scanned": 1
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "material-web",
+  "q": "Checkbox one",
+  "cat": "shadow-dom-label",
+  "expect": {
+   "css": "label:has-text('Checkbox one') md-checkbox"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5.800000000745058,
+   "matched": {
+    "by": "text",
+    "tag": "label",
+    "name": "checkbox one",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "label",
+    "pos": "386,1911",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "material-web",
+  "q": "Usage",
+  "cat": "toc-vs-heading",
+  "expect": {
+   "role": "link",
+   "name": "Usage",
+   "exact": true
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5.599999997764826,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "usage",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "usage label",
+    "pos": "1087,201",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "material-web",
+  "q": "Open interactive demo in new tab",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "nameRe": "^Open interactive demo in new tab"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5.400000002235174,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "open interactive demo in new tab",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "interactive demo",
+    "pos": "56,1396",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "material-web",
+  "q": "View interactive demo inline",
+  "cat": "summary",
+  "expect": {
+   "css": "summary"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5,
+   "matched": {
+    "by": "text",
+    "tag": "summary",
+    "name": "view interactive demo inline",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "heading": "interactive demo",
+    "pos": "56,1340",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "material-web",
+  "q": "Design article",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Design article"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5.100000001490116,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "design article",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "design article",
+    "heading": "checkbox",
+    "pos": "96,1159",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "material-web",
+  "q": "Material Web",
+  "cat": "shadow-dom",
+  "expect": {
+   "css": "#home-link"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "material web",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "landmark": "header",
+    "pos": "56,21",
+    "inViewport": true
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "material-web",
+  "q": "Source code",
+  "cat": "exact-link",
+  "expect": {
+   "role": "link",
+   "name": "Source code"
+  },
+  "verdict": "pass",
+  "res": {
+   "ok": true,
+   "ms": 5.5,
+   "matched": {
+    "by": "text",
+    "tag": "a",
+    "name": "source code",
+    "tier": "exact",
+    "ratio": 1,
+    "source": "content",
+    "disabled": false,
+    "row": "source code",
+    "heading": "checkbox",
+    "pos": "96,1203",
+    "inViewport": false
+   }
+  }
+ },
+ {
+  "set": "holdout",
+  "page": "material-web",
+  "q": "Uninstall",
+  "cat": "not-found",
+  "expect": "not_found",
+  "verdict": "pass",
+  "res": {
+   "ok": false,
+   "error": "not_found",
+   "ms": 5.199999999254942,
+   "scanned": 646
+  }
+ }
+]
