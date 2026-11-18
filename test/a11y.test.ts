@@ -1,6 +1,6 @@
 // Accessibility behaviour of the overlay: live region, take-me-there, describedby, Escape, compact layout.
 import { afterEach, describe, expect, it } from "vitest";
-import { cleanup, openFixture, parts } from "./helpers.js";
+import { cleanup, emulateMedia, openFixture, parts } from "./helpers.js";
 
 afterEach(cleanup);
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -66,6 +66,46 @@ describe("take me there", () => {
     expect(div.getAttribute("tabindex")).toBe("-1");
     fx.el("t-plain").focus();
     expect(div.hasAttribute("tabindex")).toBe(false);
+  });
+});
+
+describe("take me there: visibility", () => {
+  it("scrolls an off-screen target to the centre, without moving it when already in view", async () => {
+    const fx = await openFixture();
+    const t = fx.el("t-bottom");
+    fx.win.scrollTo(0, 0);
+    fx.overlay.show(t, { message: "m" });
+    expect(t.getBoundingClientRect().top).toBeGreaterThan(fx.win.innerHeight);
+    parts(fx).goto.click();
+    await fx.frames();
+    const r = t.getBoundingClientRect();
+    expect(r.top).toBeGreaterThanOrEqual(0);
+    expect(r.bottom).toBeLessThanOrEqual(fx.win.innerHeight);
+    const y = fx.win.scrollY;
+    parts(fx).goto.click();
+    expect(fx.win.scrollY).toBe(y);
+  });
+
+  it("focuses so the ring shows (focus-visible) after a mouse click", async () => {
+    const fx = await openFixture();
+    fx.overlay.show(fx.el("t-plain"), { message: "m" });
+    parts(fx).goto.click();
+    expect(fx.el("t-plain").matches(":focus-visible")).toBe(true);
+  });
+
+  it("pulses the spotlight", async () => {
+    const fx = await openFixture();
+    await fx.show("t-plain");
+    parts(fx).goto.click();
+    expect(parts(fx).ring.getAnimations().length).toBe(1);
+  });
+
+  it("does not pulse under prefers-reduced-motion", async () => {
+    await emulateMedia({ reducedMotion: "reduce" });
+    const fx = await openFixture();
+    await fx.show("t-plain");
+    parts(fx).goto.click();
+    expect(parts(fx).ring.getAnimations().length).toBe(0);
   });
 });
 

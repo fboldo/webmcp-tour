@@ -232,16 +232,21 @@ export class Overlay {
     }
   };
 
-  /** User-triggered focus move. A target that cannot take focus gets tabindex=-1 until it blurs. */
+  /** User-triggered: scroll the target into view, focus it with a visible ring, pulse the spotlight. A target that cannot take focus gets tabindex=-1 until it blurs. */
   #goto(): void {
     const t = this.#target as HTMLElement | undefined;
     if (!t?.focus) return;
-    t.focus();
+    const r = t.getBoundingClientRect();
+    if (r.top < 0 || r.left < 0 || r.bottom > innerHeight || r.right > innerWidth) t.scrollIntoView({ block: "center", inline: "nearest" });
+    const focus = (): void => t.focus({ preventScroll: true, focusVisible: true } as FocusOptions);
+    focus();
     if (!t.matches(":focus") && !t.hasAttribute("tabindex")) {
       t.setAttribute("tabindex", "-1");
       t.addEventListener("blur", () => t.removeAttribute("tabindex"), { once: true });
-      t.focus();
+      focus();
     }
+    if (!matchMedia("(prefers-reduced-motion:reduce)").matches)
+      this.#parts?.ring.animate?.([{ outlineOffset: "2px" }, { outlineOffset: "9px" }, { outlineOffset: "2px" }], { duration: 600 });
   }
 
   /** Escape dismisses from inside the card, or when nothing else claimed the key. */

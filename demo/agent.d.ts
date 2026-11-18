@@ -14,6 +14,8 @@ export type AgentEvent =
 export type Mode = "auto" | "native" | "constraint" | "openrouter" | "scripted";
 export const FINAL: string;
 export const MAX_STEPS: number;
+export function parseToolArgs(raw: unknown, tool?: ToolEntry): Record<string, unknown> | null;
+export function capAnswer(trace: { tool: string; args?: Record<string, unknown>; result?: Record<string, any> }[]): string;
 export function detectModel(LanguageModel: unknown): Promise<string>;
 export function listTools(modelContext: ModelContextLike, options?: { tries?: number; delay?: number }): Promise<ToolEntry[]>;
 export function callTool(modelContext: ModelContextLike, tool: ToolEntry | undefined, args?: object, signal?: AbortSignal): Promise<Record<string, unknown>>;

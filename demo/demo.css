@@ -54,3 +54,14 @@ th, td { text-align: left; padding: .35rem; border-bottom: 1px solid #eef; }
 .composer-btn[hidden] { display: none; }
 @media (forced-colors: active) { .composer:focus-within { outline: 2px solid Highlight; } }
 @media (prefers-reduced-motion: reduce) { .composer { transition: none; } }
+
+dialog { border: 1px solid #b9bbd0; border-radius: 10px; padding: 1rem 1.25rem; max-width: 26rem; color: inherit; }
+dialog::backdrop { background: rgb(20 20 40 / .45); }
+dialog fieldset { border: 1px solid #dde; border-radius: 6px; }
+dialog h2 { margin-top: 0; }
+#chat { position: fixed; inset: auto 350px 1rem auto; margin: 0; width: 20rem; }
+#chat-log { list-style: none; margin: 0 0 .5rem; padding: 0; max-height: 10rem; overflow: auto; font-size: 13px; }
+#chat-form { display: flex; gap: .35rem; }
+#chat-form input { flex: 1; min-width: 0; padding: .35rem .5rem; font: inherit; }
+#toast { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 10; padding: .6rem 1rem; border-radius: 8px; background: #1c1c28; color: #fff; }
+#toast[hidden] { display: none; }

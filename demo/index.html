@@ -9,6 +9,7 @@
 <script src="/node_modules/@w3c/webmcp-polyfill/dist/polyfill.js"></script>
 <script src="/dist/webmcp-tour.js"></script>
 <script type="module" src="demo.js"></script>
+<script type="module" src="app.js"></script>
 <script type="module" src="assistant.js"></script>
 </head>
 <body>
@@ -20,7 +21,7 @@
     <a href="#notifications">Notifications</a>
     <a href="#security">Security</a>
   </nav>
-  <button type="button" id="help" data-tour-id="help-chat">Help</button>
+  <button type="button" id="help" aria-haspopup="dialog">Help</button>
 </header>
 
 <main>
@@ -38,12 +39,12 @@
 
   <section id="billing">
     <h2>Billing</h2>
-    <p>Current plan: <strong>Team</strong>, 5 seats.</p>
+    <p>Current plan: <strong id="plan-name">Team</strong>, <span id="plan-seats">5</span> seats.</p>
     <p>
       <button type="button" class="primary" data-tour-id="billing-plan"
-        data-tour-description="Opens the plan picker. Pick Team or Business, then confirm on the next screen.">Change plan</button>
+        data-tour-description="Opens the plan picker. Choose Free, Team or Business there, then press Confirm.">Change plan</button>
       <button type="button" data-tour-id="invoices"
-        data-tour-description="Downloads every invoice as a ZIP of PDFs.">Download invoices</button>
+        data-tour-description="Downloads every invoice as a ZIP of PDFs; a confirmation appears at the bottom of the page.">Download invoices</button>
     </p>
     <h3>API keys</h3>
     <table>
@@ -67,7 +68,7 @@
     <details>
       <summary>Advanced</summary>
       <p><button type="button" data-tour-id="two-factor"
-        data-tour-description="Starts two-factor setup with an authenticator app."
+        data-tour-description="Opens two-factor setup: scan a code with an authenticator app, then enter the 6-digit code it shows."
         data-tour-reveal="Open Security → Advanced first.">Set up two-factor</button></p>
     </details>
     <p>
@@ -76,6 +77,53 @@
     </p>
   </section>
 </main>
+
+<dialog id="plan-dialog" aria-labelledby="plan-title">
+  <form method="dialog" id="plan-form">
+    <h2 id="plan-title">Choose a plan</h2>
+    <fieldset data-tour-id="plan-options" data-tour-description="The three plans: Free (1 seat), Team (5 seats) and Business (25 seats). Pick one." data-tour-reveal="Click Change plan first: the plan picker opens.">
+      <legend>Plan</legend>
+      <label><input type="radio" name="plan" value="Free" data-seats="1"> Free: 1 seat</label>
+      <label><input type="radio" name="plan" value="Team" data-seats="5" checked> Team: 5 seats</label>
+      <label><input type="radio" name="plan" value="Business" data-seats="25"> Business: 25 seats</label>
+    </fieldset>
+    <p>
+      <button type="submit" value="confirm" class="primary" data-tour-id="plan-confirm"
+        data-tour-description="Applies the selected plan and closes the picker." data-tour-reveal="Click Change plan first: the plan picker opens.">Confirm</button>
+      <button type="submit" value="cancel" formnovalidate>Cancel</button>
+    </p>
+  </form>
+</dialog>
+
+<dialog id="tfa-dialog" aria-labelledby="tfa-title">
+  <form method="dialog" id="tfa-form">
+    <h2 id="tfa-title">Set up two-factor</h2>
+    <p>1. Scan this code with an authenticator app. <code aria-label="Setup key">JBSW Y3DP EHPK 3PXP</code></p>
+    <label>2. Enter the 6-digit code
+      <input type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required id="tfa-code" autocomplete="off"
+        data-tour-id="two-factor-code" data-tour-description="Type the 6-digit code the authenticator app shows (any six digits work in this demo)."
+        data-tour-reveal="Click Set up two-factor first.">
+    </label>
+    <p>
+      <button type="submit" value="verify" class="primary">Verify</button>
+      <button type="submit" value="cancel" formnovalidate>Cancel</button>
+    </p>
+  </form>
+</dialog>
+
+<dialog id="chat" aria-labelledby="chat-title">
+  <h2 id="chat-title">Support chat</h2>
+  <ol id="chat-log" aria-live="polite"><li>Support: Hi Sam, how can we help?</li></ol>
+  <form id="chat-form" method="dialog">
+    <label class="visually-hidden" for="chat-msg">Message</label>
+    <input type="text" id="chat-msg" autocomplete="off" placeholder="Type a message…" required
+      data-tour-id="chat-input" data-tour-description="Type your question for support here, then press Send." data-tour-reveal="Click Help first.">
+    <button type="submit" value="send">Send</button>
+    <button type="button" id="chat-close">Close</button>
+  </form>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
 
 <aside class="panel" data-tour-exclude aria-label="Tour control panel">
   <h2>Control panel</h2>
