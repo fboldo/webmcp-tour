@@ -1,6 +1,6 @@
 import { Overlay } from "../engine/overlay/index.js";
 import type { OverlayEvents, OverlayOptions } from "../engine/overlay/index.js";
-import { listTargets, locate, reveal } from "../engine/resolver/index.js";
+import { listTargets, locate, locationOf, reveal } from "../engine/resolver/index.js";
 import type { ResolverOptions } from "../engine/resolver/index.js";
 import { defineTools } from "../tools/definitions.js";
 import { MAX_MESSAGE, MAX_TITLE } from "./limits.js";
@@ -34,7 +34,9 @@ function build(options: TourOptions): Tour {
   if (rest.render !== undefined) overlayOptions.render = rest.render;
   if (rest.renderPopover) overlayOptions.renderPopover = rest.renderPopover;
   if (rest.attribution !== undefined) overlayOptions.attribution = rest.attribution;
+  if (rest.describeTarget) overlayOptions.describeTarget = true;
   const overlay = new Overlay(overlayOptions);
+  overlay.mount(); // the live region exists from load; no-op headless or without a document
   const targets = new Targets();
 
   const tour: Tour = {
@@ -60,7 +62,9 @@ function build(options: TourOptions): Tour {
       if (message === undefined) return invalid("message is required unless the target is declared with a description.");
 
       const seen = reveal(found.element);
-      const shown = overlay.show(found.element, { title: title ?? "", message, ...(placement ? { placement } : {}) });
+      const where = locationOf(found.element);
+      const announcement = `${message} — ${where.name || found.matched.tag}${where.landmark ? `, ${where.landmark}` : ""}`;
+      const shown = overlay.show(found.element, { title: title ?? "", message, announcement, ...(placement ? { placement } : {}) });
       if (!shown.shown) return { ok: false, error: "obscured", message: "A modal dialog is open; the page behind it cannot be pointed at." };
       return { ok: true, matched: { ...found.matched, ...seen } };
     },

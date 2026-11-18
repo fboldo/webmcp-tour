@@ -12,7 +12,7 @@ import { buildSync } from "esbuild";
 const KB = 1024;
 const bundle = (options) => buildSync({ bundle: true, write: false, minify: true, format: "esm", target: "es2022", logLevel: "error", ...options }).outputFiles[0].text;
 const budgets = [
-  { label: "engine (createTour from dist/index.js)", max: 10 * KB, source: () => bundle({ stdin: { contents: `import { createTour } from "./dist/index.js"; console.log(createTour);`, resolveDir: resolve("."), loader: "js" } }) },
+  { label: "engine (createTour from dist/index.js)", max: 12 * KB, source: () => bundle({ stdin: { contents: `import { createTour } from "./dist/index.js"; console.log(createTour);`, resolveDir: resolve("."), loader: "js" } }) },
   { label: "full (dist/auto.js)", max: 15 * KB, source: () => bundle({ entryPoints: ["dist/auto.js"] }) },
   // Script-tag build, already minified.
   { label: "full (dist/webmcp-tour.js, IIFE)", max: 15 * KB, source: () => readFileSync("dist/webmcp-tour.js") },

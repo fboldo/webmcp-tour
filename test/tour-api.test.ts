@@ -51,9 +51,15 @@ describe("singleton", () => {
     expect(createTour()).not.toBe(tour);
   });
 
-  it("is quiet at import: creating a tour touches no DOM until a step is shown", () => {
+  it("is quiet at import: creating a tour mounts only the empty live region, nothing is drawn", () => {
+    const host = document.querySelector("[data-webmcp-tour-root]")!;
+    expect(host.shadowRoot!.querySelector("[part~=popover],[part~=spotlight]")).toBeNull();
+    expect(host.shadowRoot!.querySelector("[part~=live]")!.textContent).toBe("");
+  });
+
+  it("headless mounts nothing at all", () => {
     tour.destroy();
-    createTour();
+    createTour({ render: false });
     expect(document.querySelector("[data-webmcp-tour-root]")).toBeNull();
   });
 });

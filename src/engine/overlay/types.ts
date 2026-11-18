@@ -6,6 +6,8 @@ export interface OverlayStep {
   message?: string;
   /** Preferred side of the target for the card. Default "auto" (below, flipping when it does not fit). */
   placement?: Placement;
+  /** What the live region says. Default: the message. */
+  announcement?: string;
 }
 
 /** What `renderPopover` receives. */
@@ -40,9 +42,11 @@ export interface OverlayOptions {
   positioning?: "auto" | "anchor" | "fixed";
   /** Provenance label. Present by default; overridable. */
   attribution?: string;
+  /** Also set `aria-describedby` on the target (a light-DOM copy of the message), restored on dismiss. Default off. */
+  describeTarget?: boolean;
 }
 
 export interface OverlayEvents {
-  show: { target: Element } & Required<OverlayStep>;
+  show: { target: Element } & Required<Omit<OverlayStep, "announcement">>;
   dismiss: { target: Element; reason: DismissReason };
 }

@@ -53,3 +53,11 @@ export function nearNames(root: ParentNode, q: string, allowed: (el: Element) =>
   }
   return [...seen].sort((a, b) => b[1] - a[1]).slice(0, max).map(([n]) => n);
 }
+
+/** "Name, landmark" for a live-region announcement: the element's accessible name and its nearest landmark. */
+export function locationOf(el: Element): { name: string; landmark?: string } {
+  const lm = composedClosest(el, `main,[role=main],${LANDMARK}`);
+  const label = lm?.getAttribute("aria-label");
+  const landmark = lm && lm !== el ? clip((label || (lm.getAttribute("role") ?? lm.tagName.toLowerCase())).replace(/\s+/g, " ").trim(), 60) : undefined;
+  return { name: clip(accName(el, newCache()).name.replace(/\s+/g, " ").trim(), 60), ...opt("landmark", landmark) };
+}
