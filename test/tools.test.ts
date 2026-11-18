@@ -206,6 +206,19 @@ describe("calling the tools", () => {
     expect(r).toMatchObject({ ok: true, matched: { by: "text", tag: "button", name: "save changes" } });
     expect(r.isError).toBeUndefined();
     expect(card()!.textContent).toContain("Click this to save.");
+    expect(r.note).toBe("The highlight stays until dismissed. Call tour_dismiss when the user moves on.");
+  });
+
+  it("show_step guides the agent: absent controls, locator preference, renamed dismiss in the note", async () => {
+    await start(PLAIN);
+    const d = (await ctx().getTools()).find((t) => t.name === "tour_show_step")!.description;
+    expect(d).toContain("not on the page, say so; do not highlight a nearby element as a guess");
+    expect(d).toContain("Prefer `text` or `target`; use `selector` only for something you saw in the page snapshot");
+    expect(d.length).toBeLessThan(700);
+    const failed = await call("tour_show_step", { text: "No such control", message: "x" });
+    expect(failed).toMatchObject({ ok: false, error: "not_found", isError: true });
+    expect(failed.near).toBeInstanceOf(Array);
+    expect(failed.note).toBeUndefined();
   });
 
   it("returns failures as envelopes with isError, and never rejects", async () => {
@@ -248,7 +261,7 @@ describe("embedding", () => {
     expect(await names()).toEqual(["settings_clear_point", "settings_point_at", "tour_list_targets", "tour_wait_for_interaction"]);
     expect((await ctx().getTools()).find((t) => t.name === "tour_list_targets")!.description).toContain("settings_point_at");
     expect((await ctx().getTools()).find((t) => t.name === "tour_wait_for_interaction")!.description).toContain("settings_point_at");
-    expect(await call("settings_point_at", { text: "Save changes", message: "Here." })).toMatchObject({ ok: true });
+    expect(await call("settings_point_at", { text: "Save changes", message: "Here." })).toMatchObject({ ok: true, note: expect.stringContaining("settings_clear_point") });
     expect(await call("settings_clear_point")).toEqual({ ok: true, dismissed: true });
     stop.abort();
   });

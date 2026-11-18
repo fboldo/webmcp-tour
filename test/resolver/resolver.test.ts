@@ -177,6 +177,36 @@ describe("exclusions and scope", () => {
     expect(() => text("Save", {}, { exclude: "[" })).toThrow(TypeError);
   });
 
+  describe("a wrapper never matches or reports the text of an excluded control inside it", () => {
+    const WRAP = `<a id=w href="#"><span>Open</span> <button data-tour-exclude>Delete account</button></a>`;
+
+    it("text", () => {
+      mount(WRAP);
+      expect(err(text("Delete account"))).toBe("not_found");
+      expect(err(text("Open Delete account"))).toBe("not_found");
+      expect(el(text("Open")).id).toBe("w");
+      mount(`<a id=x href="#"><span>Go</span> <button class=nope>Secret plan</button></a>`);
+      expect(err(text("Secret plan", {}, { exclude: ".nope" }))).toBe("not_found");
+    });
+
+    it("selector and target report only the visible text", () => {
+      mount(`<div data-tour-id=w>${WRAP}</div>`);
+      for (const r of [locate({ selector: "#w" }), locate({ target: "w" })]) {
+        const m = r.ok ? r.matched : undefined;
+        expect(m, "matched").toBeDefined();
+        expect(m!.name + m!.text).not.toMatch(/delete/i);
+      }
+      expect(locate({ selector: "#w" })).toMatchObject({ ok: true, matched: { name: "open", text: "open" } });
+    });
+
+    it("near suggestions leave the excluded text out", () => {
+      mount(WRAP);
+      const r = text("zzz");
+      expect(r).toMatchObject({ ok: false, error: "not_found" });
+      expect(JSON.stringify(r)).not.toMatch(/delete/i);
+    });
+  });
+
   it("a label never leads to an excluded control", () => {
     mount(`<label for=s>Secret</label><input id=s data-tour-exclude>`);
     expect(el(text("Secret")).tagName).toBe("LABEL");

@@ -113,7 +113,7 @@ function build(options: TourOptions): Tour {
         },
         events ?? [defaultEvent(found.element) as WaitEvent],
         (el) => {
-          const m = describe("selector", el);
+          const m = describe("selector", el, ropts());
           return { tag: m.tag, name: m.name };
         },
         signal,

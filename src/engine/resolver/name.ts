@@ -5,7 +5,8 @@
 const SKIP = new Set(["SCRIPT", "STYLE", "TEMPLATE", "NOSCRIPT", "HEAD", "TITLE", "META", "LINK"]);
 const FIELDS = new Set(["INPUT", "SELECT", "TEXTAREA"]);
 
-type Cache = Map<Element, string>;
+/** `skip` marks elements whose content never names an ancestor (excluded ones). */
+type Cache = Map<Element, string> & { skip?: ((el: Element) => boolean) | undefined };
 
 const buttonValue = (el: Element): string =>
   el.tagName === "INPUT" && /^(submit|button|reset)$/i.test((el as HTMLInputElement).type) ? (el as HTMLInputElement).value : "";
@@ -17,7 +18,7 @@ function contentText(node: Node, cache: Cache): string {
   const hit = cache.get(el);
   if (hit !== undefined) return hit;
   let out = "";
-  if (!SKIP.has(el.tagName) && el.getAttribute("aria-hidden") !== "true" && !el.hasAttribute("inert")) {
+  if (!SKIP.has(el.tagName) && !cache.skip?.(el) && el.getAttribute("aria-hidden") !== "true" && !el.hasAttribute("inert")) {
     const cs = getComputedStyle(el);
     // Invisible content (incl. opacity:0) must not name its ancestors.
     if (cs.display !== "none" && cs.visibility !== "hidden" && cs.opacity !== "0") {
@@ -66,7 +67,7 @@ function referenced(el: Element, ids: string, cache: Cache): string {
     .join(" ");
 }
 
-export const newCache = (): Cache => new Map();
+export const newCache = (skip?: (el: Element) => boolean): Cache => Object.assign(new Map<Element, string>(), { skip });
 
 export function accName(el: Element, cache: Cache): { name: string; source: string } {
   const by = el.getAttribute("aria-labelledby");

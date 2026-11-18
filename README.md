@@ -4,6 +4,16 @@ Agent-callable guided-tour tools for WebMCP: an agent answering "how do I change
 
 Status: pre-release, under construction.
 
+## Playwright MCP
+
+Playwright MCP reaches WebMCP tools only in Chrome launched with the feature on. In its config:
+
+```json
+{ "browser": { "launchOptions": { "args": ["--enable-features=WebMCP"] } } }
+```
+
+The tools show up as `webmcp_<name>` (for example `webmcp_tour_show_step`) after a page snapshot. The snapshot lists the raw names (`tour_show_step`); call the prefixed ones. Each call is capped at 30 s, so a long `tour_wait_for_interaction` ends early: call it again or ask the user.
+
 ## Development
 
 Uses **pnpm** (version pinned in `package.json` → `packageManager`; `corepack enable` picks it up) and Node ≥ 22.18.

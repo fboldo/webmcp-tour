@@ -20,8 +20,8 @@ const squash = (s: string | null): string => norm(s).replace(/\s/g, "");
  * Accessible-name matching over visible, allowed elements. Returns the
  * candidates of the winning tier, or [] for `not_found`. `q` is `norm`ed.
  */
-export function textHits(root: ParentNode, q: string, allowed: (el: Element) => boolean): Hit[] {
-  const cache = newCache();
+export function textHits(root: ParentNode, q: string, allowed: (el: Element) => boolean, skip?: (el: Element) => boolean): Hit[] {
+  const cache = newCache(skip);
   const qs = squash(q);
   const hits = new Map<Element, Hit>();
 
