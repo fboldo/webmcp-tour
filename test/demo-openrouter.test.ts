@@ -87,11 +87,36 @@ describe("tool-calling loop", () => {
     expect(results.map((r) => r.result.error)).toEqual(["unknown_tool", "bad_arguments"]);
   });
 
-  it("stops after 6 steps by default", async () => {
-    const { out, calls, mock } = await run(Array.from({ length: 10 }, () => completion({ content: null, tool_calls: [toolCall("tour_list_targets", {})] })));
-    expect(calls).toHaveLength(6);
-    expect(mock).toHaveBeenCalledTimes(6);
+  it("stops after 8 steps by default", async () => {
+    const { out, calls, mock } = await run(Array.from({ length: 12 }, () => completion({ content: null, tool_calls: [toolCall("tour_list_targets", {})] })));
+    expect(calls).toHaveLength(8);
+    expect(mock).toHaveBeenCalledTimes(8);
     expect(out.answer).toMatch(/could not finish/);
+  });
+
+  it("summarises what it highlighted when the cap is hit", async () => {
+    const { mc } = context();
+    mc.executeTool = async () => JSON.stringify({ ok: true, matched: { name: "Change plan" } });
+    const s = stub(Array.from({ length: 5 }, () => completion({ content: null, tool_calls: [toolCall("tour_show_step", { text: "Change plan" })] })));
+    const out = await ask({ question: "q", mode: "openrouter", modelContext: mc, emit: () => {}, fetch: s.fetch, openrouter: { apiKey: KEY }, maxSteps: 3 });
+    expect(out.answer).toBe("I highlighted “Change plan”. Click it to continue, then ask me for the next step.");
+  });
+
+  it("treats empty arguments as {} for a tool with no required properties, and rejects them when something is required", async () => {
+    const { mc, calls } = context();
+    const strict = { name: "tour_show_step", description: "d", inputSchema: { type: "object", properties: { text: { type: "string" } }, required: ["text"] } };
+    mc.getTools = async () => [strict, tools[1]!];
+    const events: AgentEvent[] = [];
+    const s = stub([completion({ content: null, tool_calls: [toolCall("tour_list_targets", "  ", "a"), toolCall("tour_show_step", "", "b")] }), text("ok")]);
+    await ask({ question: "q", mode: "openrouter", modelContext: mc, emit: (e) => events.push(e), fetch: s.fetch, openrouter: { apiKey: KEY } });
+    expect(calls).toEqual([{ name: "tour_list_targets", input: {} }]);
+    const toolMsg = s.requests[1]!.body.messages.filter((m: any) => m.role === "tool").map((m: any) => JSON.parse(m.content));
+    expect(toolMsg[1]).toMatchObject({ error: "bad_arguments", message: expect.stringContaining("not valid JSON for tool tour_show_step") });
+  });
+
+  it("tells the model to lead on after an interaction", async () => {
+    const { requests } = await run([text("hi")]);
+    expect(requests[0]!.body.messages[0].content).toContain('"interacted"');
   });
 
   it("uses the chosen model, including a free-text id", async () => {
@@ -132,6 +157,37 @@ describe("models without tool support", () => {
     const { out, requests } = await run([noTools, failure(400, "response_format json_object is not supported"), text('Sure:\n```json\n{"tool":"final_answer","args":"{}","answer":"Done."}\n```')]);
     expect(out.answer).toBe("Done.");
     expect(requests[2]!.body.response_format).toBeUndefined();
+  });
+});
+
+describe("malformed replies in JSON mode", () => {
+  const noTools = failure(404, "No endpoints found that support tool use");
+  const json = (o: object) => text(JSON.stringify(o));
+
+  it("asks the model to reply again instead of ending the run, for bad JSON and bad args", async () => {
+    const { out, calls, requests, events } = await run([
+      noTools,
+      text("not json at all"),
+      json({ tool: "tour_show_step", args: "{oops", answer: "" }),
+      json({ tool: "tour_show_step", args: { text: "Change plan" }, answer: "" }),
+      json({ tool: "final_answer", args: {}, answer: "Click it." }),
+    ]);
+    expect(out.answer).toBe("Click it.");
+    expect(calls).toEqual([{ name: "tour_show_step", input: { text: "Change plan" } }]);
+    expect(events.filter((e) => e.type === "error")).toHaveLength(2);
+    const fixes = requests.flatMap((r) => r.body.messages).filter((m: any) => m.role === "user" && /not valid JSON/.test(m.content));
+    expect(fixes.some((m: any) => m.content.includes("for tool tour_show_step"))).toBe(true);
+  });
+
+  it("keeps retrying past three bad replies, up to the step cap, then summarises", async () => {
+    const { out, mock } = await run([noTools, ...Array.from({ length: 12 }, () => text("nope"))]);
+    expect(mock).toHaveBeenCalledTimes(1 + 8);
+    expect(out.answer).toMatch(/could not finish/);
+  });
+
+  it("treats empty args as {} for a tool without required properties", async () => {
+    const { calls } = await run([noTools, json({ tool: "tour_list_targets", args: " ", answer: "" }), json({ tool: "final_answer", args: {}, answer: "k" })]);
+    expect(calls).toEqual([{ name: "tour_list_targets", input: {} }]);
   });
 });
 

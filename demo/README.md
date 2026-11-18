@@ -8,6 +8,10 @@ pnpm demo        # builds, then serves http://127.0.0.1:4173/demo/  (PORT overri
 
 `http://localhost` counts as a secure context; WebMCP needs one. Where Chrome has no native WebMCP, the page loads the W3C polyfill (a dev dependency, served only by the demo server) to provide `document.modelContext`.
 
+## The fake app
+
+The controls work, so guidance can span several steps: **Change plan** opens a plan picker (a modal `<dialog>` with declared targets `plan-options` and `plan-confirm`) and **Confirm** updates the plan shown under Billing; **Download invoices** shows a confirmation toast; Security → Advanced → **Set up two-factor** opens a setup step (`two-factor-code`); **Help** opens a fake chat (`chat-input`). The overlay mounts inside an open modal, so it can point at the picker's controls.
+
 ## The assistant
 
 Four modes, picked from the **Mode** menu (default **Auto**). The status line above the transcript always says which one is running.
@@ -15,8 +19,8 @@ Four modes, picked from the **Mode** menu (default **Auto**). The status line ab
 | Mode | What runs | Needs |
 |---|---|---|
 | **Scripted demo** | A handful of canned question → tool-call mappings. No AI model; answers are fixed text. The tool calls are real. | Nothing. Used automatically when the Prompt API is missing or its model unavailable. `?agent=scripted` pins it. |
-| **Model, JSON-constrained** | Chrome's Prompt API (`LanguageModel`, Gemini Nano). The model replies `{ tool, args, answer }` under a `responseConstraint` JSON Schema; the page calls the tool through `document.modelContext.executeTool` and feeds the result back, until the model sends `final_answer` (6 steps at most). | Prompt API + the on-device model. |
-| **OpenRouter** | Your OpenRouter API key and a model of your choice. The page maps the registered WebMCP tools to OpenAI-style `tools`, calls the ones the model asks for through `document.modelContext.executeTool`, sends the results back, and loops to a final answer (6 steps at most). **Stop** aborts the request. | An [OpenRouter](https://openrouter.ai) API key (see below). |
+| **Model, JSON-constrained** | Chrome's Prompt API (`LanguageModel`, Gemini Nano). The model replies `{ tool, args, answer }` under a `responseConstraint` JSON Schema; the page calls the tool through `document.modelContext.executeTool` and feeds the result back, until the model sends `final_answer` (8 steps at most). | Prompt API + the on-device model. |
+| **OpenRouter** | Your OpenRouter API key and a model of your choice. The page maps the registered WebMCP tools to OpenAI-style `tools`, calls the ones the model asks for through `document.modelContext.executeTool`, sends the results back, and loops to a final answer (8 steps at most). **Stop** aborts the request. | An [OpenRouter](https://openrouter.ai) API key (see below). |
 | **Model, native tool use** | The page's registered tools are passed to `LanguageModel.create({ tools })` and Chrome runs the loop. | As above, plus `chrome://flags/#prompt-api-tool-use` set to Enabled. If the session cannot be created with tools, the page falls back to the JSON-constrained mode and says so in the transcript. |
 
 **Auto** uses the JSON-constrained mode when a model is available (it works without the tool-use flag), else OpenRouter when a key is entered, else the scripted agent. It never calls OpenRouter without a key. Pick native tool use explicitly to try the flag.
@@ -41,6 +45,8 @@ From the [Prompt API docs](https://developer.chrome.com/docs/ai/prompt-api):
 `LanguageModel.availability()` returns `"unavailable"` on hardware that does not qualify; the panel then says so and uses the scripted agent. When it returns `"downloadable"`, a **Download model** button appears (the download needs a click). WebMCP itself needs native support from Chrome's WebMCP trial/flag (`chrome://flags/#enable-webmcp-testing`) or falls back to the polyfill.
 
 Chrome 157 on a machine that cannot run the model reports `unavailable`, so the scripted agent is what you get there.
+
+A malformed model reply (bad JSON, bad `args`) never ends the run: the model gets a short corrective message and tries again, counting toward the 8-step cap. When the cap is hit, the final message says what was highlighted last.
 
 ## Tests
 

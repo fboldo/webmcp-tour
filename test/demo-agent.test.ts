@@ -85,6 +85,45 @@ describe("constraint loop (Prompt API + responseConstraint)", () => {
     expect(out.answer).toMatch(/could not finish/);
   });
 
+  it("retries a reply with invalid args JSON, naming the tool, and counts it toward the cap", async () => {
+    const { mc, calls } = context();
+    const { LanguageModel, session } = model([turn("tour_show_step", "{oops"), turn("tour_show_step", { text: "x" }), turn("final_answer", {}, "ok")]);
+    const events: AgentEvent[] = [];
+    const out = await ask({ question: "q", LanguageModel, modelContext: mc, emit: (e) => events.push(e) });
+    expect(out.answer).toBe("ok");
+    expect(calls).toEqual([{ name: "tour_show_step", input: { text: "x" } }]);
+    expect(session.prompt.mock.calls[1]![0]).toMatch(/not valid JSON for tool tour_show_step.*reply again/);
+  });
+
+  it("does not give up after three bad replies; the step cap ends it", async () => {
+    const { mc } = context();
+    const { LanguageModel, session } = model(Array.from({ length: 20 }, () => "garbage"));
+    const out = await ask({ question: "q", LanguageModel, modelContext: mc, emit: () => {} });
+    expect(session.prompt).toHaveBeenCalledTimes(8);
+    expect(out.answer).toMatch(/could not finish/);
+  });
+
+  it("treats empty args as {}", async () => {
+    const { mc, calls } = context();
+    const { LanguageModel } = model([turn("tour_list_targets", "   "), turn("final_answer", {}, "ok")]);
+    await ask({ question: "q", LanguageModel, modelContext: mc, emit: () => {} });
+    expect(calls).toEqual([{ name: "tour_list_targets", input: {} }]);
+  });
+
+  it("summarises the last highlight when the cap is hit", async () => {
+    const { mc } = context({ tour_show_step: { ok: true, matched: { name: "Change plan" } } });
+    const { LanguageModel } = model(Array.from({ length: 10 }, () => turn("tour_show_step", { text: "Change plan" })));
+    const out = await ask({ question: "q", LanguageModel, modelContext: mc, emit: () => {}, maxSteps: 2 });
+    expect(out.answer).toBe("I highlighted “Change plan”. Click it to continue, then ask me for the next step.");
+  });
+
+  it("the system prompt says to lead on after an interaction", async () => {
+    const { mc } = context();
+    const { LanguageModel } = model([turn("final_answer", {}, "ok")]);
+    await ask({ question: "q", LanguageModel, modelContext: mc, emit: () => {} });
+    expect((LanguageModel.create.mock.calls[0]![0] as any).initialPrompts[0].content).toContain('"interacted"');
+  });
+
   it("aborts mid-loop without an answer", async () => {
     const { mc } = context();
     const ctl = new AbortController();
