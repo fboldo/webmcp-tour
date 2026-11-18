@@ -67,7 +67,7 @@ function setup(opts: ResolverOptions) {
   return { doc, root: (scope ?? doc) as ParentNode, allowed };
 }
 
-function describe(by: Matched["by"], el: Element): Matched {
+export function describe(by: Matched["by"], el: Element): Matched {
   const name = clip(norm(accName(el, newCache()).name), 80);
   const html = el as HTMLElement;
   const text = clip(norm(html.innerText ?? el.textContent), 120);
