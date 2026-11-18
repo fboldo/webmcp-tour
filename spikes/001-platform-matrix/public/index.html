@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Spike 001 — WebMCP platform probe</title>
+  <script>
+    // ?polyfill=1 loads the W3C polyfill first (it installs only when document.modelContext is absent).
+    if (new URLSearchParams(location.search).has("polyfill")) {
+      document.write('<script src="/polyfill.js"><\/script>');
+    }
+  </script>
+  <script src="/probe.js" defer></script>
+  <style>body{font:14px system-ui;margin:2rem}pre{background:#f4f4f4;padding:1rem;white-space:pre-wrap}</style>
+</head>
+<body>
+  <h1>WebMCP platform probe</h1>
+  <p>Registers one tool, <code>spike_probe</code>, and logs what the host exposes.</p>
+  <button id="target">Change plan</button>
+  <pre id="log"></pre>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+ "version": "157.0.8103.78",
+ "seededFlag": "enable-webmcp-testing@1",
+ "log": [
+  {
+   "event": "shape",
+   "documentModelContext": "ModelContext",
+   "navigatorModelContext": null
+  },
+  {
+   "event": "register:returned"
+  },
+  {
+   "event": "event:toolchange"
+  },
+  {
+   "event": "register:resolved"
+  },
+  {
+   "event": "register:duplicate-rejected"
+  },
+  {
+   "event": "getTools"
+  }
+ ]
+}

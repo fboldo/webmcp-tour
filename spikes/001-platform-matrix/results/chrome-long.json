@@ -1,0 +1,1298 @@
+{
+ "when": "2026-11-18T19:02:08.737Z",
+ "variants": {
+  "chrome-noflag": {
+   "args": [],
+   "chromeVersion": "157.0.8103.78",
+   "pageLog": [
+    {
+     "t": 37,
+     "host": "chrome-noflag",
+     "event": "shape",
+     "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "isSecureContext": true,
+     "polyfillRequested": false,
+     "documentModelContext": null,
+     "navigatorModelContext": null,
+     "sameObject": null,
+     "methods": [],
+     "registerToolLength": null
+    },
+    {
+     "t": 38,
+     "host": "chrome-noflag",
+     "event": "no-api"
+    }
+   ],
+   "cdpEvents": [],
+   "cdpEnable": "ok"
+  },
+  "chrome-flag": {
+   "args": [
+    "--enable-features=WebMCP"
+   ],
+   "chromeVersion": "157.0.8103.78",
+   "pageLog": [
+    {
+     "t": 21,
+     "host": "chrome-flag",
+     "event": "shape",
+     "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "isSecureContext": true,
+     "polyfillRequested": false,
+     "documentModelContext": "ModelContext",
+     "navigatorModelContext": null,
+     "sameObject": true,
+     "methods": [
+      "executeTool",
+      "getTools",
+      "ontoolactivated",
+      "ontoolcancel",
+      "ontoolchange",
+      "registerTool"
+     ],
+     "registerToolLength": 1
+    },
+    {
+     "t": 22,
+     "host": "chrome-flag",
+     "event": "register:returned",
+     "isPromise": true,
+     "value": "Promise"
+    },
+    {
+     "t": 31,
+     "host": "chrome-flag",
+     "event": "event:toolchange",
+     "toolName": null
+    },
+    {
+     "t": 31,
+     "host": "chrome-flag",
+     "event": "register:resolved",
+     "value": "undefined"
+    },
+    {
+     "t": 32,
+     "host": "chrome-flag",
+     "event": "register:duplicate-rejected",
+     "name": "InvalidStateError",
+     "message": "Duplicate tool name"
+    },
+    {
+     "t": 32,
+     "host": "chrome-flag",
+     "event": "getTools",
+     "tools": [
+      {
+       "name": "spike_probe",
+       "title": "Spike probe (title field)",
+       "annotations": {
+        "consequentialHint": false,
+        "debugging": false,
+        "readOnlyHint": true,
+        "untrustedContentHint": true
+       },
+       "keys": [
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window",
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window"
+       ]
+      }
+     ]
+    }
+   ],
+   "cdpEvents": [
+    {
+     "at": 1795028532820,
+     "event": "toolsAdded",
+     "tools": [
+      {
+       "name": "spike_probe",
+       "description": "Diagnostic tool for a compatibility spike. Call it with sleepMs (0-600000) to hold the call open that long; it returns what the page saw: the execute arguments, the abort signal, and timings.",
+       "inputSchema": {
+        "type": "object",
+        "properties": {
+         "sleepMs": {
+          "type": "number",
+          "description": "How long to hold the call open, in ms."
+         }
+        }
+       },
+       "annotations": {
+        "readOnly": true,
+        "untrustedContent": true,
+        "consequential": false,
+        "debugging": false
+       },
+       "frameId": "DDDD06F1E75FB15D60317AA2A70F86D9",
+       "stackTrace": {
+        "callFrames": [
+         {
+          "functionName": "",
+          "scriptId": "5",
+          "url": "http://localhost:8401/probe.js",
+          "lineNumber": 83,
+          "columnNumber": 13
+         },
+         {
+          "functionName": "",
+          "scriptId": "5",
+          "url": "http://localhost:8401/probe.js",
+          "lineNumber": 106,
+          "columnNumber": 2
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "at": 1795028533328,
+     "event": "toolInvoked",
+     "toolName": "spike_probe",
+     "frameId": "DDDD06F1E75FB15D60317AA2A70F86D9",
+     "invocationId": "0E033982EA10372FD7B634C620672162",
+     "input": "{\"sleepMs\":200}"
+    },
+    {
+     "at": 1795028533530,
+     "event": "toolResponded",
+     "invocationId": "0E033982EA10372FD7B634C620672162",
+     "status": "Completed",
+     "output": {
+      "ok": true,
+      "id": 1,
+      "sleptMs": 201,
+      "aborted": null,
+      "typeofSecond": "object",
+      "secondKeys": [
+       "signal",
+       "signal"
+      ],
+      "secondCtor": "Object",
+      "hasSignal": true,
+      "signalAbortedAtStart": false
+     }
+    },
+    {
+     "at": 1795028533581,
+     "event": "toolInvoked",
+     "toolName": "spike_probe",
+     "frameId": "DDDD06F1E75FB15D60317AA2A70F86D9",
+     "invocationId": "82F05B98AF0C1C097D704C07ABCEF56A",
+     "input": "{\"sleepMs\":60000}"
+    },
+    {
+     "at": 1795028534584,
+     "event": "toolResponded",
+     "invocationId": "82F05B98AF0C1C097D704C07ABCEF56A",
+     "status": "Canceled",
+     "errorText": ""
+    },
+    {
+     "at": 1795028534589,
+     "event": "toolInvoked",
+     "toolName": "spike_probe",
+     "frameId": "DDDD06F1E75FB15D60317AA2A70F86D9",
+     "invocationId": "4E88F12D89D7C05870D23802A2DE47E9",
+     "input": "{\"sleepMs\":310000}"
+    },
+    {
+     "at": 1795028844589,
+     "event": "toolResponded",
+     "invocationId": "4E88F12D89D7C05870D23802A2DE47E9",
+     "status": "Completed",
+     "output": {
+      "ok": true,
+      "id": 3,
+      "sleptMs": 310001,
+      "aborted": null,
+      "typeofSecond": "object",
+      "secondKeys": [
+       "signal",
+       "signal"
+      ],
+      "secondCtor": "Object",
+      "hasSignal": true,
+      "signalAbortedAtStart": false
+     }
+    }
+   ],
+   "cdpEnable": "ok",
+   "quickCall": {
+    "at": 1795028533530,
+    "event": "toolResponded",
+    "invocationId": "0E033982EA10372FD7B634C620672162",
+    "status": "Completed",
+    "output": {
+     "ok": true,
+     "id": 1,
+     "sleptMs": 201,
+     "aborted": null,
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    }
+   },
+   "cancelCall": {
+    "at": 1795028534584,
+    "event": "toolResponded",
+    "invocationId": "82F05B98AF0C1C097D704C07ABCEF56A",
+    "status": "Canceled",
+    "errorText": ""
+   },
+   "longCall": {
+    "elapsedMs": 310046,
+    "done": {
+     "at": 1795028844589,
+     "event": "toolResponded",
+     "invocationId": "4E88F12D89D7C05870D23802A2DE47E9",
+     "status": "Completed",
+     "output": {
+      "ok": true,
+      "id": 3,
+      "sleptMs": 310001,
+      "aborted": null,
+      "typeofSecond": "object",
+      "secondKeys": [
+       "signal",
+       "signal"
+      ],
+      "secondCtor": "Object",
+      "hasSignal": true,
+      "signalAbortedAtStart": false
+     }
+    }
+   },
+   "playwrightFrameTools": [
+    {
+     "name": "spike_probe",
+     "description": "Diagnostic tool for a compatibility spike. Call it with sleepMs (0-600000) to hold the call open that long; it returns what the page saw: the execute arguments, the abort signal, and timings.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "sleepMs": {
+        "type": "number",
+        "description": "How long to hold the call open, in ms."
+       }
+      }
+     },
+     "annotations": {
+      "readOnly": true,
+      "untrustedContent": true
+     }
+    }
+   ],
+   "pageLogAfterCalls": [
+    {
+     "t": 21,
+     "host": "chrome-flag",
+     "event": "shape",
+     "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "isSecureContext": true,
+     "polyfillRequested": false,
+     "documentModelContext": "ModelContext",
+     "navigatorModelContext": null,
+     "sameObject": true,
+     "methods": [
+      "executeTool",
+      "getTools",
+      "ontoolactivated",
+      "ontoolcancel",
+      "ontoolchange",
+      "registerTool"
+     ],
+     "registerToolLength": 1
+    },
+    {
+     "t": 22,
+     "host": "chrome-flag",
+     "event": "register:returned",
+     "isPromise": true,
+     "value": "Promise"
+    },
+    {
+     "t": 31,
+     "host": "chrome-flag",
+     "event": "event:toolchange",
+     "toolName": null
+    },
+    {
+     "t": 31,
+     "host": "chrome-flag",
+     "event": "register:resolved",
+     "value": "undefined"
+    },
+    {
+     "t": 32,
+     "host": "chrome-flag",
+     "event": "register:duplicate-rejected",
+     "name": "InvalidStateError",
+     "message": "Duplicate tool name"
+    },
+    {
+     "t": 32,
+     "host": "chrome-flag",
+     "event": "getTools",
+     "tools": [
+      {
+       "name": "spike_probe",
+       "title": "Spike probe (title field)",
+       "annotations": {
+        "consequentialHint": false,
+        "debugging": false,
+        "readOnlyHint": true,
+        "untrustedContentHint": true
+       },
+       "keys": [
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window",
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window"
+       ]
+      }
+     ]
+    },
+    {
+     "t": 2042,
+     "host": "chrome-flag",
+     "event": "execute:start",
+     "id": 1,
+     "input": {
+      "sleepMs": 200
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2043,
+     "host": "chrome-flag",
+     "event": "event:toolactivated",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 2243,
+     "host": "chrome-flag",
+     "event": "execute:end",
+     "ok": true,
+     "id": 1,
+     "sleptMs": 201,
+     "aborted": null,
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2295,
+     "host": "chrome-flag",
+     "event": "execute:start",
+     "id": 2,
+     "input": {
+      "sleepMs": 60000
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2296,
+     "host": "chrome-flag",
+     "event": "event:toolactivated",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 3298,
+     "host": "chrome-flag",
+     "event": "execute:abort",
+     "id": 2,
+     "afterMs": 1003,
+     "reason": "AbortError: signal is aborted without reason"
+    },
+    {
+     "t": 3299,
+     "host": "chrome-flag",
+     "event": "execute:end",
+     "ok": true,
+     "id": 2,
+     "sleptMs": 1004,
+     "aborted": {
+      "afterMs": 1003,
+      "reason": "AbortError: signal is aborted without reason"
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 3300,
+     "host": "chrome-flag",
+     "event": "event:toolcancel",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 3303,
+     "host": "chrome-flag",
+     "event": "execute:start",
+     "id": 3,
+     "input": {
+      "sleepMs": 310000
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 3304,
+     "host": "chrome-flag",
+     "event": "event:toolactivated",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 313304,
+     "host": "chrome-flag",
+     "event": "execute:end",
+     "ok": true,
+     "id": 3,
+     "sleptMs": 310001,
+     "aborted": null,
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    }
+   ]
+  },
+  "chrome-noflag-polyfill": {
+   "args": [],
+   "chromeVersion": "157.0.8103.78",
+   "pageLog": [
+    {
+     "t": 25,
+     "host": "chrome-noflag-polyfill",
+     "event": "shape",
+     "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "isSecureContext": true,
+     "polyfillRequested": true,
+     "documentModelContext": "ModelContext",
+     "navigatorModelContext": null,
+     "sameObject": true,
+     "methods": [
+      "executeTool",
+      "getTools",
+      "ontoolactivated",
+      "ontoolcancel",
+      "ontoolchange",
+      "registerTool"
+     ],
+     "registerToolLength": 1
+    },
+    {
+     "t": 27,
+     "host": "chrome-noflag-polyfill",
+     "event": "register:returned",
+     "isPromise": true,
+     "value": "Promise"
+    },
+    {
+     "t": 39,
+     "host": "chrome-noflag-polyfill",
+     "event": "event:toolchange",
+     "toolName": null
+    },
+    {
+     "t": 39,
+     "host": "chrome-noflag-polyfill",
+     "event": "register:resolved",
+     "value": "undefined"
+    },
+    {
+     "t": 40,
+     "host": "chrome-noflag-polyfill",
+     "event": "register:duplicate-rejected",
+     "name": "InvalidStateError",
+     "message": "A tool named spike_probe is already registered"
+    },
+    {
+     "t": 42,
+     "host": "chrome-noflag-polyfill",
+     "event": "getTools",
+     "tools": [
+      {
+       "name": "spike_probe",
+       "title": "Spike probe (title field)",
+       "annotations": {
+        "consequentialHint": false,
+        "debugging": false,
+        "readOnlyHint": true,
+        "untrustedContentHint": true
+       },
+       "keys": [
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window",
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window"
+       ]
+      }
+     ]
+    }
+   ],
+   "cdpEvents": [],
+   "cdpEnable": "ok",
+   "polyfillCalls": {
+    "quick": {
+     "ok": true,
+     "id": 1,
+     "sleptMs": 201,
+     "aborted": null,
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    "cancelled": "rejected: AbortError"
+   },
+   "playwrightFrameTools": "error: webMCP.tools: WebMCP is not enabled. Launch the browser with the \"--enable-features=WebMCP\" argument.",
+   "pageLogAfterCalls": [
+    {
+     "t": 25,
+     "host": "chrome-noflag-polyfill",
+     "event": "shape",
+     "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "isSecureContext": true,
+     "polyfillRequested": true,
+     "documentModelContext": "ModelContext",
+     "navigatorModelContext": null,
+     "sameObject": true,
+     "methods": [
+      "executeTool",
+      "getTools",
+      "ontoolactivated",
+      "ontoolcancel",
+      "ontoolchange",
+      "registerTool"
+     ],
+     "registerToolLength": 1
+    },
+    {
+     "t": 27,
+     "host": "chrome-noflag-polyfill",
+     "event": "register:returned",
+     "isPromise": true,
+     "value": "Promise"
+    },
+    {
+     "t": 39,
+     "host": "chrome-noflag-polyfill",
+     "event": "event:toolchange",
+     "toolName": null
+    },
+    {
+     "t": 39,
+     "host": "chrome-noflag-polyfill",
+     "event": "register:resolved",
+     "value": "undefined"
+    },
+    {
+     "t": 40,
+     "host": "chrome-noflag-polyfill",
+     "event": "register:duplicate-rejected",
+     "name": "InvalidStateError",
+     "message": "A tool named spike_probe is already registered"
+    },
+    {
+     "t": 42,
+     "host": "chrome-noflag-polyfill",
+     "event": "getTools",
+     "tools": [
+      {
+       "name": "spike_probe",
+       "title": "Spike probe (title field)",
+       "annotations": {
+        "consequentialHint": false,
+        "debugging": false,
+        "readOnlyHint": true,
+        "untrustedContentHint": true
+       },
+       "keys": [
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window",
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window"
+       ]
+      }
+     ]
+    },
+    {
+     "t": 2044,
+     "host": "chrome-noflag-polyfill",
+     "event": "execute:start",
+     "id": 1,
+     "input": {
+      "sleepMs": 200
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2045,
+     "host": "chrome-noflag-polyfill",
+     "event": "event:toolactivated",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 2245,
+     "host": "chrome-noflag-polyfill",
+     "event": "execute:end",
+     "ok": true,
+     "id": 1,
+     "sleptMs": 201,
+     "aborted": null,
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2247,
+     "host": "chrome-noflag-polyfill",
+     "event": "execute:start",
+     "id": 2,
+     "input": {
+      "sleepMs": 60000
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2248,
+     "host": "chrome-noflag-polyfill",
+     "event": "event:toolactivated",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 3248,
+     "host": "chrome-noflag-polyfill",
+     "event": "execute:abort",
+     "id": 2,
+     "afterMs": 1001,
+     "reason": "AbortError: signal is aborted without reason"
+    },
+    {
+     "t": 3249,
+     "host": "chrome-noflag-polyfill",
+     "event": "event:toolcancel",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 3249,
+     "host": "chrome-noflag-polyfill",
+     "event": "execute:end",
+     "ok": true,
+     "id": 2,
+     "sleptMs": 1002,
+     "aborted": {
+      "afterMs": 1001,
+      "reason": "AbortError: signal is aborted without reason"
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    }
+   ]
+  },
+  "chrome-flag-polyfill": {
+   "args": [
+    "--enable-features=WebMCP"
+   ],
+   "chromeVersion": "157.0.8103.78",
+   "pageLog": [
+    {
+     "t": 132,
+     "host": "chrome-flag-polyfill",
+     "event": "shape",
+     "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "isSecureContext": true,
+     "polyfillRequested": true,
+     "documentModelContext": "ModelContext",
+     "navigatorModelContext": null,
+     "sameObject": true,
+     "methods": [
+      "executeTool",
+      "getTools",
+      "ontoolactivated",
+      "ontoolcancel",
+      "ontoolchange",
+      "registerTool"
+     ],
+     "registerToolLength": 1
+    },
+    {
+     "t": 136,
+     "host": "chrome-flag-polyfill",
+     "event": "register:returned",
+     "isPromise": true,
+     "value": "Promise"
+    },
+    {
+     "t": 185,
+     "host": "chrome-flag-polyfill",
+     "event": "event:toolchange",
+     "toolName": null
+    },
+    {
+     "t": 186,
+     "host": "chrome-flag-polyfill",
+     "event": "register:resolved",
+     "value": "undefined"
+    },
+    {
+     "t": 186,
+     "host": "chrome-flag-polyfill",
+     "event": "register:duplicate-rejected",
+     "name": "InvalidStateError",
+     "message": "Duplicate tool name"
+    },
+    {
+     "t": 202,
+     "host": "chrome-flag-polyfill",
+     "event": "getTools",
+     "tools": [
+      {
+       "name": "spike_probe",
+       "title": "Spike probe (title field)",
+       "annotations": {
+        "consequentialHint": false,
+        "debugging": false,
+        "readOnlyHint": true,
+        "untrustedContentHint": true
+       },
+       "keys": [
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window",
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window"
+       ]
+      }
+     ]
+    }
+   ],
+   "cdpEvents": [
+    {
+     "at": 1795028851230,
+     "event": "toolsAdded",
+     "tools": [
+      {
+       "name": "spike_probe",
+       "description": "Diagnostic tool for a compatibility spike. Call it with sleepMs (0-600000) to hold the call open that long; it returns what the page saw: the execute arguments, the abort signal, and timings.",
+       "inputSchema": {
+        "type": "object",
+        "properties": {
+         "sleepMs": {
+          "type": "number",
+          "description": "How long to hold the call open, in ms."
+         }
+        }
+       },
+       "annotations": {
+        "readOnly": true,
+        "untrustedContent": true,
+        "consequential": false,
+        "debugging": false
+       },
+       "frameId": "6C6CA8F56C9D0F5AB5104FEAD18CCD61",
+       "stackTrace": {
+        "callFrames": [
+         {
+          "functionName": "",
+          "scriptId": "5",
+          "url": "http://localhost:8401/probe.js",
+          "lineNumber": 83,
+          "columnNumber": 13
+         },
+         {
+          "functionName": "",
+          "scriptId": "5",
+          "url": "http://localhost:8401/probe.js",
+          "lineNumber": 106,
+          "columnNumber": 2
+         }
+        ]
+       }
+      }
+     ]
+    },
+    {
+     "at": 1795028851735,
+     "event": "toolInvoked",
+     "toolName": "spike_probe",
+     "frameId": "6C6CA8F56C9D0F5AB5104FEAD18CCD61",
+     "invocationId": "E5A119134AE79FD6B45B0D9F99ED8B55",
+     "input": "{\"sleepMs\":200}"
+    },
+    {
+     "at": 1795028851935,
+     "event": "toolResponded",
+     "invocationId": "E5A119134AE79FD6B45B0D9F99ED8B55",
+     "status": "Completed",
+     "output": {
+      "ok": true,
+      "id": 1,
+      "sleptMs": 201,
+      "aborted": null,
+      "typeofSecond": "object",
+      "secondKeys": [
+       "signal",
+       "signal"
+      ],
+      "secondCtor": "Object",
+      "hasSignal": true,
+      "signalAbortedAtStart": false
+     }
+    },
+    {
+     "at": 1795028851989,
+     "event": "toolInvoked",
+     "toolName": "spike_probe",
+     "frameId": "6C6CA8F56C9D0F5AB5104FEAD18CCD61",
+     "invocationId": "B5AF1A6888CB0155C4923962A5870D9B",
+     "input": "{\"sleepMs\":60000}"
+    },
+    {
+     "at": 1795028852988,
+     "event": "toolResponded",
+     "invocationId": "B5AF1A6888CB0155C4923962A5870D9B",
+     "status": "Canceled",
+     "errorText": ""
+    },
+    {
+     "at": 1795028852992,
+     "event": "toolInvoked",
+     "toolName": "spike_probe",
+     "frameId": "6C6CA8F56C9D0F5AB5104FEAD18CCD61",
+     "invocationId": "5CC2CC6A212A8A2C1C583A605D3EF04B",
+     "input": "{\"sleepMs\":310000}"
+    },
+    {
+     "at": 1795029162992,
+     "event": "toolResponded",
+     "invocationId": "5CC2CC6A212A8A2C1C583A605D3EF04B",
+     "status": "Completed",
+     "output": {
+      "ok": true,
+      "id": 3,
+      "sleptMs": 310001,
+      "aborted": null,
+      "typeofSecond": "object",
+      "secondKeys": [
+       "signal",
+       "signal"
+      ],
+      "secondCtor": "Object",
+      "hasSignal": true,
+      "signalAbortedAtStart": false
+     }
+    }
+   ],
+   "cdpEnable": "ok",
+   "quickCall": {
+    "at": 1795028851935,
+    "event": "toolResponded",
+    "invocationId": "E5A119134AE79FD6B45B0D9F99ED8B55",
+    "status": "Completed",
+    "output": {
+     "ok": true,
+     "id": 1,
+     "sleptMs": 201,
+     "aborted": null,
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    }
+   },
+   "cancelCall": {
+    "at": 1795028852988,
+    "event": "toolResponded",
+    "invocationId": "B5AF1A6888CB0155C4923962A5870D9B",
+    "status": "Canceled",
+    "errorText": ""
+   },
+   "longCall": {
+    "elapsedMs": 310042,
+    "done": {
+     "at": 1795029162992,
+     "event": "toolResponded",
+     "invocationId": "5CC2CC6A212A8A2C1C583A605D3EF04B",
+     "status": "Completed",
+     "output": {
+      "ok": true,
+      "id": 3,
+      "sleptMs": 310001,
+      "aborted": null,
+      "typeofSecond": "object",
+      "secondKeys": [
+       "signal",
+       "signal"
+      ],
+      "secondCtor": "Object",
+      "hasSignal": true,
+      "signalAbortedAtStart": false
+     }
+    }
+   },
+   "playwrightFrameTools": [
+    {
+     "name": "spike_probe",
+     "description": "Diagnostic tool for a compatibility spike. Call it with sleepMs (0-600000) to hold the call open that long; it returns what the page saw: the execute arguments, the abort signal, and timings.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "sleepMs": {
+        "type": "number",
+        "description": "How long to hold the call open, in ms."
+       }
+      }
+     },
+     "annotations": {
+      "readOnly": true,
+      "untrustedContent": true
+     }
+    }
+   ],
+   "pageLogAfterCalls": [
+    {
+     "t": 132,
+     "host": "chrome-flag-polyfill",
+     "event": "shape",
+     "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "isSecureContext": true,
+     "polyfillRequested": true,
+     "documentModelContext": "ModelContext",
+     "navigatorModelContext": null,
+     "sameObject": true,
+     "methods": [
+      "executeTool",
+      "getTools",
+      "ontoolactivated",
+      "ontoolcancel",
+      "ontoolchange",
+      "registerTool"
+     ],
+     "registerToolLength": 1
+    },
+    {
+     "t": 136,
+     "host": "chrome-flag-polyfill",
+     "event": "register:returned",
+     "isPromise": true,
+     "value": "Promise"
+    },
+    {
+     "t": 185,
+     "host": "chrome-flag-polyfill",
+     "event": "event:toolchange",
+     "toolName": null
+    },
+    {
+     "t": 186,
+     "host": "chrome-flag-polyfill",
+     "event": "register:resolved",
+     "value": "undefined"
+    },
+    {
+     "t": 186,
+     "host": "chrome-flag-polyfill",
+     "event": "register:duplicate-rejected",
+     "name": "InvalidStateError",
+     "message": "Duplicate tool name"
+    },
+    {
+     "t": 202,
+     "host": "chrome-flag-polyfill",
+     "event": "getTools",
+     "tools": [
+      {
+       "name": "spike_probe",
+       "title": "Spike probe (title field)",
+       "annotations": {
+        "consequentialHint": false,
+        "debugging": false,
+        "readOnlyHint": true,
+        "untrustedContentHint": true
+       },
+       "keys": [
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window",
+        "annotations",
+        "description",
+        "inputSchema",
+        "name",
+        "origin",
+        "title",
+        "window"
+       ]
+      }
+     ]
+    },
+    {
+     "t": 2166,
+     "host": "chrome-flag-polyfill",
+     "event": "execute:start",
+     "id": 1,
+     "input": {
+      "sleepMs": 200
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2167,
+     "host": "chrome-flag-polyfill",
+     "event": "event:toolactivated",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 2367,
+     "host": "chrome-flag-polyfill",
+     "event": "execute:end",
+     "ok": true,
+     "id": 1,
+     "sleptMs": 201,
+     "aborted": null,
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2417,
+     "host": "chrome-flag-polyfill",
+     "event": "execute:start",
+     "id": 2,
+     "input": {
+      "sleepMs": 60000
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 2418,
+     "host": "chrome-flag-polyfill",
+     "event": "event:toolactivated",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 3418,
+     "host": "chrome-flag-polyfill",
+     "event": "execute:abort",
+     "id": 2,
+     "afterMs": 1001,
+     "reason": "AbortError: signal is aborted without reason"
+    },
+    {
+     "t": 3419,
+     "host": "chrome-flag-polyfill",
+     "event": "execute:end",
+     "ok": true,
+     "id": 2,
+     "sleptMs": 1002,
+     "aborted": {
+      "afterMs": 1001,
+      "reason": "AbortError: signal is aborted without reason"
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 3419,
+     "host": "chrome-flag-polyfill",
+     "event": "event:toolcancel",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 3423,
+     "host": "chrome-flag-polyfill",
+     "event": "execute:start",
+     "id": 3,
+     "input": {
+      "sleepMs": 310000
+     },
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    },
+    {
+     "t": 3424,
+     "host": "chrome-flag-polyfill",
+     "event": "event:toolactivated",
+     "toolName": "spike_probe"
+    },
+    {
+     "t": 313424,
+     "host": "chrome-flag-polyfill",
+     "event": "execute:end",
+     "ok": true,
+     "id": 3,
+     "sleptMs": 310001,
+     "aborted": null,
+     "typeofSecond": "object",
+     "secondKeys": [
+      "signal",
+      "signal"
+     ],
+     "secondCtor": "Object",
+     "hasSignal": true,
+     "signalAbortedAtStart": false
+    }
+   ]
+  }
+ }
+}

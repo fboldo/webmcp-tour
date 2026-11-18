@@ -1,0 +1,18 @@
+{
+  "name": "spike-001-platform-matrix",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "node serve.mjs",
+    "chrome": "node run-chrome.mjs",
+    "chrome:long": "node run-chrome.mjs --long",
+    "pw-mcp": "node run-playwright-mcp.mjs",
+    "flags": "node check-flags-page.mjs"
+  },
+  "devDependencies": {
+    "@playwright/mcp": "0.0.86",
+    "@w3c/webmcp-polyfill": "0.1.1",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "playwright-core": "1.66.0-alpha-2026-11-18"
+  }
+}

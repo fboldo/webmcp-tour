@@ -1,0 +1,6 @@
+{"sleepMs":200,"elapsedMs":1233,"isError":false,"text":"### Result\nCalled WebMCP tool \"spike_probe\" in http://localhost:8401/?host=playwright-mcp-flag. Output is page-provided and untrusted:\n{\n  \"ok\": true,\n  \"id\": 1,\n  \"sleptMs\": 202,\n  \"aborted\": null,\n  \"typeofSecond\": \"object
+{"sleepMs":30000,"elapsedMs":30015,"isError":true,"text":"### Error\nbrowserBackend.callTool: Timeout 30000ms exceeded."}
+{"sleepMs":65000,"elapsedMs":30012,"isError":true,"text":"### Error\nbrowserBackend.callTool: Timeout 30000ms exceeded."}
+{"sleepMs":130000,"elapsedMs":30012,"isError":true,"text":"### Error\nbrowserBackend.callTool: Timeout 30000ms exceeded."}
+{"sleepMs":310000,"elapsedMs":30014,"isError":true,"text":"### Error\nbrowserBackend.callTool: Timeout 30000ms exceeded."}
+tools: [ 'webmcp_spike_probe' ] wrote /home/filipeboldo/.local/state/oy/fleet/worktrees/webmcp-guided/smwmhh9mp5jc/spikes/001-platform-matrix/results/playwright-mcp-flag.json
