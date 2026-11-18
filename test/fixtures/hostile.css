@@ -1,0 +1,7 @@
+/* Real-world-style rules from sites and CMS themes, unlayered. */
+div:empty { display: none !important; }
+div { max-width: 100%; }
+span { display: block; }
+button { background: hotpink !important; padding: 20px !important; border-radius: 0; }
+[popover] { inset: 0; margin: auto; padding: 40px; border: 5px dashed red; }
+* { transition: all 1s linear; }
