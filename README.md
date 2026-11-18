@@ -30,7 +30,7 @@ pnpm build       # tsup → dist/index.js, dist/auto.js (ESM), dist/webmcp-tour.
 pnpm test        # Vitest browser mode (Chromium + Firefox); the IIFE test needs the build
 pnpm size        # gzip budget gate: engine-only ≤ 12 KB; full (/auto, script tag) ≤ 15 KB each
 pnpm check       # all of the above, as CI runs it
-pnpm demo        # build, then serve http://127.0.0.1:4173/demo/ (PORT overrides)
+pnpm demo        # build, then serve http://127.0.0.1:4173/demo/ (PORT overrides); see demo/README.md
 ```
 
 CI: the GitHub Actions workflow is manual-only for now; run `pnpm check` locally before merging.
