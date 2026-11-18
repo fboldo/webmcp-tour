@@ -1,4 +1,4 @@
-// Ported from spike 005: CSP (real header) and isolation from hostile page CSS.
+// CSP (real header) and isolation from hostile page CSS.
 import { afterEach, describe, expect, it } from "vitest";
 import { cardPlaced, cleanup, geom, openFixture, parts, ringOnTarget } from "./helpers.js";
 

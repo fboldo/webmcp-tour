@@ -1,4 +1,4 @@
-// Ported from spike 005: placement on hostile pages, both positioning paths.
+// Placement on hostile pages, both positioning paths.
 import { afterEach, describe, expect, it } from "vitest";
 import { cardPlaced, cleanup, geom, openFixture, parts, ringOnTarget } from "./helpers.js";
 
