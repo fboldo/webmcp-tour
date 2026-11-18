@@ -1,7 +1,6 @@
 // Side-effect entry: `import "webmcp-tour/auto"` registers the toolset.
-// Registration lands in M2; the `typeof document` guard keeps SSR imports safe.
-if (typeof document !== "undefined") {
-  // registerAutoTools() — M2
-}
+// The `typeof document` guard keeps SSR imports safe; the singleton in
+// registerAutoTools() keeps a script tag plus this import to one registration.
+import { registerAutoTools } from "./tools/index.js";
 
-export {};
+if (typeof document !== "undefined") registerAutoTools();

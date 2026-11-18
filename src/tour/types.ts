@@ -1,5 +1,6 @@
 import type { OverlayEvents, Placement, RenderStep } from "../engine/overlay/index.js";
-import type { Matched, ResolveError, Reveal } from "../engine/resolver/index.js";
+import type { Matched, ResolveError, Reveal, TargetInfo } from "../engine/resolver/index.js";
+import type { ToolDefinition, ToolNames } from "../tools/definitions.js";
 
 /** What `tour.show` takes: exactly one of `target`, `selector`, `text`. */
 export interface StepInput {
@@ -59,7 +60,8 @@ export interface TourOptions {
   attribution?: string;
 }
 
-export type TourEvents = OverlayEvents;
+/** `targets` fires when `defineTarget` adds or removes a target. `data-tour-id` elements are read at call time and fire nothing. */
+export type TourEvents = OverlayEvents & { targets: Record<string, never> };
 
 export interface Tour {
   /** Resolve the step's element, point at it, and return the tool-shaped envelope. Replaces the current step. */
@@ -69,6 +71,14 @@ export interface Tour {
   on<K extends keyof TourEvents>(type: K, fn: (e: TourEvents[K]) => void): () => void;
   /** Declare a target in code. Returns a function that removes it. Throws on bad input. */
   defineTarget(def: TargetDefinition): () => void;
+  /** Declared targets that can be pointed at, as `tour_list_targets` reports them (capped; `total` counts all). */
+  targets(): { targets: TargetInfo[]; total: number };
+  /**
+   * Tool definitions to register under your own names and timing:
+   * `show_step`, `list_targets`, `dismiss`, in that order. Registers nothing itself.
+   * Throws on bad names. Each `execute` returns an envelope and never throws.
+   */
+  tools(options?: { names?: Partial<ToolNames> }): ToolDefinition[];
   /** Dismiss, remove the overlay and release the singleton. */
   destroy(): void;
 }

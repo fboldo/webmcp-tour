@@ -1,33 +1,37 @@
-// Size budget gate: fails when a built file exceeds its gzip budget.
-// ESM entries are measured minified (what a consumer's bundler ships); the
-// published file stays readable.
+// Size budget gate: fails when a built artifact exceeds its gzip budget.
+// ESM entries are measured bundled with the shared chunks they import,
+// tree-shaken and minified (what a consumer's bundler ships); the published
+// files stay readable.
+//   engine: what `import { createTour } from "webmcp-tour"` costs.
+//   full:   the `/auto` side-effect entry and the script-tag build, tools included.
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
-import { transformSync } from "esbuild";
+import { buildSync } from "esbuild";
 
 const KB = 1024;
+const bundle = (options) => buildSync({ bundle: true, write: false, minify: true, format: "esm", target: "es2022", logLevel: "error", ...options }).outputFiles[0].text;
 const budgets = [
-  // Engine ESM (root entry). The budget: ≤ 10 KB gzip, minified.
-  { file: "dist/index.js", max: 10 * KB, minify: true },
+  { label: "engine (createTour from dist/index.js)", max: 10 * KB, source: () => bundle({ stdin: { contents: `import { createTour } from "./dist/index.js"; console.log(createTour);`, resolveDir: resolve("."), loader: "js" } }) },
+  { label: "full (dist/auto.js)", max: 15 * KB, source: () => bundle({ entryPoints: ["dist/auto.js"] }) },
   // Script-tag build, already minified.
-  { file: "dist/webmcp-tour.js", max: 10 * KB },
+  { label: "full (dist/webmcp-tour.js, IIFE)", max: 15 * KB, source: () => readFileSync("dist/webmcp-tour.js") },
 ];
 
 let failed = false;
-for (const { file, max, minify } of budgets) {
-  let source;
+for (const { label, max, source } of budgets) {
+  let code;
   try {
-    source = readFileSync(file);
-  } catch {
-    console.error(`✗ ${file}: missing — run the build first`);
+    code = source();
+  } catch (e) {
+    console.error(`✗ ${label}: cannot measure (${String(e.message).split("\n")[0]}) — run the build first`);
     failed = true;
     continue;
   }
-  if (minify) source = transformSync(source.toString(), { minify: true, format: "esm", target: "es2022" }).code;
-  const size = gzipSync(source, { level: 9 }).length;
+  const size = gzipSync(code, { level: 9 }).length;
   const ok = size <= max;
   if (!ok) failed = true;
-  console.log(`${ok ? "✓" : "✗"} ${file}${minify ? " (minified)" : ""}: ${(size / KB).toFixed(2)} KB gzip (budget ${(max / KB).toFixed(0)} KB)`);
+  console.log(`${ok ? "✓" : "✗"} ${label}: ${(size / KB).toFixed(2)} KB gzip (budget ${(max / KB).toFixed(0)} KB)`);
 }
 
 process.exit(failed ? 1 : 0);

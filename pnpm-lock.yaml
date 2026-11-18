@@ -14,6 +14,9 @@ importers:
       '@vitest/browser-playwright':
         specifier: ^5.1.0
         version: 5.1.0(playwright@1.65.1)(vite@8.3.8(@types/node@22.20.5)(esbuild@0.28.2))(vitest@5.1.0)
+      '@w3c/webmcp-polyfill':
+        specifier: 0.1.1
+        version: 0.1.1
       esbuild:
         specifier: ^0.28.2
         version: 0.28.2
@@ -524,6 +527,9 @@ packages:
   '@vitest/utils@5.1.0':
     resolution: {integrity: sha512-V+qgCwkvVw+s1t1S5TaoBHsLi5Sz/YmohCMoOu0mZ8ZQst2bKhRYARAQucWpVg8D0mv0x5MHcWXY5QdOsoiGBQ==}
 
+  '@w3c/webmcp-polyfill@0.1.1':
+    resolution: {integrity: sha512-oIVCnVLd8pEvf8dPoU1j5SizqMi01LDeg4He0gfDRr34Krq64FA8J6CBELFKVfrmF0C3OfXehFVAgDRFqQZ8LQ==}
+
   acorn@8.19.0:
     resolution: {integrity: sha512-oJlA3XiRm7Cyk6qFD2Jn8ak9B7jSy0qy00ADO3+8dpT0LSjFihQYv4C02LFCSYJV3Q37xYwwRy5m+IpIiUzqWw==}
     engines: {node: '>=0.4.0'}
@@ -966,6 +972,9 @@ packages:
       jsdom:
         optional: true
 
+  webmcp-types@0.1.11:
+    resolution: {integrity: sha512-eMbboj2UcDVEJ0bdLsKJNRnvcVrAzesVnK5A4R+b9zbPiM6kuGPXQNTWlMlWq1FWr0L2BWZ3iA6e8fr3TN7gVw==}
+
   why-is-node-running@3.2.1:
     resolution: {integrity: sha512-Tb2FUhB4vUsGQlfSquQLYkApkuPAFQXGFzxWKHHumVz2dK+X1RUm/HnID4+TfIGYJ1kTcwOaCk/buYCEJr6YjQ==}
     engines: {node: '>=20.11'}
@@ -1317,6 +1326,10 @@ snapshots:
       '@vitest/pretty-format': 5.1.0
       convert-source-map: 2.0.0
       tinyrainbow: 3.2.0
+
+  '@w3c/webmcp-polyfill@0.1.1':
+    dependencies:
+      webmcp-types: 0.1.11
 
   acorn@8.19.0: {}
 
@@ -1694,6 +1707,8 @@ snapshots:
       '@vitest/ui': 5.1.0(vitest@5.1.0)
     transitivePeerDependencies:
       - msw
+
+  webmcp-types@0.1.11: {}
 
   why-is-node-running@3.2.1: {}
 

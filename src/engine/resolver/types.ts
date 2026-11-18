@@ -12,7 +12,7 @@ export interface ResolveInput {
 
 /** A declared-target lookup (the default one reads `data-tour-id`). */
 export interface TargetSource {
-  get(id: string): { element: Element; reveal?: string | undefined } | null | undefined;
+  get(id: string): { element: Element; reveal?: string | undefined; description?: string | undefined; label?: string | undefined } | null | undefined;
   ids(): string[];
 }
 
@@ -44,6 +44,16 @@ export interface Reveal {
   scrolledIntoView: boolean;
   /** A fixed/sticky element still covers the element's centre after scrolling. */
   occluded: boolean;
+}
+
+/** One declared target as `tour_list_targets` reports it. Page-provided text, clipped. */
+export interface TargetInfo {
+  id: string;
+  label: string;
+  description?: string;
+  reveal?: string;
+  /** Rendered right now; when false, `reveal` says what to do first. */
+  visible: boolean;
 }
 
 export interface Candidate {

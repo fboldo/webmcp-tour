@@ -4,7 +4,7 @@ import { accName, newCache } from "./name.js";
 import { clip, norm } from "./normalize.js";
 import { reveal } from "./occlusion.js";
 import { textHits } from "./text.js";
-import type { Candidate, LocateResult, Matched, ResolveError, ResolveInput, ResolverOptions, ResolveResult, TargetSource } from "./types.js";
+import type { Candidate, LocateResult, Matched, ResolveError, ResolveInput, ResolverOptions, ResolveResult, TargetInfo, TargetSource } from "./types.js";
 import { isVisible } from "./visibility.js";
 
 const MAX_TEXT = 200;
@@ -37,7 +37,8 @@ export function domTargets(doc: Document): TargetSource {
   return {
     get(id) {
       const element = find(id);
-      return element && { element, reveal: element.getAttribute("data-tour-reveal") ?? undefined };
+      const attr = (n: string) => element!.getAttribute(`data-tour-${n}`) ?? undefined;
+      return element && { element, reveal: attr("reveal"), description: attr("description"), label: attr("label") };
     },
     ids: () => [...doc.querySelectorAll("[data-tour-id]")].map((e) => e.getAttribute("data-tour-id")!),
   };
@@ -147,4 +148,25 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
 export function resolve(input: ResolveInput, opts: ResolverOptions = {}): ResolveResult {
   const r = locate(input, opts);
   return r.ok ? { ok: true, element: r.element, matched: { ...r.matched, ...reveal(r.element) } } : r;
+}
+
+/** Declared targets the tour may point at (not excluded, in scope), capped. `total` counts them all. */
+export function listTargets(opts: ResolverOptions, max = MAX_IDS): { targets: TargetInfo[]; total: number } {
+  const { doc, allowed } = setup(opts);
+  const src = opts.targets ?? domTargets(doc);
+  const cache = newCache();
+  const targets: TargetInfo[] = [];
+  let total = 0;
+  for (const id of src.ids()) {
+    const t = src.get(id);
+    if (!t || !allowed(t.element) || total++ >= max) continue;
+    const text = (s: string | undefined, n: number) => clip((s ?? "").replace(/\s+/g, " ").trim(), n);
+    const info: TargetInfo = { id: clip(id, 80), label: text(t.label, 80) || text(accName(t.element, cache).name, 80), visible: isVisible(t.element) };
+    const description = text(t.description, 300);
+    const reveal = text(t.reveal, 200);
+    if (description) info.description = description;
+    if (reveal) info.reveal = reveal;
+    targets.push(info);
+  }
+  return { targets, total };
 }

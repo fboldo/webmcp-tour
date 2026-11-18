@@ -54,6 +54,7 @@
   "devDependencies": {
     "@types/node": "^22.20.5",
     "@vitest/browser-playwright": "^5.1.0",
+    "@w3c/webmcp-polyfill": "0.1.1",
     "esbuild": "^0.28.2",
     "playwright": "^1.65.1",
     "tsup": "^9.0.0",

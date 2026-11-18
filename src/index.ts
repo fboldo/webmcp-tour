@@ -12,3 +12,10 @@ export type { DismissResult, StepInput, StepResult, TargetDefinition, Tour, Tour
 // Overlay.
 export { Overlay } from "./engine/index.js";
 export type { OverlayOptions, OverlayStep, ShowResult } from "./engine/index.js";
+
+// Tools layer (M2).
+export { getModelContext } from "./adapters/index.js";
+export type { ModelContextLike, RegistrableTool } from "./adapters/index.js";
+export { DEFAULT_NAMES, defineTools, registerAutoTools } from "./tools/index.js";
+export type { AutoHandle, AutoOptions, ToolDefinition, ToolNames, ToolResult } from "./tools/index.js";
+export type { TargetInfo } from "./engine/resolver/index.js";
