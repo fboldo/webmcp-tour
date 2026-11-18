@@ -7,11 +7,11 @@ export type { ResolveInput, ResolveResult, ResolverOptions } from "./engine/reso
 
 // Tour API (M1).
 export { createTour, MAX_MESSAGE, MAX_TITLE } from "./tour/index.js";
-export type { DismissResult, StepInput, StepResult, TargetDefinition, Tour, TourEvents, TourOptions, WaitEvent, WaitInput, WaitOptions, WaitResult } from "./tour/index.js";
+export type { DismissResult, PageDefinition, PageInfo, StepInput, StepResult, TargetDefinition, Tour, TourEvents, TourOptions, WaitEvent, WaitInput, WaitOptions, WaitResult } from "./tour/index.js";
 
 // Overlay.
 export { Overlay } from "./engine/index.js";
-export type { OverlayOptions, OverlayStep, ShowResult } from "./engine/index.js";
+export type { Labels, OverlayOptions, OverlayStep, ShowResult } from "./engine/index.js";
 
 // Tools layer (M2).
 export { getModelContext } from "./adapters/index.js";

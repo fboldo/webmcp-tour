@@ -10,6 +10,10 @@ pnpm demo        # builds, then serves http://127.0.0.1:4173/demo/  (PORT overri
 
 ## The fake app
 
+A small single-page app with four pages (**Billing**, **Team**, **Security**, **Notifications**), one visible at a time, routed with `history.pushState` (`/demo/billing`, …; `pnpm demo` serves any `/demo/<page>` as the app). `demo/tour.js` creates the tour with `pages` and a `navigate` that swaps the visible page, so nothing reloads and the in-page agent keeps running. Each declared target says which page it is on (`data-tour-page`).
+
+Try it: on Billing, ask "How do I set up two-factor?". The agent answers `other_page` and a card appears: **Go to Security** / **Not now**. Nothing moves until you click Go. After Go, ask again: the control sits under Security → Advanced, so open that first (the reveal hint says so), then ask once more to get the highlight.
+
 The controls work, so guidance can span several steps: **Change plan** opens a plan picker (a modal `<dialog>` with declared targets `plan-options` and `plan-confirm`) and **Confirm** updates the plan shown under Billing; **Download invoices** shows a confirmation toast; Security → Advanced → **Set up two-factor** opens a setup step (`two-factor-code`); **Help** opens a fake chat (`chat-input`). The overlay mounts inside an open modal, so it can point at the picker's controls.
 
 ## The assistant

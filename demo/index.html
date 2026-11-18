@@ -7,19 +7,17 @@
 <link rel="stylesheet" href="demo.css">
 <!-- Where the browser has no WebMCP, the W3C polyfill supplies document.modelContext (a no-op when native exists). -->
 <script src="/node_modules/@w3c/webmcp-polyfill/dist/polyfill.js"></script>
-<script src="/dist/webmcp-tour.js"></script>
 <script type="module" src="demo.js"></script>
-<script type="module" src="app.js"></script>
 <script type="module" src="assistant.js"></script>
 </head>
 <body>
 <header class="top">
   <strong>Acme Cloud</strong>
   <nav aria-label="Account">
-    <a href="#profile">Profile</a>
-    <a href="#billing">Billing</a>
-    <a href="#notifications">Notifications</a>
-    <a href="#security">Security</a>
+    <a href="/demo/billing" data-page="billing">Billing</a>
+    <a href="/demo/team" data-page="team">Team</a>
+    <a href="/demo/security" data-page="security">Security</a>
+    <a href="/demo/notifications" data-page="notifications">Notifications</a>
   </nav>
   <button type="button" id="help" aria-haspopup="dialog">Help</button>
 </header>
@@ -27,23 +25,13 @@
 <main>
   <h1>Settings</h1>
 
-  <section id="profile">
-    <h2>Profile</h2>
-    <label>Display name <input type="text" value="Sam Rivera"></label>
-    <label>Email <input type="email" value="sam@example.com"></label>
-    <label>Theme
-      <select><option>System</option><option>Light</option><option>Dark</option></select>
-    </label>
-    <p><button type="button" class="primary">Save changes</button> <button type="button">Cancel</button></p>
-  </section>
-
-  <section id="billing">
+  <section id="billing" data-view>
     <h2>Billing</h2>
     <p>Current plan: <strong id="plan-name">Team</strong>, <span id="plan-seats">5</span> seats.</p>
     <p>
-      <button type="button" class="primary" data-tour-id="billing-plan"
+      <button type="button" class="primary" data-tour-id="billing-plan" data-tour-page="billing" data-tour-label="Change plan"
         data-tour-description="Opens the plan picker. Choose Free, Team or Business there, then press Confirm.">Change plan</button>
-      <button type="button" data-tour-id="invoices"
+      <button type="button" data-tour-id="invoices" data-tour-page="billing" data-tour-label="Download invoices"
         data-tour-description="Downloads every invoice as a ZIP of PDFs; a confirmation appears at the bottom of the page.">Download invoices</button>
     </p>
     <h3>API keys</h3>
@@ -56,18 +44,25 @@
     </table>
   </section>
 
-  <section id="notifications">
-    <h2>Notifications</h2>
-    <label><input type="checkbox" checked data-tour-id="email-digest"
-      data-tour-description="Sends one summary email a day instead of one email per event."> Daily email digest</label>
-    <label><input type="checkbox"> Product news</label>
+  <section id="team" data-view hidden>
+    <h2>Team</h2>
+    <p><button type="button" class="primary" data-tour-id="invite-member" data-tour-page="team" data-tour-label="Invite member"
+      data-tour-description="Sends an invite by email. New members join as Viewer until you change their role.">Invite member</button></p>
+    <table>
+      <thead><tr><th>Member</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td>Sam Rivera</td><td>Owner</td></tr>
+        <tr><td>Ana Costa</td><td>Admin</td></tr>
+        <tr><td>Lee Park</td><td>Viewer</td></tr>
+      </tbody>
+    </table>
   </section>
 
-  <section id="security">
+  <section id="security" data-view hidden>
     <h2>Security</h2>
     <details>
       <summary>Advanced</summary>
-      <p><button type="button" data-tour-id="two-factor"
+      <p><button type="button" data-tour-id="two-factor" data-tour-page="security" data-tour-label="Set up two-factor"
         data-tour-description="Opens two-factor setup: scan a code with an authenticator app, then enter the 6-digit code it shows."
         data-tour-reveal="Open Security → Advanced first.">Set up two-factor</button></p>
     </details>
@@ -75,6 +70,13 @@
       <button type="button" class="danger" data-tour-exclude>Delete account</button>
       <small>Kept off-limits with <code>data-tour-exclude</code>: the tour never points at it.</small>
     </p>
+  </section>
+
+  <section id="notifications" data-view hidden>
+    <h2>Notifications</h2>
+    <label><input type="checkbox" checked data-tour-id="email-digest" data-tour-page="notifications" data-tour-label="Daily email digest"
+      data-tour-description="Sends one summary email a day instead of one email per event."> Daily email digest</label>
+    <label><input type="checkbox"> Product news</label>
   </section>
 </main>
 
@@ -134,7 +136,7 @@
   </fieldset>
   <form id="step">
     <label>Locate by
-      <select name="by"><option>text</option><option>selector</option><option>target</option></select>
+      <select name="by"><option>text</option><option>selector</option><option>target</option><option>page</option></select>
     </label>
     <label>Value <input name="value" value="Change plan" autocomplete="off"></label>
     <label>Index <input name="index" type="number" min="0" placeholder="(for ambiguous)"></label>

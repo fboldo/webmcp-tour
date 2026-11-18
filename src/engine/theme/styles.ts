@@ -4,7 +4,7 @@
 // are the documented tokens, `part` names the documented hack surface.
 
 const ALL = "[part~=spotlight],[part~=popover]";
-const BTN = "[part~=close],[part~=goto]";
+const BTN = "[part~=close],[part~=gotit],[part~=goto],[part~=go],[part~=notnow]";
 const ANCHOR_VISIBLE =
   // Chromium deprecated the plural; Firefox only parses the plural.
   "position-visibility:anchors-visible;position-visibility:anchor-visible;";
@@ -47,7 +47,11 @@ ${BTN}{font:inherit;color:inherit;background:transparent;
 border:1px solid color-mix(in srgb,var(--_text) 35%,transparent);
 border-radius:6px;padding:2px 8px;margin:0;cursor:pointer}
 [part~=close]{grid-column:2;grid-row:1;border:0;line-height:1;font-size:18px;padding:0 4px}
-[part~=goto]{grid-column:1/-1;justify-self:start;margin-top:6px}
+[part~=actions]{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+[part~=gotit],[part~=go]{font-weight:600}
+[part~=popover] button[hidden]{display:none}
+/* Page suggestion: no target, so a plain corner card. */
+[part~=popover][data-notice]{position-anchor:none;position-area:none;position-try-fallbacks:none;position-visibility:always;inset:auto 16px 16px auto;margin:0}
 [part~=live]{position:fixed;top:0;left:0;contain:strict;width:1px;height:1px;margin:0;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 [part~=title]:empty,[part~=message]:empty{display:none}
 /* JS fixed-position path: the engine writes top/left/width/height. */
@@ -58,7 +62,7 @@ border-radius:6px;padding:2px 8px;margin:0;cursor:pointer}
 /* Small viewports and 400% zoom: actions first, so they never land below the fold. */
 @media (max-width:480px),(max-height:420px){
 [part~=popover]{padding:8px 10px;gap:2px;font-size:13px}
-[part~=goto]{grid-row:2;margin-top:2px}
+[part~=actions]{grid-row:2;margin-top:2px}
 [part~=title]{grid-row:3}
 [part~=message]{grid-row:4}}
 @media (prefers-reduced-motion:reduce){${ALL}{transition:none}}

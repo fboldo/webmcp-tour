@@ -38,7 +38,7 @@ export function domTargets(doc: Document): TargetSource {
     get(id) {
       const element = find(id);
       const attr = (n: string) => element!.getAttribute(`data-tour-${n}`) ?? undefined;
-      return element && { element, reveal: attr("reveal"), description: attr("description"), label: attr("label") };
+      return element && { element, reveal: attr("reveal"), description: attr("description"), label: attr("label"), page: attr("page") };
     },
     ids: () => [...doc.querySelectorAll("[data-tour-id]")].map((e) => e.getAttribute("data-tour-id")!),
   };

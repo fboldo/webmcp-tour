@@ -261,4 +261,60 @@ describe("demo page (scripted mode, end to end)", () => {
     expect(doc.querySelector("#transcript li.answer")!.textContent).toContain("off-limits");
     expect(doc.querySelector("[data-webmcp-tour-root]")?.shadowRoot?.querySelector("[part~=message]")).toBeFalsy();
   }, 15_000);
+
+  const ask = (doc: Document, q: string) => {
+    doc.querySelectorAll("#transcript li.answer").forEach((li) => li.remove());
+    const form = doc.getElementById("ask") as HTMLFormElement;
+    (form.elements.namedItem("q") as HTMLInputElement).value = q;
+    form.requestSubmit();
+    return answered(doc);
+  };
+  const card = (doc: Document) => doc.querySelector("[data-webmcp-tour-root]")!.shadowRoot!;
+  const view = (doc: Document) => [...doc.querySelectorAll<HTMLElement>("[data-view]")].filter((s) => !s.hidden).map((s) => s.id);
+
+  it("two-factor from Billing: a suggestion card first, the highlight after Go", async () => {
+    const doc = await open("?agent=scripted");
+    const path = doc.location.pathname;
+    expect(view(doc)).toEqual(["billing"]);
+
+    await ask(doc, "How do I set up two-factor?");
+    const lines = [...doc.querySelectorAll("#transcript li")].map((li) => li.textContent!);
+    expect(lines.some((l) => l.startsWith("← tour_show_step:") && l.includes('"error":"other_page"'))).toBe(true);
+    expect(doc.querySelector("#transcript li.answer")!.textContent).toContain("Security");
+    // The card asks; nothing has moved.
+    expect(card(doc).querySelector("[part~=message]")!.textContent).toBe("Your assistant suggests going to Security");
+    expect(card(doc).querySelector("[part~=spotlight]")?.matches(":popover-open")).toBeFalsy();
+    expect(doc.location.pathname).toBe(path);
+    expect(view(doc)).toEqual(["billing"]);
+
+    card(doc).querySelector<HTMLElement>("[part~=go]")!.click();
+    expect(doc.location.pathname).toBe("/demo/security");
+    expect(view(doc)).toEqual(["security"]);
+
+    // The control sits under Security → Advanced: the reveal hint says so until the user opens it.
+    await ask(doc, "How do I set up two-factor?");
+    expect(doc.querySelector("#transcript li.answer")!.textContent).toContain("Advanced");
+    doc.querySelector("details")!.open = true;
+    await ask(doc, "How do I set up two-factor?");
+    expect(card(doc).querySelector("[part~=message]")!.textContent).toContain("two-factor setup");
+    expect(card(doc).querySelector<HTMLElement>("[part~=spotlight]")!.matches(":popover-open")).toBe(true);
+    expect(card(doc).querySelector<HTMLElement>("[part~=gotit]")!.hidden).toBe(false);
+  }, 20_000);
+
+  it("Not now leaves the page where it is", async () => {
+    const doc = await open("?agent=scripted");
+    await ask(doc, "How do I set up two-factor?");
+    card(doc).querySelector<HTMLElement>("[part~=notnow]")!.click();
+    expect(view(doc)).toEqual(["billing"]);
+    expect(card(doc).querySelector<HTMLElement>("[part~=popover]")!.matches(":popover-open")).toBe(false);
+  }, 20_000);
+
+  it("the nav links route client-side and declare the pages to the tour", async () => {
+    const doc = await open("?agent=scripted");
+    doc.querySelector<HTMLAnchorElement>('nav a[data-page="team"]')!.click();
+    expect(doc.location.pathname).toBe("/demo/team");
+    expect(view(doc)).toEqual(["team"]);
+    const tour = (doc.defaultView as unknown as { webmcpTour: { page(): { id: string } | undefined } }).webmcpTour;
+    expect(tour.page()?.id).toBe("team");
+  }, 20_000);
 });

@@ -23,6 +23,8 @@ window.overlay = new Overlay({
   ...(positioning === "anchor" || positioning === "fixed" ? { positioning } : {}),
   ...(attribution ? { attribution } : {}),
   ...(describeTarget ? { describeTarget } : {}),
+  ...(q.has("plain") ? {} : { takeMeThere: true }), // the goto tests are the majority; ?plain is the default card
+  ...(q.has("labels") ? { labels: JSON.parse(q.get("labels")!) } : {}),
   ...(hook === "throw"
     ? {
         renderPopover: () => {

@@ -3,9 +3,12 @@
 
 import { createSheet } from "../theme/index.js";
 import { clearFixed, drift, isClipped, placeFixed } from "./position.js";
+import { LABELS } from "./types.js";
 import type {
   DismissReason,
+  Labels,
   OverlayEvents,
+  OverlayNotice,
   OverlayOptions,
   OverlayStep,
   Placement,
@@ -46,7 +49,8 @@ export class Overlay {
     dismiss: new Set(),
   };
   #parts: Parts | undefined;
-  #defaults: { attribution: HTMLElement; title: HTMLElement; message: HTMLElement; card: HTMLElement } | undefined;
+  #defaults: { attribution: HTMLElement; close: HTMLElement; title: HTMLElement; message: HTMLElement; actions: HTMLElement[]; card: HTMLElement } | undefined;
+  #notice = false; // the card is a page suggestion: no target, no spotlight
   #target: Element | undefined;
   #card: HTMLElement | undefined; // the card in use: default or the hook's
   #placement: Placement = "auto";
@@ -61,6 +65,12 @@ export class Overlay {
 
   constructor(options: OverlayOptions = {}) {
     this.#opts = options;
+  }
+
+  #label(k: keyof Labels, page?: string): string {
+    const o = this.#opts;
+    const t = o.labels?.[k] ?? (k === "attribution" ? o.attribution : undefined) ?? LABELS[k];
+    return page === undefined ? t : t.replaceAll("{page}", page);
   }
 
   /** The element currently pointed at, if any. */
@@ -107,8 +117,18 @@ export class Overlay {
   }
 
   show(target: Element, step: OverlayStep = {}): ShowResult {
+    return this.#present(target, step);
+  }
+
+  /** A card with no target and no spotlight, offering to go to another page. Plain text only. */
+  notice(n: OverlayNotice): ShowResult {
+    return this.#present(null, { title: n.title ?? "", message: this.#label("otherPage", n.page) }, n.page);
+  }
+
+  #present(el: Element | null, step: OverlayStep, page?: string): ShowResult {
     if (this.#target) this.#end("superseded");
-    const modal = modalAncestor(target);
+    const target = el ?? document.body ?? document.documentElement; // a notice has nothing to point at; the page stands in for it
+    const modal = el ? modalAncestor(target) : null;
     // Everything outside an open modal is inert: pointing there is pointless.
     if (!modal && document.querySelector("dialog:modal"))
       return { shown: false, positioning: "none", reason: "obscured" };
@@ -117,32 +137,38 @@ export class Overlay {
     const message = step.message ?? "";
     this.#placement = step.placement ?? "auto";
     this.#target = target;
+    this.#notice = !el;
     this.#modal = modal;
     let positioning: ShowResult["positioning"] = "none";
 
     if (this.#opts.render !== false) {
       const p = (this.#parts ??= this.#build());
-      this.#fill(target, title, message);
-      this.#describe(target, message);
+      this.#fill(el, title, message, page);
+      if (el) this.#describe(target, message);
       // The overlay lives inside the modal so it is not inert.
       const mount = modal ?? document.body ?? document.documentElement;
       if (p.host.parentNode !== mount) mount.append(p.host);
       // Chromium remembers the last position-try fallback; re-inserting resets it.
       const card = this.#card!;
-      p.root.append(p.ring, card);
+      p.root.append(...(el ? [p.ring, card] : [card]));
       this.#anchorOk ??= (this.#opts.positioning ?? "auto") === "auto" ? supportsAnchor() : this.#opts.positioning === "anchor";
-      this.#fixed = !this.#anchorOk;
+      this.#fixed = !!el && !this.#anchorOk;
       this.#mode(p, card);
-      for (const e of [p.ring, card])
+      if (!el) {
+        card.showPopover();
+        positioning = "none";
+      } else for (const e of [p.ring, card])
         e.showPopover(this.#fixed ? undefined : { source: target as HTMLElement });
-      if (!this.#fixed && drift(p.ring.getBoundingClientRect(), target.getBoundingClientRect()) > 1) {
+      if (el && !this.#fixed && drift(p.ring.getBoundingClientRect(), target.getBoundingClientRect()) > 1) {
         // Engine disagrees with the target's real box (transforms in Firefox): this step goes fixed.
         this.#fixed = true;
         this.#mode(p, card);
       }
-      this.#update();
-      this.#track(true);
-      positioning = this.#fixed ? "fixed" : "anchor";
+      if (el) {
+        this.#update();
+        this.#track(true);
+        positioning = this.#fixed ? "fixed" : "anchor";
+      }
     }
     this.#watchModals(true);
     window.addEventListener("keydown", this.#key);
@@ -176,36 +202,50 @@ export class Overlay {
     const card = part("div", "popover");
     card.setAttribute("popover", "manual");
     card.setAttribute("role", "group");
-    card.setAttribute("aria-label", "Assistant guidance");
     const attribution = part("span", "attribution");
-    const close = part("button", "close");
-    close.type = "button";
-    close.setAttribute("aria-label", "Dismiss");
+    const btn = (name: string) => {
+      const b = part("button", name);
+      b.type = "button";
+      return b;
+    };
+    const close = btn("close");
     close.textContent = "×";
     const title = part("span", "title");
     const message = part("span", "message");
-    const goto = part("button", "goto");
-    goto.type = "button";
-    goto.textContent = "Take me there";
-    card.append(attribution, close, title, message, goto);
+    // One element per part: which of them the card shows is decided per step in #fill.
+    const actions = ["gotit", "goto", "go", "notnow"].map(btn);
+    const row = part("div", "actions");
+    row.append(...actions);
+    card.append(attribution, close, title, message, row);
     const live = part("div", "live");
     live.setAttribute("role", "status");
     live.setAttribute("aria-live", "polite");
     live.setAttribute("aria-atomic", "true");
     root.append(live);
     card.addEventListener("click", this.#click);
-    this.#defaults = { attribution, title, message, card };
+    this.#defaults = { attribution, close, title, message, actions, card };
     return { host, root, ring, card, live };
   }
 
-  #fill(target: Element, title: string, message: string): void {
+  /** Fill the default card; `page` makes it the page suggestion, otherwise the step card. */
+  #fill(target: Element | null, title: string, message: string, page?: string): void {
     const d = this.#defaults!;
-    d.attribution.textContent = this.#opts.attribution ?? "From your assistant";
+    const attribution = this.#label("attribution");
+    d.attribution.textContent = attribution;
+    d.card.setAttribute("aria-label", attribution);
+    d.close.setAttribute("aria-label", this.#label("close"));
     d.title.textContent = title;
     d.message.textContent = message;
+    const texts = [this.#label("gotIt"), this.#label("takeMeThere"), this.#label("goToPage", page), this.#label("notNow")];
+    const shown = page !== undefined ? [2, 3] : this.#opts.takeMeThere ? [0, 1] : [0];
+    d.actions.forEach((b, i) => {
+      b.textContent = texts[i]!;
+      b.hidden = !shown.includes(i);
+    });
+    d.card.toggleAttribute("data-notice", page !== undefined);
     let card = d.card;
     const hook = this.#opts.renderPopover;
-    if (hook) {
+    if (hook && target) {
       const step: RenderStep = { target, title, message, placement: this.#placement };
       try {
         const custom = hook(step, d.card);
@@ -227,15 +267,18 @@ export class Overlay {
     for (const n of e.composedPath()) {
       if (!(n instanceof Element)) continue;
       const parts = n.getAttribute("part") ?? "";
-      if (/(^|\s)close(\s|$)/.test(parts)) return void this.#end("hide");
-      if (/(^|\s)goto(\s|$)/.test(parts)) return this.#goto();
+      const is = (p: string) => new RegExp(`(^|\\s)${p}(\\s|$)`).test(parts);
+      if (is("close") || is("notnow")) return void this.#end(this.#notice ? "declined" : "hide");
+      if (is("gotit")) return void this.#end("acknowledged");
+      if (is("go")) return void this.#end("navigating");
+      if (is("goto")) return this.#goto();
     }
   };
 
   /** User-triggered: scroll the target into view, focus it with a visible ring, pulse the spotlight. A target that cannot take focus gets tabindex=-1 until it blurs. */
   #goto(): void {
     const t = this.#target as HTMLElement | undefined;
-    if (!t?.focus) return;
+    if (!t?.focus || this.#notice) return;
     const r = t.getBoundingClientRect();
     if (r.top < 0 || r.left < 0 || r.bottom > innerHeight || r.right > innerWidth) t.scrollIntoView({ block: "center", inline: "nearest" });
     const focus = (): void => t.focus({ preventScroll: true, focusVisible: true } as FocusOptions);
@@ -253,7 +296,7 @@ export class Overlay {
   #key = (e: KeyboardEvent): void => {
     if (e.key !== "Escape" || e.isComposing || !this.#target) return;
     if (e.defaultPrevented && !e.composedPath().includes(this.#card!)) return;
-    this.#end("hide");
+    this.#end(this.#notice ? "declined" : "hide");
   };
 
   /** Announce through the persistent region: clear, then set after a beat so repeats are heard. */
