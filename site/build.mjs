@@ -101,7 +101,7 @@ function layout({ page, all, html, toc }) {
   const nav = all.map((p) => `<li><a href="${base}${p.url}"${p === page ? ' aria-current="page"' : ""}>${esc(p.title)}</a></li>`).join("");
   const here = toc.length ? `<nav class="toc" aria-label="On this page"><h2>On this page</h2><ul>${toc.map((t) => `<li><a href="#${t.id}">${esc(t.text)}</a></li>`).join("")}</ul></nav>` : "";
   const pager = `<nav class="pager" aria-label="Pages">${prev ? `<a rel="prev" href="${base}${prev.url}"><span>Previous</span>${esc(prev.title)}</a>` : "<span></span>"}${next ? `<a rel="next" href="${base}${next.url}"><span>Next</span>${esc(next.title)}</a>` : ""}</nav>`;
-  const title = page.slug === "index" ? "webmcp-tour: show users where to click" : `${page.title} · webmcp-tour`;
+  const title = page.slug === "index" ? "webmcp-tour: guided tours for AI agents" : `${page.title} · webmcp-tour`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -146,7 +146,7 @@ function layout({ page, all, html, toc }) {
 // ---- llms.txt ----------------------------------------------------------------------------------
 
 const SUMMARY =
-  "webmcp-tour is a zero-dependency TypeScript browser library that lets an AI agent show a user where to click instead of clicking for them. " +
+  "webmcp-tour is a zero-dependency TypeScript browser library that gives AI agents guided tours of a web app: with one script tag, any WebMCP agent can walk users through the app, highlighting and explaining each step. " +
   "It registers four WebMCP tools (tour_show_step, tour_list_targets, tour_dismiss, tour_wait_for_interaction) that highlight a control with a short explanation beside it; the user does the action. " +
   "It works with no setup on any page (the agent points at visible text) and gets better with declared targets, pages, and resume-after-navigation.";
 

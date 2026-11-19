@@ -7,7 +7,7 @@
 [![license: MIT](https://img.shields.io/npm/l/webmcp-tour)](LICENSE)
 [![zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](package.json)
 
-**Your app, narrated by whichever AI agent your user already has.** One script tag lets any WebMCP agent point at a control, explain it in a short card, and step back while the user clicks. It never clicks for them.
+**Guided tours for AI agents, in one script tag.** Add webmcp-tour and any WebMCP agent can walk your users through your app, highlighting and explaining each step. Declare a few targets when you want to shape the tour.
 
 > **Experimental (0.x).** The API may change between minor versions, and WebMCP itself is still experimental in browsers.
 
@@ -87,15 +87,6 @@ const result = await tour.show({ target: "two-factor", message: "Press this to s
 Several tours on one page (say, per product area) need distinct tool names: `createTour({ toolPrefix: "billing" })` gives `billing_show_step` and friends, and `registerAsWebMcpTool([billingTour, teamTour])` registers them together.
 
 Translations, card placement, `resume`, and the rest are in the [concepts](https://fboldo.github.io/webmcp-tour/concepts/) and [engine API](https://fboldo.github.io/webmcp-tour/engine-api/) pages.
-
-## Why guide instead of click?
-
-An agent that clicks for the user needs the user's trust and the user's session. Guidance does not:
-
-- **Auth and two-factor**: the user types their own secrets.
-- **Payments and irreversible actions**: the agent shows the button; a person decides to press it.
-- **Learning the app**: the user ends up knowing where things are.
-- **The worst case is small**: a wrong highlight is ignored, not a wrong purchase.
 
 ## What agents get
 

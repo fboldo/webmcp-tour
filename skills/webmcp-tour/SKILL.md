@@ -1,6 +1,6 @@
 ---
 name: webmcp-tour
-description: Adds webmcp-tour to a web app so AI agents can show users where to click (highlight a control and explain it) instead of clicking for them. Use when the user wants in-app "how do I…?" guidance, onboarding, or agent help for steps the user must do themselves (sign-in, payments, two-factor, irreversible actions), or mentions webmcp-tour, WebMCP guided tours, tour_show_step, data-tour-id, or highlighting UI for an agent.
+description: Adds webmcp-tour to a web app so AI agents can give users guided tours of it (highlight a control and explain it). Use when the user wants in-app "how do I…?" guidance, onboarding, or agent help for steps the user must do themselves (sign-in, payments, two-factor, irreversible actions), or mentions webmcp-tour, WebMCP guided tours, tour_show_step, data-tour-id, or highlighting UI for an agent.
 license: MIT
 compatibility: Browser apps (plain HTML, React, Vue, Next, any SPA). WebMCP needs a secure context (https or localhost); the audit script needs Node 18+.
 metadata:
