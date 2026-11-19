@@ -98,6 +98,16 @@ createTour({ resume: { param: "webmcp-tour" } }); // the default; `resume: false
 
 Agents embedded in the page restart after a full page load, so after **Go** they begin again on the new page. For a single-page app, pass `navigate` (your router's push) so the page does not reload and the agent stays alive. A script-tag build cannot take options; use `window.webmcpTour.definePage(...)`, or import `createTour` from the package, to set pages and `navigate`.
 
+## Use with coding agents
+
+An [Agent Skill](https://agentskills.io) in [`skills/webmcp-tour`](skills/webmcp-tour) teaches a coding agent (Claude Code, Cursor, Codex and others) to add webmcp-tour to your app: install with SRI, declare targets, pages and resume, write descriptions, and test.
+
+```sh
+npx skills add fboldo/webmcp-tour --skill webmcp-tour
+```
+
+The repository is private for now, so the install needs GitHub access to it (`gh auth login` or an SSH key). It also includes an audit script: `node skills/webmcp-tour/scripts/audit.mjs src/` lists controls that lack `data-tour-id` / `data-tour-description`.
+
 ## Examples
 Three runnable apps in [`examples/`](examples): a script tag, a Vite bundle (a SPA with pages), and an engine embed with your own tool. Start with `pnpm example:script-tag`.
 
