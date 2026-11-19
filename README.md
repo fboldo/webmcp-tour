@@ -60,9 +60,15 @@ tour.defineTarget({ id: "two-factor", page: "security", label: "Set up two-facto
 
 - **Current page.** The first page whose `match` accepts `location`. `match` is optional: a string is a `location.pathname` prefix, a `RegExp` is tested against the pathname, a function gets `location`. Without it, the page's `url` path must equal `location.pathname`.
 - **Targets on a page.** `defineTarget({ id, page, label, description })` needs no element: it only says where the control lives. On its own page the real element comes from `data-tour-id="two-factor"` (or `selector` / `element` on the definition). `data-tour-page="<page id>"` does the same in markup. A target whose page is not the current one is off-page: it is never highlighted.
-- **`tour_list_targets`** returns the current `page`, the other `pages`, and every target; off-page ones carry `page: { id, title }` and `onThisPage: false`. It is registered whenever there are pages or targets, even if none is on the current page.
+- **`tour_list_targets`** also returns the page `outline` (below), and the current `page`, the other `pages`, and every target; off-page ones carry `page: { id, title }` and `onThisPage: false`.
 - **`tour_show_step`** takes a fifth locator, `{ page: "security" }`. For an off-page target, or an explicit `page`, it shows a card with no spotlight (unless anchored, below): the `otherPage` text, **Go to Security** and **Not now**. The envelope is `{ ok: false, error: "other_page", page }` for a target, and `{ ok: true, suggested: page }` for a `page` locator. A call never navigates; only the user's click on **Go** calls `navigate(url)`.
 - **Waiting.** With a suggestion on screen, `tour_wait_for_interaction` resolves `{ status: "navigating" }` on **Go** and `{ status: "dismissed" }` on **Not now**, ×, or Escape.
+
+### The page outline
+
+Agents inside the page (an on-device model, a hosted model called from page script) cannot see it, so `tour_list_targets` also returns what a person sees: `outline: { headings: [...], controls: [{ role, name, context }] }`. Controls are visible links, buttons, fields (by label), selects, tabs and menu items; `name` is the accessible name and `context` the nearest landmark or heading. The agent points at one with `tour_show_step({ text })`. The tool is registered whenever a document exists, even with nothing declared.
+
+Same privacy rules as the `near` list of a miss: visible elements only, never field values, attributes, URLs or hidden content; `scope`, `exclude`, `data-tour-exclude`, `aria-hidden`, `inert` and the tour's own overlay are honoured. At most 60 controls and 30 headings, names clipped to 60 characters; `truncated: true` when capped. Also `tour.outline()`.
 
 ### Where the suggestion card goes
 

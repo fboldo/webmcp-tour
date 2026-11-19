@@ -87,3 +87,10 @@ export type LocateResult = { ok: true; element: Element; matched: Matched } | Re
 export type ResolveResult =
   | { ok: true; element: Element; matched: Matched & Reveal }
   | ResolveError;
+
+/** A visible control or heading list, as an agent that cannot see the page needs it. `truncated` when capped. */
+export interface Outline {
+  headings: string[];
+  controls: { role?: string; name: string; context?: string }[];
+  truncated?: true;
+}

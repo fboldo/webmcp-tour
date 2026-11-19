@@ -1,7 +1,7 @@
 import { Overlay } from "../engine/overlay/index.js";
 import type { OverlayEvents, OverlayOptions } from "../engine/overlay/index.js";
 import type { TargetInfo } from "../engine/resolver/index.js";
-import { describe, isVisible, listTargets, locate, locationOf, reveal } from "../engine/resolver/index.js";
+import { describe, isVisible, listTargets, locate, locationOf, outline, reveal } from "../engine/resolver/index.js";
 import type { ResolveInput, ResolverOptions } from "../engine/resolver/index.js";
 import { defineTools } from "../tools/definitions.js";
 import { MAX_MESSAGE, MAX_TITLE } from "./limits.js";
@@ -263,6 +263,8 @@ function build(options: TourOptions): Tour {
         ...(others.length ? { pages: others } : {}),
       };
     },
+
+    outline: () => outline({ targets, overlayHost: overlay.host, scope, exclude }),
 
     definePage: (def) => pages.define(def),
 

@@ -321,4 +321,54 @@ describe("demo page (scripted mode, end to end)", () => {
     const tour = (doc.defaultView as unknown as { webmcpTour: { page(): { id: string } | undefined } }).webmcpTour;
     expect(tour.page()?.id).toBe("team");
   }, 20_000);
+
+  it("\"Where can I manage my billing?\" highlights the Billing nav link from the page outline", async () => {
+    const doc = await open("?agent=scripted");
+    await ask(doc, "Where can I manage my billing?");
+    const lines = [...doc.querySelectorAll("#transcript li")].map((li) => li.textContent!);
+    expect(lines.findIndex((l) => l.startsWith("→ tour_list_targets("))).toBeGreaterThanOrEqual(0);
+    expect(lines.some((l) => l.startsWith("← tour_show_step:") && l.includes('"ok":true'))).toBe(true);
+    const target = doc.querySelector('nav a[data-page="billing"]')!;
+    const spot = card(doc).querySelector<HTMLElement>("[part~=spotlight]")!;
+    expect(spot.matches(":popover-open")).toBe(true);
+    const a = target.getBoundingClientRect();
+    const b = spot.getBoundingClientRect();
+    expect(b.left).toBeLessThanOrEqual(a.left + 1);
+    expect(b.right).toBeGreaterThanOrEqual(a.right - 1);
+    expect(b.top).toBeLessThanOrEqual(a.top + 1);
+    expect(b.bottom).toBeGreaterThanOrEqual(a.bottom - 1);
+    expect(doc.querySelector("#transcript li.answer")!.textContent).toContain("Billing");
+  }, 20_000);
+
+  it("points at nav links by text for team, security and notifications", async () => {
+    const doc = await open("?agent=scripted");
+    for (const [q, name] of [["Where do I add team members?", "Team"], ["Where can I change my password?", "Security"], ["Where are my notifications?", "Notifications"]] as const) {
+      await ask(doc, q);
+      expect(doc.querySelector("#transcript li.answer")!.textContent).toContain(`“${name}”`);
+      expect(card(doc).querySelector("[part~=message]")!.textContent).toContain(name);
+    }
+  }, 30_000);
+});
+
+describe("in-page agents are told to look at the outline first", () => {
+  const prompt = /call tour_list_targets first/;
+  it("the on-device system prompt", async () => {
+    const { mc } = context();
+    const { LanguageModel, session } = model([turn("final_answer", {}, "ok")]);
+    await ask({ question: "q", mode: "constraint", LanguageModel, modelContext: mc, emit: () => {} });
+    const given = (LanguageModel.create.mock.calls[0]![0] as { initialPrompts: { content: string }[] }).initialPrompts[0]!.content;
+    expect(given).toMatch(prompt);
+    expect(given).toContain("`text`");
+    void session;
+  });
+
+  it("the scripted agent calls the list tool, then points at the outline's nav link", async () => {
+    const { mc, calls } = context({ tour_list_targets: { ok: true, targets: [], outline: { headings: [], controls: [{ role: "link", name: "Billing", context: "Account" }] } } });
+    const out = await ask({ question: "Where can I manage my billing?", mode: "scripted", modelContext: mc, emit: () => {} });
+    expect(calls).toEqual([
+      { name: "tour_list_targets", input: {} },
+      { name: "tour_show_step", input: { text: "Billing", message: "Billing opens the Billing page: your plan and invoices." } },
+    ]);
+    expect(out.answer).toContain("“Billing” link in Account");
+  });
 });

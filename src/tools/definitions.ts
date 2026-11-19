@@ -97,16 +97,16 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
     },
     {
       name: n.listTargets,
-      title: "List guided targets",
+      title: "List page outline and targets",
       description:
-        "List the guided-tour targets the page author declared: stable ids, each with a label and a short description of what the control does. " +
-        "Includes the current `page` and targets on other pages (`onThisPage: false`). " +
-        `If the list is empty, do not stop: point at the element directly with ${n.showStep}, by its visible text or a CSS selector.`,
+        "What is on this page. If you cannot see the page, call this first, then point with `text` or `target`. " +
+        "Returns the visible `outline` (headings, controls with role, name, context) plus the author's declared targets (id, label, description), the current `page` and targets on other pages (`onThisPage: false`). " +
+        `Then use ${n.showStep}; do not highlight a guess.`,
       inputSchema: { type: "object", properties: {} },
       annotations: { ...ro, untrustedContentHint: true },
       execute: safe(tour, () => {
         const { targets, total, page, pages } = tour.targets();
-        return { ok: true, ...(page ? { page } : {}), ...(pages ? { pages } : {}), targets, count: total, ...(total > targets.length ? { truncated: true } : {}) };
+        return { ok: true, outline: tour.outline(), ...(page ? { page } : {}), ...(pages ? { pages } : {}), targets, count: total, ...(total > targets.length ? { truncated: true } : {}) };
       }),
     },
     {

@@ -1,5 +1,5 @@
 import type { Labels, OverlayEvents, Placement, RenderStep } from "../engine/overlay/index.js";
-import type { Matched, ResolveError, Reveal, TargetInfo } from "../engine/resolver/index.js";
+import type { Matched, Outline, ResolveError, Reveal, TargetInfo } from "../engine/resolver/index.js";
 import type { ToolDefinition, ToolNames } from "../tools/definitions.js";
 
 /** A page of the app, for suggesting navigation. */
@@ -175,6 +175,8 @@ export interface Tour {
    * `page` is the current page; `pages` the others.
    */
   targets(): { targets: TargetInfo[]; total: number; page?: PageInfo; pages?: (PageInfo & { description?: string })[] };
+  /** The visible headings and controls on this page (names only, capped), as `tour_list_targets` reports them. */
+  outline(): Outline;
   /**
    * Tool definitions to register under your own names and timing:
    * `show_step`, `list_targets`, `dismiss`, `wait_for_interaction`, in that order. Registers nothing itself.
