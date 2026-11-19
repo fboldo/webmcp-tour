@@ -27,7 +27,7 @@ try {
   const browser = await chromium.launch();
   const context = await browser.newContext({ viewport: { width: 1240, height: 720 }, recordVideo: { dir: tmp, size: { width: 1240, height: 720 } } });
   const page = await context.newPage();
-  await page.goto(`http://127.0.0.1:${port}/demo/billing?agent=scripted`);
+  await page.goto(`http://127.0.0.1:${port}/demo/billing?agent=scripted&panel=closed`);
   await page.waitForTimeout(1200);
   await page.locator("#q").pressSequentially("How do I set up two-factor?", { delay: 45 });
   await page.waitForTimeout(400);

@@ -124,7 +124,8 @@
 <div id="toast" role="status" aria-live="polite" hidden></div>
 
 <aside class="panel" data-tour-exclude aria-label="Tour control panel">
-  <h2>Control panel</h2>
+<details id="panel-toggle" open>
+  <summary><h2>Control panel</h2></summary>
   <p class="hint">Drives <code>window.webmcpTour</code>.</p>
   <fieldset>
     <legend>Declared targets</legend>
@@ -145,10 +146,12 @@
   </form>
   <h3>Result</h3>
   <pre id="result" aria-live="polite">—</pre>
+</details>
 </aside>
 <aside class="assistant" data-tour-exclude aria-labelledby="assistant-title">
   <h2 id="assistant-title">Ask the assistant</h2>
   <p id="assistant-mode" class="mode" role="status">Checking for an on-device model…</p>
+  <p id="webmcp-status" class="webmcp-status"></p>
   <ol id="transcript" role="log" aria-live="polite" aria-label="Conversation and tool calls"></ol>
   <p id="samples" class="samples"></p>
   <form id="ask">

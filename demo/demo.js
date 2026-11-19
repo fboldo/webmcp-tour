@@ -39,3 +39,10 @@ form.addEventListener("submit", (e) => {
 });
 document.getElementById("dismiss").addEventListener("click", () => show(tour.dismiss()));
 tour.on("dismiss", (e) => console.info("dismissed:", e.reason));
+
+// Remember whether the control panel is open.
+const panelToggle = document.getElementById("panel-toggle");
+if (panelToggle) {
+  if (new URLSearchParams(location.search).get("panel") === "closed" || localStorage.getItem("webmcp-tour-demo-panel") === "closed") panelToggle.open = false;
+  panelToggle.addEventListener("toggle", () => localStorage.setItem("webmcp-tour-demo-panel", panelToggle.open ? "open" : "closed"));
+}
