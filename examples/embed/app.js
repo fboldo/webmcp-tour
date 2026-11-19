@@ -1,9 +1,18 @@
 // Engine embed: one app tool of our own plus the tour tools under our own names.
-import { createTour, getModelContext } from "/dist/index.js";
+import { createTour, getModelContext, registerAsWebMcpTool } from "/dist/index.js";
 
 const PLANS = { starter: "Starter", team: "Team", business: "Business" };
 const $ = (id) => document.getElementById(id);
-const tour = createTour({ labels: { attribution: "From Northwind assistant" } });
+const tour = createTour({
+  labels: { attribution: "From Northwind assistant" },
+  // The tour tools under our own names.
+  names: {
+    showStep: "settings_point_at",
+    listTargets: "settings_list_controls",
+    dismiss: "settings_clear_point",
+    waitForInteraction: "settings_wait_for_click",
+  },
+});
 let pending = null;
 
 function stage(plan) {
@@ -40,15 +49,9 @@ if (mc) {
       return { staged: true, plan, pointed: step.ok, note: "The user still has to click Confirm." };
     },
   });
-
-  // The tour tools under our own names, registered at our own timing.
-  const names = {
-    showStep: "settings_point_at",
-    listTargets: "settings_list_controls",
-    dismiss: "settings_clear_point",
-    waitForInteraction: "settings_wait_for_click",
-  };
-  for (const def of tour.tools({ names })) await mc.registerTool(def);
 }
 
-if (location.search.includes("polyfill")) import("/shared/tool-console.js");
+// The tour tools, at our own timing.
+await registerAsWebMcpTool(tour);
+
+if (window.webmcpMode === "polyfill") import("/shared/tool-console.js");

@@ -1,4 +1,4 @@
-// In-page tool tester for ?polyfill runs: lists document.modelContext tools and calls them.
+// In-page tool tester for polyfill runs (see webmcp-env.js): lists document.modelContext tools and calls them.
 // Native hosts (Chrome, ChatGPT Desktop, ...) bring their own UI; this exists for the polyfill only.
 const ctx = document.modelContext;
 const root = document.createElement("details");
@@ -16,7 +16,7 @@ const $ = (n) => root.querySelector(`[name=${n}]`);
 async function refresh() {
   const tools = ctx ? await ctx.getTools() : [];
   $("tool").replaceChildren(...tools.map((t) => new Option(t.name)));
-  $("out").textContent = ctx ? `${tools.length} tools: ${tools.map((t) => t.name).join(", ")}` : "No document.modelContext: is the polyfill loaded?";
+  $("out").textContent = ctx ? `${tools.length} tools: ${tools.map((t) => t.name).join(", ")}` : "No document.modelContext.";
 }
 $("refresh").addEventListener("click", refresh);
 $("run").addEventListener("click", async () => {

@@ -6,7 +6,6 @@ import { createTour } from "../src/index.js";
 import type { Tour } from "../src/index.js";
 import { emulateMedia } from "./helpers.js";
 
-const KEY = Symbol.for("webmcp-tour");
 let tour: Tour;
 const PAGE = `
   <header><nav aria-label="Primary"><a href="#top">Home</a></nav></header>
@@ -31,7 +30,7 @@ beforeEach(() => {
   tour = createTour({ takeMeThere: true });
 });
 afterEach(async () => {
-  (globalThis as Record<symbol, Tour | undefined>)[KEY]?.destroy();
+  tour?.destroy();
   document.body.innerHTML = "";
   await emulateMedia({ forcedColors: null, reducedMotion: null });
 });

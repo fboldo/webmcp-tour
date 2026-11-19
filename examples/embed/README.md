@@ -3,13 +3,13 @@
 Uses the engine directly. `app.js` creates a tour, registers an app tool of its own, and registers the tour tools under custom names. No bundler: the page imports `/dist/index.js`.
 
 ```sh
-pnpm example:embed    # http://localhost:5173/   (add ?polyfill for in-page testing)
+pnpm example:embed    # http://localhost:5173/   (native WebMCP, else the polyfill loads by itself; ?webmcp=native|polyfill overrides)
 ```
 
 What to look at in `app.js`:
 
 - `change_plan` stages a plan change in the UI, then calls `tour.show({ target: "confirm-plan", … })` inside `execute`. It returns `{ staged: true, pointed: true }`: the user still clicks Confirm.
-- `tour.tools({ names })` gives `settings_point_at`, `settings_list_controls`, `settings_clear_point` and `settings_wait_for_click`, registered in a loop with `registerTool`.
+- `createTour({ names })` gives the tour tools `settings_point_at`, `settings_list_controls`, `settings_clear_point` and `settings_wait_for_click`; `registerAsWebMcpTool(tour)` registers them.
 
 ## Try asking
 

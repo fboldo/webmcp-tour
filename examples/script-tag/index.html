@@ -6,9 +6,9 @@
 <title>Northwind settings · script-tag example</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/shared/app.css">
-<!-- ?polyfill: install the W3C WebMCP polyfill first, for browsers without native WebMCP. -->
-<script>if (location.search.includes("polyfill")) document.write('<script src="/vendor/polyfill.js"><\/script>');</script>
-<!-- The one line this example is about: registers the tools and sets window.webmcpTour. -->
+<!-- Native WebMCP when the browser has it, else the W3C polyfill (override: ?webmcp=native|polyfill). -->
+<script src="/shared/webmcp-env.js" data-polyfill="/vendor/polyfill.js"></script>
+<!-- The one line this example is about: creates a default tour, registers its tools, sets window.webmcpTour. -->
 <script src="/dist/webmcp-tour.js"></script>
 <script src="app.js" defer></script>
 </head>
@@ -83,6 +83,6 @@
   </div>
 </main>
 
-<script>if (location.search.includes("polyfill")) import("/shared/tool-console.js");</script>
+<script>if (window.webmcpMode === "polyfill") import("/shared/tool-console.js");</script>
 </body>
 </html>

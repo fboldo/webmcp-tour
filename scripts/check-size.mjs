@@ -3,7 +3,7 @@
 // tree-shaken and minified (what a consumer's bundler ships); the published
 // files stay readable.
 //   engine: what `import { createTour } from "webmcp-tour"` costs.
-//   full:   the `/auto` side-effect entry and the script-tag build, tools included.
+//   full:   the script-tag build, tools included.
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { gzipSync } from "node:zlib";
@@ -13,7 +13,6 @@ const KB = 1024;
 const bundle = (options) => buildSync({ bundle: true, write: false, minify: true, format: "esm", target: "es2022", logLevel: "error", ...options }).outputFiles[0].text;
 const budgets = [
   { label: "engine (createTour from dist/index.js)", max: 16 * KB, source: () => bundle({ stdin: { contents: `import { createTour } from "./dist/index.js"; console.log(createTour);`, resolveDir: resolve("."), loader: "js" } }) },
-  { label: "full (dist/auto.js)", max: 16 * KB, source: () => bundle({ entryPoints: ["dist/auto.js"] }) },
   // Script-tag build, already minified.
   { label: "full (dist/webmcp-tour.js, IIFE)", max: 16 * KB, source: () => readFileSync("dist/webmcp-tour.js") },
 ];

@@ -18,11 +18,11 @@ No. A script tag is enough: the agent reads the visible outline and points by te
 
 ## How big is it?
 
-Zero dependencies. The gate in `scripts/check-size.mjs` keeps each build under **16 KB gzipped**: the engine alone (`createTour`), the full `webmcp-tour/auto` entry, and the script-tag file. `pnpm size` prints the current numbers.
+Zero dependencies. The gate in `scripts/check-size.mjs` keeps each build under **16 KB gzipped**: the engine alone (`createTour`) and the script-tag file (default tour and tool registration included). `pnpm size` prints the current numbers.
 
 ## Does it work with server-side rendering?
 
-Importing is safe on a server: the package does no DOM access at import time, and `webmcp-tour/auto` guards on `typeof document`. Calls that need a page return `unavailable` ("There is no document") rather than throwing. Create and use the tour on the client, in an effect or a client-only module.
+Importing is safe on a server: the package does no DOM access at import time and registers nothing until you call `registerAsWebMcpTool`. Calls that need a page return `unavailable` ("There is no document") rather than throwing. Create and use the tour on the client, in an effect or a client-only module.
 
 ## Which frameworks?
 
@@ -35,10 +35,6 @@ It needs a browser or bridge that provides `document.modelContext`, or the polyf
 ## Can the agent click the control for the user?
 
 Not with this library. That is the point. A bridge may give the agent other tools (browser automation); this library's tools are read-only.
-
-## Why didn't my `createTour` options apply?
-
-One tour exists per document and **the first call wins**. `webmcp-tour/auto` (and the script tag) create it with **no options**. If you need options, call `createTour(options)` first and then `registerAutoTools()`; do not rely on import order ([Quick start](quick-start.md)). A later call with options logs a warning and is ignored.
 
 ## Why did a step not appear?
 

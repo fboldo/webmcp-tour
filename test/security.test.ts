@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createTour } from "../src/index.js";
 import type { Tour } from "../src/index.js";
 
-const KEY = Symbol.for("webmcp-tour");
 let tour: Tour;
 const root = (): ShadowRoot => document.querySelector("[data-webmcp-tour-root]")!.shadowRoot!;
 
@@ -16,7 +15,7 @@ beforeEach(() => {
   tour = createTour();
 });
 afterEach(() => {
-  (globalThis as Record<symbol, Tour | undefined>)[KEY]?.destroy();
+  tour?.destroy();
   document.body.innerHTML = "";
 });
 

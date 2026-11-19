@@ -1,7 +1,6 @@
-// Control panel for the demo: drives the tour by hand. tour.js sets it up (pages + SPA navigate)
-// and must be imported before auto.js, which registers the WebMCP tools on that same tour.
+// Control panel for the demo: drives the tour by hand. tour.js creates it (pages + SPA navigate)
+// and registers its WebMCP tools.
 import { tour } from "./tour.js";
-import "/dist/auto.js";
 
 const result = document.getElementById("result");
 const form = document.getElementById("step");

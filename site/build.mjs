@@ -203,10 +203,11 @@ async function copyDemo() {
   await cp(polyfill, join(out, "vendor/polyfill.js"));
   await cp(join(repo, "node_modules/@w3c/webmcp-polyfill/LICENSE"), join(out, "vendor/polyfill.LICENSE")).catch(() => {});
 
+  await mkdir(join(out, "shared"), { recursive: true });
+  await cp(join(repo, "examples/shared/webmcp-env.js"), join(out, "shared/webmcp-env.js"));
   await mkdir(target, { recursive: true });
   const rules = {
     "app.js": [['const BASE = "/demo/";', `const BASE = "${base}demo/";`]],
-    "demo.js": [['"/dist/auto.js"', `"${base}lib/auto.js"`]],
     "tour.js": [['"/dist/index.js"', `"${base}lib/index.js"`]],
   };
   let html = "";
@@ -214,6 +215,7 @@ async function copyDemo() {
     if (f.endsWith(".md") || f.endsWith(".d.ts")) continue;
     if (f === "index.html") {
       html = swap(f, await readFile(join(demo, f), "utf8"), [
+        ['src="/shared/webmcp-env.js"', `src="${base}shared/webmcp-env.js"`],
         ["/node_modules/@w3c/webmcp-polyfill/dist/polyfill.js", `${base}vendor/polyfill.js`],
         ['href="/demo/', `href="${base}demo/`],
         ['href="demo.css"', `href="${base}demo/demo.css"`],

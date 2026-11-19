@@ -1,8 +1,8 @@
 // tour_list_targets' page outline: what is visible, what is never reported, caps, scope.
 import { installWebMCP } from "@w3c/webmcp-polyfill";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createTour, registerAutoTools } from "../src/index.js";
-import type { AutoHandle, Tour, TourOptions } from "../src/index.js";
+import { createTour, registerAsWebMcpTool } from "../src/index.js";
+import type { Registration, Tour, TourOptions } from "../src/index.js";
 
 installWebMCP();
 
@@ -15,19 +15,20 @@ async function list(): Promise<Record<string, any>> {
 }
 
 const slots = globalThis as Record<symbol, unknown>;
-let auto: AutoHandle | undefined;
+let reg: Registration | undefined;
 let tour: Tour;
 async function start(html: string, options: TourOptions = {}) {
+  reg?.unregister();
+  tour?.destroy();
   document.body.innerHTML = html;
   tour = createTour(options);
-  auto = registerAutoTools();
-  await auto.ready;
+  reg = await registerAsWebMcpTool(tour);
 }
 beforeEach(() => vi.spyOn(console, "warn").mockImplementation(() => {}));
 afterEach(async () => {
-  auto?.stop();
-  auto = undefined;
-  (slots[Symbol.for("webmcp-tour")] as Tour | undefined)?.destroy();
+  reg?.unregister();
+  reg = undefined;
+  tour?.destroy();
   document.body.innerHTML = "";
   vi.restoreAllMocks();
   await vi.waitFor(async () => expect(await ctx().getTools()).toEqual([]));
@@ -92,8 +93,7 @@ describe("outline", () => {
   it("honours scope", async () => {
     document.body.innerHTML = `<button>Outside</button><div id="s"><h2>In scope</h2><button>Inside</button></div>`;
     tour = createTour({ scope: document.getElementById("s")! });
-    auto = registerAutoTools();
-    await auto.ready;
+    reg = await registerAsWebMcpTool(tour);
     const { outline } = await list();
     expect(outline).toEqual({ headings: ["In scope"], controls: [{ role: "button", name: "Inside", context: "In scope" }] });
   });

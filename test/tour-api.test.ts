@@ -1,10 +1,9 @@
-// createTour contract: singleton, envelopes, replace semantics, caps, targets, constraints.
+// createTour contract: instances, envelopes, replace semantics, caps, targets, constraints.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTour } from "../src/index.js";
 import type { Tour } from "../src/index.js";
 
 let tour: Tour;
-const KEY = Symbol.for("webmcp-tour");
 
 function page(html: string): void {
   document.body.innerHTML = html;
@@ -26,29 +25,41 @@ beforeEach(() => {
   tour = createTour();
 });
 afterEach(() => {
-  (globalThis as Record<symbol, Tour | undefined>)[KEY]?.destroy();
+  tour?.destroy();
   document.body.innerHTML = "";
   vi.restoreAllMocks();
 });
 
-describe("singleton", () => {
-  it("returns the same instance and stores it under Symbol.for", () => {
-    expect(createTour()).toBe(tour);
-    expect((globalThis as Record<symbol, unknown>)[KEY]).toBe(tour);
+describe("instances", () => {
+  it("returns a new tour on every call, each with its own options", () => {
+    const other = createTour({ attribution: "Other" });
+    expect(other).not.toBe(tour);
+    expect(createTour()).not.toBe(createTour());
+    other.destroy();
   });
 
-  it("applies options only to the creating call, and says so", () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    expect(createTour({ attribution: "Other" })).toBe(tour);
-    expect(warn).toHaveBeenCalledOnce();
-  });
-
-  it("destroy releases the slot, dismisses and removes the host", async () => {
+  it("destroy dismisses and removes only its own host", async () => {
+    const other = createTour();
     await tour.show({ text: "Save changes", message: "m" });
+    expect(document.querySelectorAll("[data-webmcp-tour-root]")).toHaveLength(2);
     tour.destroy();
-    expect((globalThis as Record<symbol, unknown>)[KEY]).toBeUndefined();
+    expect(document.querySelectorAll("[data-webmcp-tour-root]")).toHaveLength(1);
+    other.destroy();
     expect(document.querySelector("[data-webmcp-tour-root]")).toBeNull();
-    expect(createTour()).not.toBe(tour);
+  });
+
+  it("tours share the screen: a step in one supersedes the other's, and its pending wait", async () => {
+    const other = createTour();
+    const ev: string[] = [];
+    tour.on("dismiss", (e) => ev.push(`a:${e.reason}`));
+    other.on("show", () => ev.push("b:show"));
+    await tour.show({ text: "Save changes", message: "m" });
+    const waiting = tour.waitForInteraction();
+    await other.show({ text: "Change plan", message: "n" });
+    expect(await waiting).toMatchObject({ ok: true, status: "superseded" });
+    expect(ev.sort()).toEqual(["a:hide", "b:show"]);
+    expect(document.querySelectorAll("[part~=popover]:popover-open")).toHaveLength(0); // shadow roots are not searched
+    other.destroy();
   });
 
   it("is quiet at import: creating a tour mounts only the empty live region, nothing is drawn", () => {
@@ -302,7 +313,6 @@ describe("options", () => {
   it("an invalid exclude selector throws at creation", () => {
     tour.destroy();
     expect(() => createTour({ exclude: "a[" })).toThrow(TypeError);
-    expect((globalThis as Record<symbol, unknown>)[KEY]).toBeUndefined();
   });
 
   it("attribution is overridable", async () => {

@@ -10,18 +10,18 @@ Two requirements: a **secure context** (https, or `http://localhost`), and a bro
 
 ## With a script tag
 
-`dist/webmcp-tour.js` is a single file (an IIFE). Include it and the four tools are registered; nothing else is needed.
+`dist/webmcp-tour.js` is a single file (an IIFE). Include it and it creates a default tour and registers its four tools; nothing else is needed.
 
 ```html
 <script src="/webmcp-tour.js"></script>
 ```
 
-That is the whole setup. The script also creates the tour and exposes it as `window.webmcpTour`, so you can configure it from your own script:
+That is the whole setup. `window.webmcpTour` is `{ tour, createTour, registerAsWebMcpTool }`: `tour` is the default tour, so you can configure it from your own script:
 
 ```html
 <script src="/webmcp-tour.js"></script>
 <script>
-  webmcpTour.defineTarget({
+  webmcpTour.tour.defineTarget({
     id: "change-plan",
     selector: "#plan-button",
     description: "Opens the plan picker.",
@@ -29,33 +29,42 @@ That is the whole setup. The script also creates the tour and exposes it as `win
 </script>
 ```
 
-A script tag cannot take options, because the tour is already created when your code runs. To set `pages`, `navigate`, `labels` and the other [options](engine-api.md), use `webmcpTour.definePage(...)` and `webmcpTour.defineTarget(...)`, or use a bundler as below.
+To give the default tour its options, add a JSON block anywhere before the script. Only JSON-safe options are read: `pages`, `labels`, `pageSuggestion`, `resume` and `takeMeThere`.
+
+```html
+<script type="application/json" id="webmcp-tour-config">
+  { "pages": [{ "id": "billing", "url": "/billing", "title": "Billing" }], "labels": { "gotIt": "Entendi" } }
+</script>
+<script src="/webmcp-tour.js"></script>
+```
+
+`navigate` is a function and cannot be JSON. For that, or for several tours, use `data-manual` and build the tours yourself with `webmcpTour.createTour(options)` and `webmcpTour.registerAsWebMcpTool(tour)`, or use a bundler as below.
 
 Attributes on the script tag:
 
 | Attribute | Effect |
 |---|---|
-| `data-no-global` | Do not set `window.webmcpTour`. The tour is still reachable through `globalThis[Symbol.for("webmcp-tour")]`. `window.webmcpTour` is page-global: any same-origin script can drive the overlay, so opt out if that matters. |
-| `data-no-auto` | Do not register the tools. Register them yourself with `tour.tools()` ([Engine API](engine-api.md)). |
+| `data-no-global` | Do not set `window.webmcpTour`. `window.webmcpTour` is page-global: any same-origin script can drive the overlay, so opt out if that matters. |
+| `data-manual` | Create the default tour but do not register its tools. Register them yourself with `webmcpTour.registerAsWebMcpTool(...)` ([Engine API](engine-api.md)). |
 
 ## With a bundler
 
 ```ts
-import { createTour, registerAutoTools } from "webmcp-tour";
+import { createTour, registerAsWebMcpTool } from "webmcp-tour";
 
-createTour({
+const tour = createTour({
   pages: [
     { id: "billing", url: "/billing", title: "Billing" },
     { id: "security", url: "/security", title: "Security" },
   ],
   navigate: (url) => router.push(url),
 });
-registerAutoTools(); // registers the four tools on that tour
+await registerAsWebMcpTool(tour); // registers the four tools of that tour
 ```
 
-**The first `createTour()` call decides the options.** There is one tour per document; later calls return the first one and log a warning if you passed options. The side-effect import `import "webmcp-tour/auto"` is the same as calling `registerAutoTools()`, which creates a default tour if none exists yet. ES imports are hoisted, so with that form put your `createTour(options)` call in a module that is imported *before* it (the demo does this), or just call `registerAutoTools()` yourself as above.
+`createTour()` returns a new tour each time, so its options always apply. To register several tours, give each its own `toolPrefix` or `names` ([Engine API](engine-api.md)).
 
-Importing only `createTour` from `webmcp-tour` gives you the engine without registering any tool ([Engine API](engine-api.md)). Both entry points are side-effect safe to import on a server: nothing touches the DOM at import time ([FAQ](faq.md)).
+Importing `createTour` alone gives you the engine without registering any tool ([Engine API](engine-api.md)). The package is side-effect free: importing it on a server touches nothing ([FAQ](faq.md)).
 
 ## Declare a control (optional)
 

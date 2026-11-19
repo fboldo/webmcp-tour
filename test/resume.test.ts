@@ -3,7 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTour } from "../src/index.js";
 import type { Tour, TourOptions } from "../src/index.js";
 
-const KEY = Symbol.for("webmcp-tour");
 const slots = globalThis as Record<symbol, unknown>;
 const MESSAGE = "Starts two-factor setup for your account.";
 const PAGE = `
@@ -48,7 +47,7 @@ beforeEach(() => {
   tour = createTour(options());
 });
 afterEach(() => {
-  (slots[KEY] as Tour | undefined)?.destroy();
+  tour?.destroy();
   document.body.innerHTML = "";
   sessionStorage.clear();
 });
