@@ -39,10 +39,10 @@ export const LABELS: Readonly<Labels> = {
   gotIt: "Got it",
   takeMeThere: "Take me there",
   close: "Dismiss",
-  attribution: "From your assistant",
+  attribution: "From the AI assistant",
   goToPage: "Go to {page}",
   notNow: "Not now",
-  otherPage: "Your assistant suggests going to {page}",
+  otherPage: "The AI assistant suggests going to {page}",
 };
 
 export interface ShowResult {

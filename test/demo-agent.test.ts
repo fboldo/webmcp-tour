@@ -282,7 +282,7 @@ describe("demo page (scripted mode, end to end)", () => {
     expect(lines.some((l) => l.startsWith("← tour_show_step:") && l.includes('"error":"other_page"'))).toBe(true);
     expect(doc.querySelector("#transcript li.answer")!.textContent).toContain("Security");
     // The card asks; nothing has moved.
-    expect(card(doc).querySelector("[part~=message]")!.textContent).toBe("Your assistant suggests going to Security");
+    expect(card(doc).querySelector("[part~=message]")!.textContent).toBe("The AI assistant suggests going to Security");
     expect(card(doc).querySelector("[part~=spotlight]")?.matches(":popover-open")).toBeFalsy();
     expect(doc.location.pathname).toBe(path);
     expect(view(doc)).toEqual(["billing"]);

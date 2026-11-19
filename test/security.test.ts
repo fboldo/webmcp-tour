@@ -22,7 +22,7 @@ afterEach(() => {
 describe("attribution", () => {
   it("is on the card by default, whatever the caller sends", async () => {
     await tour.show({ selector: "#save", title: "Site notice", message: "From the site itself." });
-    expect(root().querySelector("[part~=attribution]")!.textContent).toBe("From your assistant");
+    expect(root().querySelector("[part~=attribution]")!.textContent).toBe("From the AI assistant");
   });
 });
 

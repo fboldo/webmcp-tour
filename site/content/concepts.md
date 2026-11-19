@@ -65,7 +65,7 @@ tour.defineTarget({ id: "two-factor", page: "security", label: "Set up two-facto
 - **`tour_show_step`** takes a fourth locator, `{ page: "security" }`. For an off-page target, or an explicit `page`, it shows a card with no spotlight: the `otherPage` text, **Go to Security** and **Not now**. The result is `{ ok: false, error: "other_page", page }` for a target, and `{ ok: true, suggested: page }` for a `page` locator. A call never navigates; only the user's click on **Go** calls `navigate(url)`.
 - **Waiting.** With a suggestion on screen, `tour_wait_for_interaction` resolves `{ status: "navigating" }` on **Go** and `{ status: "dismissed" }` on **Not now**, the × button, or Escape.
 
-![A card in the middle of the page reads "Your assistant suggests going to Security", with buttons Go to Security and Not now.](images/other-page.png)
+![A card in the middle of the page reads "The AI assistant suggests going to Security", with buttons Go to Security and Not now.](images/other-page.png)
 
 For a single-page app, pass `navigate` (your router's push) so the page does not reload and an agent embedded in the page stays alive. A full page load restarts an embedded agent (the highlight still resumes, see below).
 
@@ -102,7 +102,7 @@ createTour({ resume: { param: "webmcp-tour" } }); // the default; `resume: false
 
 - **What is stored.** The step (page id, target, title, message, a timestamp) goes in `sessionStorage` under a random nonce. Only the nonce is added to the destination URL, as the `param` query parameter.
 - **On load**, or for a single-page app after `navigate()` returns, the tour looks the nonce up. A fresh entry (at most **2 minutes** old) is shown as the step as soon as its target is on the page (a `MutationObserver` watches for it, for at most **5 seconds**). Then the parameter is removed with `history.replaceState` and the entry is deleted: **one use**.
-- **Safety.** The message, title and target never go in the URL. A link with an unknown, expired or already used nonce shows nothing, so nobody can craft a link that makes your site display text "from your assistant". Same-origin destinations only: a URL on another origin is used as is, with no nonce.
+- **Safety.** The message, title and target never go in the URL. A link with an unknown, expired or already used nonce shows nothing, so nobody can craft a link that makes your site display text "from the AI assistant". Same-origin destinations only: a URL on another origin is used as is, with no nonce.
 - **What the agent sees.** The next tool result after a resume carries `resumed: { page, target? }` (`tour.takeResumed()` gives the same once). A `tour_wait_for_interaction` that ended with `navigating` is finished for good; one called with no arguments while a resume is still looking for its target waits for it, then waits on the resumed highlight.
 - **Full page loads.** An agent embedded in the page restarts, but the highlight still resumes: it does not depend on the agent. If your `navigate` appends its own query string, build it from the URL it is given (it already carries the nonce).
 
@@ -116,10 +116,10 @@ createTour({
     gotIt: "Got it",
     takeMeThere: "Take me there",
     close: "Dismiss", // aria label of the × button
-    attribution: "From your assistant", // visible, and the card's aria label
+    attribution: "From the AI assistant", // visible, and the card's aria label
     goToPage: "Go to {page}", // {page} is the page title
     notNow: "Not now",
-    otherPage: "Your assistant suggests going to {page}",
+    otherPage: "The AI assistant suggests going to {page}",
   },
 });
 ```

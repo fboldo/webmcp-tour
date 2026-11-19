@@ -8,7 +8,7 @@ order: 1
 
 [Try the live demo](demo/) · [Quick start](quick-start.md) · [Tools reference](tools.md)
 
-![The Billing page of the demo app: the Change plan button is highlighted and a card beside it says "From your assistant" with the explanation and a Got it button.](images/highlight-card.png)
+![The Billing page of the demo app: the Change plan button is highlighted and a card beside it says "From the AI assistant" with the explanation and a Got it button.](images/highlight-card.png)
 
 It is a zero-dependency TypeScript library for the browser. It registers four [WebMCP](https://github.com/webmachinelearning/webmcp) tools on the page, so any agent that can call WebMCP tools (a browser's built-in assistant, an MCP client driving Chrome, or a model called from your own page script) can point at things.
 
@@ -32,7 +32,7 @@ You can mix them freely: declared targets are an addition, not a mode.
 
 ## What the user sees
 
-- A spotlight ring around the control, and a card beside it labelled **From your assistant** (so a page cannot pass the text off as its own) with a **Got it** button.
+- A spotlight ring around the control, and a card beside it labelled **From the AI assistant** (so a page cannot pass the text off as its own) with a **Got it** button.
 - Optionally **Take me there**, which scrolls to the control, focuses it and pulses the ring.
 - For a control on another page: a card in the middle of the viewport, **Go to Security** or **Not now**, and nothing moves until the user picks.
 

@@ -104,7 +104,7 @@ Details: [tools reference](https://fboldo.github.io/webmcp-tour/tools/).
 ## Security and accessibility
 
 - Tools only highlight. Navigation happens only when the user presses **Go**.
-- Cards are labelled **From your assistant**, so a page cannot pass text off as its own.
+- Cards are labelled **From the AI assistant**, so a page cannot pass text off as its own.
 - Resume uses a one-use random nonce in the URL; the message never travels in it, so crafted links show nothing.
 - The outline never includes field values, text typed into editors, attributes, URLs or hidden content; `data-tour-exclude` hides anything else.
 - `selector` cannot probe: `:has()` and attribute value operators are refused, so it is no oracle for hidden values.

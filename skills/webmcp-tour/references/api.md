@@ -23,7 +23,7 @@ All optional.
 | `exclude` | CSS selector | Never pointed at. Also `data-tour-exclude`. Invalid selector throws `TypeError`. |
 | `domTargets` | boolean | `false` ignores `data-tour-*` markup; only `defineTarget` targets exist. Use on pages that render user-written HTML. |
 | `locators` | `{ selector?, text? }` booleans | Turn a locator off; `target` is always on. |
-| `labels` | `Partial<Labels>` | `gotIt` "Got it", `takeMeThere` "Take me there", `close` "Dismiss", `attribution` "From your assistant", `goToPage` "Go to {page}", `notNow` "Not now", `otherPage` "Your assistant suggests going to {page}". |
+| `labels` | `Partial<Labels>` | `gotIt` "Got it", `takeMeThere` "Take me there", `close` "Dismiss", `attribution` "From the AI assistant", `goToPage` "Go to {page}", `notNow` "Not now", `otherPage` "The AI assistant suggests going to {page}". |
 | `takeMeThere` | boolean | Adds a button that scrolls, focuses and pulses. Default off. |
 | `pages` | `PageDefinition[]` | `{ id, url, title, description?, match? }`. `match`: string = pathname prefix, RegExp on pathname, or `(location) => boolean`. Default: `url` path equals `location.pathname`. First match wins. |
 | `navigate` | `(url) => void` | Called only on the user's **Go**. Default `location.assign`. Give the router's push for SPAs. |

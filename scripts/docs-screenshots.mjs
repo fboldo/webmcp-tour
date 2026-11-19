@@ -8,7 +8,7 @@ import { chromium } from "playwright";
 const repo = fileURLToPath(new URL("..", import.meta.url));
 const out = fileURLToPath(new URL("../site/content/images/", import.meta.url));
 const port = 4199;
-const url = (path) => `http://127.0.0.1:${port}/demo/${path}?agent=scripted`;
+const url = (path) => `http://127.0.0.1:${port}/demo/${path}?agent=scripted&panel=closed`;
 const MAX = 200 * 1024;
 
 await mkdir(out, { recursive: true });
@@ -23,7 +23,7 @@ for (let i = 0; ; i++) {
 
 const browser = await chromium.launch();
 try {
-  const page = await browser.newPage({ viewport: { width: 1000, height: 640 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: 1240, height: 720 }, deviceScaleFactor: 1 });
   const shot = async (name) => {
     await page.waitForTimeout(400); // transitions settle
     const file = `${out}${name}.png`;
