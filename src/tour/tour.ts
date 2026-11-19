@@ -3,7 +3,8 @@ import type { OverlayEvents, OverlayOptions } from "../engine/overlay/index.js";
 import type { TargetInfo } from "../engine/resolver/index.js";
 import { describe, isVisible, listTargets, locate, locationOf, outline, reveal } from "../engine/resolver/index.js";
 import type { ResolveInput, ResolverOptions } from "../engine/resolver/index.js";
-import { defineTools } from "../tools/definitions.js";
+import { defineTools, prefixed } from "../tools/definitions.js";
+import type { ToolNames } from "../tools/definitions.js";
 import { MAX_MESSAGE, MAX_TITLE } from "./limits.js";
 import { Pages } from "./pages.js";
 import { drop, peek, stash, strip } from "./resume.js";
@@ -13,10 +14,11 @@ import type { DismissResult, PageInfo, StepInput, StepResult, Tour, TourEvents, 
 import { WAIT_MS, defaultEvent, watch } from "./wait.js";
 
 export { MAX_MESSAGE, MAX_TITLE };
-const KEY = Symbol.for("webmcp-tour");
+const ACTIVE = Symbol.for("webmcp-tour.active");
 const PLACEMENTS = ["auto", "above", "below"];
 
-type Slot = { [KEY]?: Tour };
+// The tour whose step is on screen. Tours share the page, so showing a step in one clears the other's.
+type Slot = { [ACTIVE]?: { owner: Tour; release(): void } };
 type Invalid = { ok: false; error: "invalid_input"; message: string };
 const invalid = (message: string): Invalid => ({ ok: false, error: "invalid_input", message });
 
@@ -36,7 +38,8 @@ const pick = ({ target, selector, text, index }: ResolveInput): ResolveInput => 
 });
 
 function build(options: TourOptions): Tour {
-  const { scope, exclude, locators, pages: initialPages, navigate, pageSuggestion, resume: resumeOpt, ...rest } = options;
+  const { scope, exclude, locators, pages: initialPages, navigate, pageSuggestion, resume: resumeOpt, names, toolPrefix, ...rest } = options;
+  const toolNameOptions = (): Partial<ToolNames> | undefined => (toolPrefix === undefined ? names : { ...prefixed(toolPrefix), ...names });
   if (exclude !== undefined && typeof document !== "undefined") {
     try {
       document.createDocumentFragment().querySelector(exclude);
@@ -97,10 +100,23 @@ function build(options: TourOptions): Tour {
   const suggest = (page: { id: string; url: string; title: string }, title: string | undefined, target?: string, message?: string): boolean => {
     const a = pageSuggestion?.placement === "anchor" ? anchorOf(page.id) : undefined;
     if (!overlay.notice({ page: page.title, ...(title ? { title } : {}), anchor: a }).shown) return false;
+    claim();
     suggestion = { page: page.id, url: page.url, target, title, message };
     anchor = undefined;
     supersede();
     return true;
+  };
+  /** This tour now owns the screen: clear whatever another tour had up. */
+  const claim = (): void => {
+    const slot = globalThis as Slot;
+    const prev = slot[ACTIVE];
+    if (prev && prev.owner !== tour) prev.release();
+    slot[ACTIVE] = { owner: tour, release };
+  };
+  const release = (): void => {
+    suggestion = undefined;
+    overlay.hide();
+    supersede();
   };
   const obscured = (): StepResult => ({ ok: false, error: "obscured", message: "A modal dialog is open; the page behind it cannot be pointed at." });
 
@@ -185,6 +201,7 @@ function build(options: TourOptions): Tour {
       const announcement = `${message} — ${where.name || found.matched.tag}${where.landmark ? `, ${where.landmark}` : ""}`;
       const shown = overlay.show(found.element, { title: title ?? "", message, announcement, ...(placement ? { placement } : {}) });
       if (!shown.shown) return obscured();
+      claim();
       suggestion = undefined;
       anchor = pick(step);
       supersede();
@@ -273,7 +290,7 @@ function build(options: TourOptions): Tour {
       return p && info(p);
     },
 
-    tools: (opts) => defineTools(tour, opts?.names),
+    tools: (opts) => defineTools(tour, opts?.names ? { ...toolNameOptions(), ...opts.names } : toolNameOptions()),
 
     defineTarget: (def) => targets.define(def),
 
@@ -288,7 +305,7 @@ function build(options: TourOptions): Tour {
       supersede();
       overlay.destroy();
       const slot = globalThis as Slot;
-      if (slot[KEY] === tour) delete slot[KEY];
+      if (slot[ACTIVE]?.owner === tour) delete slot[ACTIVE];
     },
   };
   for (const p of initialPages ?? []) pages.define(p);
@@ -298,16 +315,9 @@ function build(options: TourOptions): Tour {
 }
 
 /**
- * The tour for this document. One per document: later calls return the
- * first instance, so a script tag and a bundle share one overlay. Options
- * only apply to the call that creates it. Touches no DOM until used.
+ * A new tour on every call. Tours on one page share the screen: showing a step
+ * in one clears the step of another. Touches no DOM until used.
  */
 export function createTour(options: TourOptions = {}): Tour {
-  const slot = globalThis as Slot;
-  const existing = slot[KEY];
-  if (existing) {
-    if (Object.keys(options).length) console.warn("webmcp-tour: a tour already exists on this page; the options passed to createTour() were ignored.");
-    return existing;
-  }
-  return (slot[KEY] = build(options));
+  return build(options);
 }

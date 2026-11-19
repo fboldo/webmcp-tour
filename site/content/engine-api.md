@@ -10,11 +10,11 @@ The engine is what the tools sit on. Use it directly to drive the overlay from y
 import { createTour } from "webmcp-tour";
 ```
 
-Exports: `createTour`, `registerAutoTools`, `defineTools`, `DEFAULT_NAMES`, `getModelContext`, `resolve`, `Overlay`, `MAX_TITLE` (80), `MAX_MESSAGE` (500), `VERSION`, and the types (`Tour`, `TourOptions`, `StepInput`, `StepResult`, `WaitInput`, `WaitResult`, `WaitOptions`, `DismissResult`, `PageDefinition`, `PageInfo`, `TargetDefinition`, `TargetInfo`, `TourEvents`, `Labels`, `OverlayOptions`, `OverlayStep`, `ShowResult`, `ToolDefinition`, `ToolNames`, `ToolResult`, `AutoHandle`, `AutoOptions`, `ModelContextLike`, `RegistrableTool`, `ResolveInput`, `ResolveResult`, `ResolverOptions`). `webmcp-tour/auto` is the side-effect entry that registers the tools.
+Exports: `createTour`, `registerAsWebMcpTool`, `defineTools`, `DEFAULT_NAMES`, `getModelContext`, `resolve`, `Overlay`, `MAX_TITLE` (80), `MAX_MESSAGE` (500), `VERSION`, and the types (`Tour`, `TourOptions`, `StepInput`, `StepResult`, `WaitInput`, `WaitResult`, `WaitOptions`, `DismissResult`, `PageDefinition`, `PageInfo`, `TargetDefinition`, `TargetInfo`, `TourEvents`, `Labels`, `OverlayOptions`, `OverlayStep`, `ShowResult`, `ToolDefinition`, `ToolNames`, `ToolResult`, `RegisterOptions`, `Registration`, `ModelContextLike`, `RegistrableTool`, `ResolveInput`, `ResolveResult`, `ResolverOptions`). Nothing runs at import: no tool is registered and no DOM is touched until you call something.
 
 ## `createTour(options?)`
 
-Returns the tour for this document. **One per document**: later calls return the first instance (a script tag and a bundle share one overlay), and the options of a later call are ignored with a `console.warn`. It touches no DOM until used.
+Returns a **new tour on every call**, with its own options. Tours on one page share the screen (see [Registering the tools](#registering-the-tools)). It touches no DOM until used.
 
 ### Options
 
@@ -32,6 +32,8 @@ Returns the tour for this document. **One per document**: later calls return the
 | `navigate` | `(url: string) => void` | `location.assign` | Called only when the user presses **Go** on a suggestion. |
 | `pageSuggestion` | `{ placement?: "center" \| "anchor" \| "corner" }` | `center` | Where the suggestion card goes. |
 | `resume` | `false \| { param?: string }` | `{ param: "webmcp-tour" }` | Resume the step after **Go**. `false` turns it off. |
+| `names` | `Partial<ToolNames>` | `tour_show_step` etc. | Tool names for this tour's four tools (see `registerAsWebMcpTool`). |
+| `toolPrefix` | `string` | — | Shorthand for `names`: `"billing"` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`. |
 | `describeTarget` | `boolean` | `false` | Also point the target's `aria-describedby` at a hidden copy of the message while the step shows (restored on dismiss). |
 
 `PageDefinition`: `{ id, url, title, description?, match? }`. `id`, `url` and `title` are non-empty strings; `match` is a string (pathname prefix), a `RegExp` or `(location) => boolean`. A page that fails these checks throws a `TypeError` from `definePage`.
@@ -51,9 +53,9 @@ Returns the tour for this document. **One per document**: later calls return the
 | `page()` | `PageInfo \| undefined` | The current page, if one matches. |
 | `targets()` | `{ targets, total, page?, pages? }` | Declared targets as `tour_list_targets` reports them (capped at 50; `total` counts all). |
 | `outline()` | `{ headings, controls, truncated? }` | The visible outline. |
-| `tools(options?)` | `ToolDefinition[]` | Tool definitions to register yourself: `show_step`, `list_targets`, `dismiss`, `wait_for_interaction`, in that order. Registers nothing. `options.names` renames them. Throws on bad names. |
+| `tools(options?)` | `ToolDefinition[]` | Tool definitions to register yourself: `show_step`, `list_targets`, `dismiss`, `wait_for_interaction`, in that order. Registers nothing. Named by the tour's `names` / `toolPrefix`; `options.names` renames them further. Throws on bad names. |
 | `takeResumed()` | `{ page, target? } \| undefined` | After a resume, once; then `undefined`. |
-| `destroy()` | `void` | Dismiss, remove the overlay and release the singleton. |
+| `destroy()` | `void` | Dismiss and remove this tour's overlay. |
 
 `show` input is a `StepInput`: `{ target?, selector?, text?, page?, index?, title?, message?, placement? }`.
 
@@ -73,11 +75,28 @@ A listener that throws does not break the overlay (the error is rethrown asynchr
 
 ## Registering the tools
 
-Three levels:
+`createTour()` returns a **new tour on every call**; options belong to the tour you pass them to. Tours on one page share the screen: showing a step in one clears the step (and a pending wait) of another.
 
-- **`import "webmcp-tour/auto"`** or the script tag: registers the four tools under the default names on the shared tour.
-- **`registerAutoTools({ names? })`**: the same, as a call. Returns `{ ready, stop }`: `ready` settles once the initial registrations have (it never rejects); `stop()` unregisters every tool and releases the singleton. One registration per document: a second call returns the first handle. It is a no-op with one `console.info` where WebMCP is unavailable, and never throws.
+- **`registerAsWebMcpTool(tour | tour[], { signal? })`** registers the tour's four tools on `document.modelContext`. It returns `Promise<{ unregister() }>`; `unregister()` (or aborting `signal`) removes every tool that call registered. It is a no-op with one `console.info` where WebMCP is unavailable, and a tool the browser refuses is skipped with a warning.
 - **`tour.tools({ names? })`**: definitions only, for you to register under your own names and timing:
+
+```ts
+import { createTour, registerAsWebMcpTool } from "webmcp-tour";
+
+const tour = createTour({ pages, navigate });
+const { unregister } = await registerAsWebMcpTool(tour);
+```
+
+For several tours, every tool name must be distinct. Give each tour a `toolPrefix` (`"billing"` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`) or `names`; a duplicate across the array throws a `TypeError` before anything registers:
+
+```ts
+await registerAsWebMcpTool([
+  createTour({ toolPrefix: "billing", pages: billingPages }),
+  createTour({ names: { showStep: "docs_point_at", listTargets: "docs_list", dismiss: "docs_clear", waitForInteraction: "docs_wait" } }),
+]);
+```
+
+To register by hand:
 
 ```ts
 import { createTour, getModelContext } from "webmcp-tour";

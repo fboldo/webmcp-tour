@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>webmcp-tour demo</title>
 <link rel="stylesheet" href="demo.css">
-<!-- Where the browser has no WebMCP, the W3C polyfill supplies document.modelContext (a no-op when native exists). -->
-<script src="/node_modules/@w3c/webmcp-polyfill/dist/polyfill.js"></script>
+<!-- Native WebMCP is used when the browser has it; otherwise the W3C polyfill is loaded (override: ?webmcp=native|polyfill). -->
+<script src="/shared/webmcp-env.js" data-polyfill="/node_modules/@w3c/webmcp-polyfill/dist/polyfill.js"></script>
 <script type="module" src="demo.js"></script>
 <script type="module" src="assistant.js"></script>
 </head>

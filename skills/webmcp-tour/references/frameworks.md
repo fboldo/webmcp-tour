@@ -1,16 +1,16 @@
 # Framework recipes
 
-Rule for all of them: one tour per document, and its options come from the first `createTour(options)` call. With options, create the tour first, then call `registerAutoTools()`; do not also import `webmcp-tour/auto`. Without options, `import "webmcp-tour/auto"` alone is enough.
+Rule for all of them: `createTour(options)` returns a new tour with its own options, and `registerAsWebMcpTool(tour)` registers its four tools. Create one tour per app (several tours share the screen and need distinct tool names: `toolPrefix` or `names`).
 
 ## Plain HTML
 
-Script tag with a pinned version and SRI (see SKILL.md), then markup attributes. For pages or labels, use a module instead of the script tag:
+Script tag with a pinned version and SRI (see SKILL.md), then markup attributes. For pages or labels, either put them in a `<script type="application/json" id="webmcp-tour-config">` block before the script tag, or use a module (needed for `navigate`):
 
 ```html
 <script type="module">
-  import { createTour, registerAutoTools } from "https://unpkg.com/webmcp-tour@<VERSION>/dist/index.js";
-  createTour({ pages: [{ id: "billing", url: "/billing.html", title: "Billing" }, { id: "security", url: "/security.html", title: "Security" }] });
-  registerAutoTools();
+  import { createTour, registerAsWebMcpTool } from "https://unpkg.com/webmcp-tour@<VERSION>/dist/index.js";
+  const tour = createTour({ pages: [{ id: "billing", url: "/billing.html", title: "Billing" }, { id: "security", url: "/security.html", title: "Security" }] });
+  registerAsWebMcpTool(tour);
 </script>
 ```
 
@@ -22,7 +22,7 @@ Declarative markup works as is (`data-tour-*` props pass through to the DOM). Se
 
 ```tsx
 // src/tour.ts, imported from main.tsx
-import { createTour, registerAutoTools } from "webmcp-tour";
+import { createTour, registerAsWebMcpTool } from "webmcp-tour";
 import { router } from "./router";
 
 export const tour = createTour({
@@ -30,7 +30,7 @@ export const tour = createTour({
   navigate: (url) => router.navigate(url),
   labels: { gotIt: "Entendi" },
 });
-registerAutoTools();
+await registerAsWebMcpTool(tour);
 ```
 
 Declare a target from a component when the element is not yours to mark up, and clean up (Strict Mode runs effects twice):
@@ -57,27 +57,29 @@ export function TourClient() {
   push.current = (url) => router.push(url);
   useEffect(() => {
     let stop: (() => void) | undefined;
-    void import("webmcp-tour").then(({ createTour, registerAutoTools }) => {
-      createTour({ pages: [{ id: "billing", url: "/billing", title: "Billing" }], navigate: (url) => push.current(url) });
-      stop = registerAutoTools().stop;
+    let tour: { destroy(): void } | undefined;
+    void import("webmcp-tour").then(async ({ createTour, registerAsWebMcpTool }) => {
+      const t = createTour({ pages: [{ id: "billing", url: "/billing", title: "Billing" }], navigate: (url) => push.current(url) });
+      tour = t;
+      stop = (await registerAsWebMcpTool(t)).unregister;
     });
-    return () => stop?.();
+    return () => (stop?.(), tour?.destroy());
   }, []);
   return null;
 }
 ```
 
-Render `<TourClient />` in the root layout, so it mounts once. With the Pages Router, put the same effect in `_app.tsx` (`next/router`). Without options, a single `import "webmcp-tour/auto"` inside a client component is enough.
+Render `<TourClient />` in the root layout, so it mounts once. With the Pages Router, put the same effect in `_app.tsx` (`next/router`). Without options, load the script-tag build in a client component instead.
 
-If a route change keeps the tour alive, do not call `stop()` per page; call it only on full teardown.
+If a route change keeps the tour alive, do not unregister per page; do it only on full teardown.
 
 ## Vue / Nuxt
 
 ```ts
 // main.ts (Nuxt: a client-only plugin, plugins/tour.client.ts)
-import { createTour, registerAutoTools } from "webmcp-tour";
-createTour({ pages: [...], navigate: (url) => router.push(url) });
-registerAutoTools();
+import { createTour, registerAsWebMcpTool } from "webmcp-tour";
+const tour = createTour({ pages: [...], navigate: (url) => router.push(url) });
+await registerAsWebMcpTool(tour);
 ```
 
 In a component: `onMounted(() => { off = tour.defineTarget({...}) }); onBeforeUnmount(() => off?.())`. `data-tour-*` attributes work in templates.
@@ -85,13 +87,13 @@ In a component: `onMounted(() => { off = tour.defineTarget({...}) }); onBeforeUn
 ## Engine embed (own tools plus own names)
 
 ```ts
-import { createTour, getModelContext } from "webmcp-tour";
-const tour = createTour();
+import { createTour, getModelContext, registerAsWebMcpTool } from "webmcp-tour";
+const tour = createTour({ names: { showStep: "settings_point_at", listTargets: "settings_list_controls", dismiss: "settings_clear_point", waitForInteraction: "settings_wait_for_click" } });
 const mc = getModelContext(); // null (with one console.info) where WebMCP is missing
 if (mc) {
   await mc.registerTool(myAppTool); // calls tour.show(...) inside execute
-  for (const def of tour.tools({ names: { showStep: "settings_point_at", listTargets: "settings_list_controls", dismiss: "settings_clear_point", waitForInteraction: "settings_wait_for_click" } })) await mc.registerTool(def);
+  await registerAsWebMcpTool(tour); // the four tour tools, under the names above
 }
 ```
 
-Do not also load `registerAutoTools` (you would register the standard tools twice under different names).
+Do not also load the script tag (it would register the standard tools a second time under the default names).

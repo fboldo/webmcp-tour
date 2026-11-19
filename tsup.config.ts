@@ -2,8 +2,8 @@ import { defineConfig } from "tsup";
 
 export default defineConfig([
   {
-    // Bundler entries: dist/index.js, dist/auto.js (+ .d.ts).
-    entry: { index: "src/index.ts", auto: "src/auto.ts" },
+    // Bundler entries: dist/index.js (+ .d.ts).
+    entry: { index: "src/index.ts" },
     format: ["esm"],
     platform: "browser",
     target: "es2022",

@@ -4,7 +4,8 @@
 |---|---|
 | No tools appear; console says "tools not registered, …" | The message names why: not a secure context (use https or localhost), a `tools` Permissions-Policy blocks it, or the browser has no `document.modelContext`. Load `@w3c/webmcp-polyfill` first, or use Chrome with WebMCP enabled. |
 | Playwright MCP shows no tools | Launch Chrome with `--enable-features=WebMCP`; take a page snapshot; call the `webmcp_`-prefixed names. |
-| `createTour` options ignored; console warns "a tour already exists" | Something created the tour first: `webmcp-tour/auto`, the script tag, or an earlier `createTour()`. Create it with options before anything else; remove the other loader. |
+| Two tours fight over the highlight | Tours on one page share the screen: a step in one clears the other's. Use one tour per page unless you mean otherwise. |
+| `registerAsWebMcpTool` throws "more than one tool is named …" | Two tours in the array have the same tool names. Give each `createTour({ toolPrefix: "billing" })` or `names`. |
 | `not_found` with a `near` list | No visible element with that text. Use a name from `near` or `tour_list_targets`; or declare the control with `data-tour-id`. |
 | `not_visible` | Hidden or collapsed. Add `data-tour-reveal` so the agent can tell the user what to open. |
 | `ambiguous` | Several matches. Retry with `index`, or give the controls distinct `data-tour-label`s. |
@@ -15,4 +16,4 @@
 | Excluded control still mentioned in an agent's answer | The tour never points at it, but the agent may know it from elsewhere. Remove it from its own tool descriptions too. |
 | `tour_wait_for_interaction` returns `timeout` | Not a failure: the user has not acted. Call again or ask. Playwright MCP cuts calls at 30 s. |
 | `defineTarget` throws | Needs a non-empty `id` and exactly one of `selector` or `element` (or only `page`); the selector must be valid. |
-| Tool registration "skipped" warning | A duplicate tool name (`InvalidStateError`). Do not register the tour tools twice; use `names` to avoid collisions with your own tools. |
+| Tool registration "skipped" warning | A duplicate tool name (`InvalidStateError`). Do not register the same tour's tools twice; use `names` or `toolPrefix` to avoid collisions with your own tools. |

@@ -146,6 +146,10 @@ export interface TourOptions {
   resume?: false | { param?: string };
   /** Called only when the user presses Go on a suggestion. Default `location.assign`; give your router's push for an SPA. */
   navigate?: (url: string) => void;
+  /** Tool names for this tour's four tools (see `registerAsWebMcpTool`). Default `tour_show_step` etc. */
+  names?: Partial<ToolNames>;
+  /** Shorthand for `names`: `"billing"` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`. */
+  toolPrefix?: string;
   /** Also point the target's `aria-describedby` at a hidden copy of the message while the step shows. Default off. */
   describeTarget?: boolean;
 }
@@ -178,13 +182,13 @@ export interface Tour {
   /** The visible headings and controls on this page (names only, capped), as `tour_list_targets` reports them. */
   outline(): Outline;
   /**
-   * Tool definitions to register under your own names and timing:
+   * Tool definitions to register under your own names and timing (default: this tour's `names` / `toolPrefix`):
    * `show_step`, `list_targets`, `dismiss`, `wait_for_interaction`, in that order. Registers nothing itself.
    * Throws on bad names. Each `execute` returns an envelope and never throws.
    */
   tools(options?: { names?: Partial<ToolNames> }): ToolDefinition[];
   /** After a resume, `{ page, target? }` once (the tools put it on the next result as `resumed`); then undefined. */
   takeResumed(): { page: string; target?: string } | undefined;
-  /** Dismiss, remove the overlay and release the singleton. */
+  /** Dismiss and remove this tour\'s overlay. */
   destroy(): void;
 }

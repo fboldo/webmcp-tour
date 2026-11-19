@@ -26,19 +26,20 @@ Skip it for apps without a browser UI, or when the agent should act on the user'
 Pick one:
 
 ```html
-<!-- script tag: registers the tools, sets window.webmcpTour -->
+<!-- script tag: creates a default tour, registers its tools, sets window.webmcpTour -->
 <script src="https://unpkg.com/webmcp-tour@<VERSION>/dist/webmcp-tour.js"
         integrity="sha384-<HASH>" crossorigin="anonymous"></script>
 ```
 
 ```ts
-// bundler: side-effect import, SSR-safe (no DOM access at import time)
-import "webmcp-tour/auto";
+// bundler: SSR-safe (no DOM access at import time); registers nothing until you call it
+import { createTour, registerAsWebMcpTool } from "webmcp-tour";
+await registerAsWebMcpTool(createTour());
 ```
 
 Pin an exact `<VERSION>` and add SRI: compute `<HASH>` with `curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A`. Use the real current version; do not use `@latest` with SRI. If the package is not published yet, install from the repo's build (`pnpm build`, serve `dist/webmcp-tour.js`).
 
-A script tag cannot take options, and it creates the tour first. For `pages`, `navigate`, `labels` and so on, import `createTour` instead (see [references/api.md](references/api.md)), or call `window.webmcpTour.definePage(...)` / `defineTarget(...)` on the tour the script tag made.
+The script tag takes JSON-safe options from `<script type="application/json" id="webmcp-tour-config">` (`pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`). `navigate` is a function, so for it use `data-manual` on the script tag and `window.webmcpTour.createTour(...)` + `registerAsWebMcpTool(...)`, or import `createTour` (see [references/api.md](references/api.md)). `window.webmcpTour.tour` is the default tour: call `definePage` / `defineTarget` on it.
 
 Where WebMCP is missing the library registers nothing and logs one `console.info`. It never throws.
 
@@ -75,9 +76,7 @@ Good descriptions: one or two sentences, imperative, say what happens next and w
 Tell the tour where controls live so the agent can say "that is on another page":
 
 ```ts
-import { createTour, registerAutoTools } from "webmcp-tour";
-// One tour per document, and the first createTour() call sets its options. Create it with your options
-// BEFORE registering the tools; do not also `import "webmcp-tour/auto"` (it would create the tour first, with no options).
+import { createTour, registerAsWebMcpTool } from "webmcp-tour";
 const tour = createTour({
   pages: [
     { id: "billing", url: "/billing", title: "Billing" },
@@ -86,7 +85,7 @@ const tour = createTour({
   navigate: (url) => router.push(url), // SPA: keep the page (and any embedded agent) alive. Default location.assign.
 });
 tour.defineTarget({ id: "two-factor", page: "security", label: "Set up two-factor", description: "Starts two-factor setup." });
-registerAutoTools(); // the four standard tools, bound to that tour
+await registerAsWebMcpTool(tour); // the four standard tools, bound to that tour
 ```
 
 For an off-page target `tour_show_step` returns `other_page` and shows a card with **Go to Security** / **Not now**. Only the user's click calls `navigate`. The step then **resumes** on the new page through a one-time nonce (`?webmcp-tour=…`): the message never travels in the URL. Build any extra query from the URL `navigate` is given (it already carries the nonce).
@@ -113,7 +112,7 @@ await document.modelContext.registerTool({
 });
 ```
 
-`tour.tools({ names })` returns the four tool definitions to register under your own names (`registerTool`). See the embed recipe in [references/frameworks.md](references/frameworks.md).
+`createTour({ names })` or `createTour({ toolPrefix: "billing" })` renames the four tools; with several tours every name must be distinct (`registerAsWebMcpTool([a, b])` throws otherwise). `tour.tools()` returns the definitions for your own `registerTool`. See the embed recipe in [references/frameworks.md](references/frameworks.md).
 
 ## Security defaults
 
@@ -127,7 +126,7 @@ await document.modelContext.registerTool({
 
 ## Testing
 
-1. **Polyfill** (no native WebMCP): load `@w3c/webmcp-polyfill` (`dist/polyfill.js`) before the library, on https or localhost. It provides `document.modelContext`; call a tool by hand with `await document.modelContext.executeTool("tour_list_targets", {})` (the result may be a JSON string).
+1. **Polyfill** (no native WebMCP): load `@w3c/webmcp-polyfill` (`dist/polyfill.js`) before the library, on https or localhost; it installs nothing when the browser already has `document.modelContext`, so detect first: `if (!document.modelContext) load the polyfill`. It provides `document.modelContext`; call a tool by hand with `await document.modelContext.executeTool("tour_list_targets", {})` (the result may be a JSON string).
 2. **Playwright MCP + native WebMCP**: launch Chrome with the feature on:
    ```json
    { "browser": { "launchOptions": { "args": ["--enable-features=WebMCP"] } } }

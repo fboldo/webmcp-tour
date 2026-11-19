@@ -17,17 +17,11 @@
     "agent"
   ],
   "type": "module",
-  "sideEffects": [
-    "./dist/auto*"
-  ],
+  "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./auto": {
-      "types": "./dist/auto.d.ts",
-      "default": "./dist/auto.js"
     },
     "./package.json": "./package.json"
   },

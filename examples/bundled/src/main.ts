@@ -1,12 +1,14 @@
 import "../../shared/app.css";
-import { createTour } from "webmcp-tour";
+import { createTour, registerAsWebMcpTool } from "webmcp-tour";
 import { routes } from "./routes";
+import "../../shared/webmcp-env.js";
 
-// ?polyfill: install the W3C WebMCP polyfill before the tour registers its tools.
-if (location.search.includes("polyfill")) {
-  await import("@w3c/webmcp-polyfill/auto");
-  await import("../../shared/tool-console.js");
-}
+// Native WebMCP when the browser has it, else the W3C polyfill (override: ?webmcp=native|polyfill).
+const env = (window as unknown as { webmcpEnv: { detect(): { mode: string; load: boolean; status: string }; render(e: object): void } }).webmcpEnv;
+const detected = env.detect();
+if (detected.load) await import("@w3c/webmcp-polyfill/auto");
+env.render(detected);
+if (detected.mode === "polyfill") await import("../../shared/tool-console.js");
 
 const view = document.getElementById("view")!;
 
@@ -33,7 +35,7 @@ tour.defineTarget({ id: "api-token", page: "settings", label: "Create API token"
 tour.defineTarget({ id: "email-digest", page: "settings", label: "Daily email digest", description: "One summary email a day." });
 
 // registers tour_show_step, tour_dismiss, tour_wait_for_interaction and tour_list_targets.
-await import("webmcp-tour/auto");
+await registerAsWebMcpTool(tour);
 
 function render(): void {
   const path = location.pathname.replace(/\/$/, "") || "/";

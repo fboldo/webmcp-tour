@@ -3,7 +3,7 @@
 A plain HTML "Northwind" settings app with Billing, Team, Security and Notifications tabs. No build step for the page itself: one `<script src="/dist/webmcp-tour.js">` registers the tools.
 
 ```sh
-pnpm example:script-tag    # http://localhost:5173/   (add ?polyfill for in-page testing)
+pnpm example:script-tag    # http://localhost:5173/   (native WebMCP, else the polyfill loads by itself; ?webmcp=native|polyfill overrides)
 ```
 
 What to look at in `index.html`:

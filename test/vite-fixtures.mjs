@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const FIXTURES = fileURLToPath(new URL("./fixtures/", import.meta.url));
 const DIST_IIFE = fileURLToPath(new URL("../dist/webmcp-tour.js", import.meta.url));
 // No 'unsafe-inline' anywhere: the overlay must work under this.
+const ENV = fileURLToPath(new URL("../examples/shared/webmcp-env.js", import.meta.url));
 const POLYFILL = fileURLToPath(new URL("../node_modules/@w3c/webmcp-polyfill/dist/polyfill.js", import.meta.url));
 export const CSP =
   "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; " +
@@ -27,6 +28,11 @@ export function fixtures() {
             res.statusCode = 404;
             return res.end();
           }
+        }
+        if (path === "/shared/webmcp-env.js") {
+          // The demo's capability detection, shared with the examples.
+          res.setHeader("content-type", "text/javascript");
+          return res.end(await readFile(ENV));
         }
         if (path === "/fx/polyfill.js") {
           // The W3C polyfill's own script-tag bundle (a devDependency; never shipped by this package).

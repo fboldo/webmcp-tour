@@ -2,12 +2,11 @@
 import { installWebMCP } from "@w3c/webmcp-polyfill";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Mock } from "vitest";
-import { createTour, registerAutoTools } from "../src/index.js";
-import type { AutoHandle, Tour, TourOptions, WaitResult } from "../src/index.js";
+import { createTour, registerAsWebMcpTool } from "../src/index.js";
+import type { Registration, Tour, TourOptions, WaitResult } from "../src/index.js";
 
 installWebMCP(); // a no-op where the browser has the API natively
 
-const KEY = Symbol.for("webmcp-tour");
 const slots = globalThis as Record<symbol, unknown>;
 const PAGE = `
   <h2>Account</h2>
@@ -39,7 +38,7 @@ beforeEach(() => {
   tour = createTour({ navigate, pages: PAGES });
 });
 afterEach(() => {
-  (slots[KEY] as Tour | undefined)?.destroy();
+  tour?.destroy();
   document.body.innerHTML = "";
 });
 
@@ -363,11 +362,11 @@ describe("registration with pages", () => {
   type Ctx = { getTools(): Promise<Registered[]>; executeTool(tool: Registered, input?: object): Promise<string> };
   const ctx = () => (document as unknown as { modelContext: Ctx }).modelContext;
   const names = async () => (await ctx().getTools()).map((t) => t.name).sort();
-  let auto: AutoHandle | undefined;
+  let reg: Registration | undefined;
   afterEach(async () => {
-    auto?.stop();
-    auto = undefined;
-    (slots[KEY] as Tour | undefined)?.destroy();
+    reg?.unregister();
+    reg = undefined;
+    tour?.destroy();
     delete slots[Symbol.for("webmcp-tour.informed")];
     await vi.waitFor(async () => expect(await names()).toEqual([]));
   });
@@ -376,8 +375,7 @@ describe("registration with pages", () => {
     tour.destroy();
     document.body.innerHTML = "<h1>Hi</h1>";
     tour = createTour({ pages: PAGES, navigate });
-    auto = registerAutoTools();
-    await auto.ready;
+    reg = await registerAsWebMcpTool(tour);
     expect(await names()).toContain("tour_list_targets");
     const list = (await ctx().getTools()).find((t) => t.name === "tour_list_targets")!;
     expect(JSON.parse(await ctx().executeTool(list, {}))).toMatchObject({ ok: true, count: 0, pages: [{ id: "security" }] });
@@ -388,8 +386,7 @@ describe("registration with pages", () => {
     document.body.innerHTML = "<h1>Hi</h1>";
     history.replaceState(null, "", "/billing");
     tour = createTour({ navigate });
-    auto = registerAutoTools();
-    await auto.ready;
+    reg = await registerAsWebMcpTool(tour);
     expect(await names()).toContain("tour_list_targets");
     const list = async () => JSON.parse(await ctx().executeTool((await ctx().getTools()).find((t) => t.name === "tour_list_targets")!, {}));
     expect((await list()).pages).toBeUndefined();

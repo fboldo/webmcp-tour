@@ -1,18 +1,17 @@
 # API reference
 
-Verified against `src/`. Everything is exported from `webmcp-tour`; `webmcp-tour/auto` is a side-effect import that calls `registerAutoTools()`.
+Verified against `src/`. Everything is exported from `webmcp-tour`. Nothing runs at import.
 
 ## Entry points
 
 | Import | Effect |
 |---|---|
-| `webmcp-tour/auto` | Creates the tour (no options) and registers the four tools. SSR-safe. |
-| `webmcp-tour` | `createTour`, `registerAutoTools`, `defineTools`, `getModelContext`, `Overlay`, `resolve`, `DEFAULT_NAMES`, `MAX_TITLE` (80), `MAX_MESSAGE` (500), `VERSION`. No side effects. |
-| `dist/webmcp-tour.js` (script tag) | Creates the tour, sets `window.webmcpTour`, registers the tools. `data-no-global` skips the global; `data-no-auto` skips registration. |
+| `webmcp-tour` | `createTour`, `registerAsWebMcpTool`, `defineTools`, `getModelContext`, `Overlay`, `resolve`, `DEFAULT_NAMES`, `MAX_TITLE` (80), `MAX_MESSAGE` (500), `VERSION`. No side effects. |
+| `dist/webmcp-tour.js` (script tag) | Creates a default tour (options from `<script type="application/json" id="webmcp-tour-config">`: `pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`), registers its tools, sets `window.webmcpTour = { tour, createTour, registerAsWebMcpTool }`. `data-no-global` skips the global; `data-manual` skips registration. |
 
-**The tour is a singleton per document.** `createTour(options)` returns the existing one if there is one, and warns (`console.warn`) when options are passed that get ignored. So: with options, call `createTour(options)` first, then `registerAutoTools()`; do not also import `webmcp-tour/auto` or load the script tag.
+**`createTour(options)` returns a new tour on every call.** Tours on one page share the screen: a step in one clears the other's.
 
-`registerAutoTools({ names? })` returns `{ ready: Promise<void>, stop() }`. Also a singleton: a second call returns the first handle. It registers all four tools, even with zero declarations. No-op with one `console.info` where WebMCP is unavailable.
+`registerAsWebMcpTool(tour | tour[], { signal? })` returns `Promise<{ unregister() }>` (aborting `signal` also unregisters). It registers all four tools, even with zero declarations. No-op with one `console.info` where WebMCP is unavailable. For an array every tool name must be distinct (`createTour({ toolPrefix: "billing" })` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`; or `names`); a duplicate throws before anything registers.
 
 ## createTour(options)
 
@@ -30,6 +29,7 @@ All optional.
 | `navigate` | `(url) => void` | Called only on the user's **Go**. Default `location.assign`. Give the router's push for SPAs. |
 | `pageSuggestion` | `{ placement? }` | `"center"` (default), `"anchor"` (ring the element marked `data-tour-page="<id>"`, which must not carry `data-tour-id`; falls back to center), `"corner"`. |
 | `resume` | `false \| { param? }` | Default param `webmcp-tour`. Nonce in the URL, step in `sessionStorage`; single use, at most 2 minutes old, watches up to 5 s for the target. |
+| `names` / `toolPrefix` | `Partial<ToolNames>` / string | This tour's tool names; `toolPrefix: "x"` gives `x_show_step` etc. Required to be distinct across tours passed to one `registerAsWebMcpTool`. |
 | `describeTarget` | boolean | Points the target's `aria-describedby` at a hidden copy of the message while shown. Default off. |
 | `render` | boolean | `false` = headless: no DOM, only events. |
 | `renderPopover` | `(step, defaultEl) => HTMLElement` | Replace card markup; the library keeps positioning and dismissal (`[part~=close]`, `[part~=gotit]`, `[part~=goto]` are wired). You own escaping. |

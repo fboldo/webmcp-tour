@@ -6,7 +6,7 @@ A fake settings app (Acme Cloud) with the tour tools registered, a control panel
 pnpm demo        # builds, then serves http://127.0.0.1:4173/demo/  (PORT overrides)
 ```
 
-`http://localhost` counts as a secure context; WebMCP needs one. Where Chrome has no native WebMCP, the page loads the W3C polyfill (a dev dependency, served only by the demo server) to provide `document.modelContext`.
+`http://localhost` counts as a secure context; WebMCP needs one. The page detects the capability: with native WebMCP (`document.modelContext` exists) it uses it; otherwise it loads the W3C polyfill (a dev dependency, served only by the demo server) so the in-page assistant works. A status line shows "Native WebMCP", "Polyfill (in-page agents only)" or "Not a secure context". `?webmcp=native` or `?webmcp=polyfill` overrides the detection for testing (the polyfill never installs over a native API).
 
 ## The fake app
 

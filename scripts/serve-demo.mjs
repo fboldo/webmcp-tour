@@ -17,10 +17,11 @@ createServer(async (req, res) => {
   if (path.endsWith("/")) path += "index.html";
   // The demo's client-side pages (/demo/team, ...): any extensionless path under /demo/ is the app.
   else if (path.startsWith("/demo/") && !extname(path)) path = "/demo/index.html";
-  const file = normalize(join(root, path));
+  // The capability-detection script is shared with the examples.
+  const file = normalize(join(root, path.startsWith("/shared/") ? join("examples", path) : path));
   // The W3C polyfill is served from node_modules for the demo only; it is not part of the package.
   const polyfill = join(root, "node_modules/@w3c/webmcp-polyfill/dist/polyfill.js");
-  if (!(file.startsWith(join(root, "demo") + "/") || file.startsWith(join(root, "dist") + "/") || file === polyfill)) {
+  if (!(file.startsWith(join(root, "demo") + "/") || file.startsWith(join(root, "examples/shared") + "/") || file.startsWith(join(root, "dist") + "/") || file === polyfill)) {
     res.statusCode = 404;
     return res.end("not found");
   }

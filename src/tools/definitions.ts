@@ -34,6 +34,12 @@ export interface ToolDefinition {
   execute(input: Record<string, unknown>, options?: { signal?: AbortSignal }): Promise<ToolResult>;
 }
 
+/** `prefixed("billing")` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`. */
+export function prefixed(prefix: string): ToolNames {
+  const p = `${prefix}_`;
+  return { showStep: `${p}show_step`, listTargets: `${p}list_targets`, dismiss: `${p}dismiss`, waitForInteraction: `${p}wait_for_interaction` };
+}
+
 const NAME = /^[A-Za-z0-9_-]{1,57}$/;
 
 export function toolNames(names: Partial<ToolNames> = {}): ToolNames {

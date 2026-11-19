@@ -20,7 +20,7 @@ Try this:
 3. Press **Go to Security**. The app switches page and the step **resumes**: **Set up two-factor** is already highlighted.
 4. The controls work, so guidance can span steps: **Change plan** opens a plan picker (a modal dialog with declared targets for the options and **Confirm**).
 
-The demo needs WebMCP: on Chrome without it, the page loads the W3C polyfill. In a browser that blocks the polyfill or has no secure context, the assistant says so and turns itself off.
+The demo needs WebMCP: it uses the native API when the browser has one, and otherwise loads the W3C polyfill by itself (a status line says which; `?webmcp=native` or `?webmcp=polyfill` overrides). Polyfilled tools are visible to in-page agents only, not to a browser agent. In a browser that blocks the polyfill or has no secure context, the assistant says so and turns itself off.
 
 ## Runnable examples
 
@@ -39,7 +39,7 @@ Try: "How do I change my plan?", "Show me how to remove Lee Park from the team."
 
 ### Bundled (`examples/bundled`)
 
-A small Vite single-page app (Dashboard, Projects, Settings) that imports `webmcp-tour/auto`. It declares its three routes with `pages` and passes `navigate` (the SPA router). Ask for "Create API token" from the Dashboard: the agent gets `other_page`, a card offers **Go to Settings** / **Not now**, and after Go the tour resumes the step on the new route. The agent stays alive because the page never reloads.
+A small Vite single-page app (Dashboard, Projects, Settings) that creates its tour with `createTour` and registers it with `registerAsWebMcpTool`. It declares its three routes with `pages` and passes `navigate` (the SPA router). Ask for "Create API token" from the Dashboard: the agent gets `other_page`, a card offers **Go to Settings** / **Not now**, and after Go the tour resumes the step on the new route. The agent stays alive because the page never reloads.
 
 Try: "How do I start a new project?", "Show me where to create an API token.", "Where do I turn off the daily email digest?"
 

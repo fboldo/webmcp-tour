@@ -1,5 +1,5 @@
 // Static server for the examples that need no bundler: `node examples/serve.mjs <script-tag|embed>`.
-// Serves the example folder at /, plus /dist/ (the built library), /shared/ and, for ?polyfill, /vendor/polyfill.js.
+// Serves the example folder at /, plus /dist/ (the built library), /shared/ and, for the polyfill fallback, /vendor/polyfill.js.
 import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";

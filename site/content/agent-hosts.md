@@ -42,14 +42,14 @@ WebMCP in Chrome is experimental and its status changes; check Chrome's own docu
 
 An agent that runs inside your page (Chrome's on-device Prompt API, or a hosted model you call from script) cannot see the page, but it can call tools through `document.modelContext.executeTool`. That is what `tour_list_targets`' `outline` is for.
 
-Where the browser has no WebMCP, load the [W3C polyfill](https://github.com/webmachinelearning/webmcp) (`@w3c/webmcp-polyfill`) before the tour, and `document.modelContext` appears:
+Where the browser has no WebMCP, load the [W3C polyfill](https://github.com/webmachinelearning/webmcp) (`@w3c/webmcp-polyfill`) before the tour, and `document.modelContext` appears. The polyfill installs nothing when the browser already has native WebMCP, so loading it unconditionally is safe, and detecting first is cheaper:
 
 ```html
 <script src="/vendor/polyfill.js"></script>
 <script src="/webmcp-tour.js"></script>
 ```
 
-The [live demo](demo/) does exactly this and runs a small in-page assistant with four modes: a scripted agent (no model), Chrome's Prompt API in JSON-constrained mode, the Prompt API with native tool use, and OpenRouter with your own key. Pick the mode from its **Mode** menu.
+The [live demo](demo/) detects the capability (native `document.modelContext`, else it loads the polyfill) and shows a status line ("Native WebMCP", "Polyfill (in-page agents only)" or "Not a secure context"); `?webmcp=native` or `?webmcp=polyfill` overrides the detection for testing. It runs a small in-page assistant with four modes: a scripted agent (no model), Chrome's Prompt API in JSON-constrained mode, the Prompt API with native tool use, and OpenRouter with your own key. Pick the mode from its **Mode** menu.
 
 Notes for in-page agents:
 

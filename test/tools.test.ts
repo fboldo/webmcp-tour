@@ -1,8 +1,8 @@
 // The tools layer against the W3C polyfill: register, list, call, embed, tear down.
 import { installWebMCP } from "@w3c/webmcp-polyfill";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createTour, getModelContext, registerAutoTools } from "../src/index.js";
-import type { AutoHandle, Tour } from "../src/index.js";
+import { createTour, getModelContext, registerAsWebMcpTool } from "../src/index.js";
+import type { Registration, Tour, TourOptions } from "../src/index.js";
 
 installWebMCP(); // a no-op where the browser has the API natively
 
@@ -19,8 +19,6 @@ async function call(name: string, input: object = {}): Promise<Record<string, an
   return JSON.parse(await ctx().executeTool(tool, input));
 }
 
-const TOUR_KEY = Symbol.for("webmcp-tour");
-const AUTO_KEY = Symbol.for("webmcp-tour.auto");
 const INFORMED_KEY = Symbol.for("webmcp-tour.informed");
 const slots = globalThis as Record<symbol, unknown>;
 
@@ -35,22 +33,21 @@ const PAGE = `
 `;
 const PLAIN = `<h1>Settings</h1><button id="save">Save changes</button><button>Cancel</button>`;
 
-let auto: AutoHandle | undefined;
+let reg: Registration | undefined;
 let tour: Tour;
 const card = () => document.querySelector("[data-webmcp-tour-root]")?.shadowRoot?.querySelector<HTMLElement>("[part~=popover]") ?? null;
 
-async function start(html: string, options?: Parameters<typeof registerAutoTools>[0]): Promise<void> {
+async function start(html: string, options?: TourOptions): Promise<void> {
   document.body.innerHTML = html;
-  tour = createTour();
-  auto = registerAutoTools(options);
-  await auto.ready;
+  tour = createTour(options);
+  reg = await registerAsWebMcpTool(tour);
 }
 
 beforeEach(() => vi.spyOn(console, "warn").mockImplementation(() => {}));
 afterEach(async () => {
-  auto?.stop();
-  auto = undefined;
-  (slots[TOUR_KEY] as Tour | undefined)?.destroy();
+  reg?.unregister();
+  reg = undefined;
+  tour?.destroy();
   delete slots[INFORMED_KEY];
   document.body.innerHTML = "";
   vi.restoreAllMocks();
@@ -76,12 +73,12 @@ describe("registration", () => {
     }
   });
 
-  it("is a singleton: a second call (script tag plus bundle) registers nothing more", async () => {
+  it("a second registration of the same tour is skipped with a warning, the first stays", async () => {
     await start(PAGE);
-    const spy = vi.spyOn(ctx() as unknown as { registerTool: () => unknown }, "registerTool");
-    expect(registerAutoTools()).toBe(auto);
-    await auto!.ready;
-    expect(spy).not.toHaveBeenCalled();
+    const again = await registerAsWebMcpTool(tour);
+    expect(await names()).toHaveLength(4);
+    expect(console.warn).toHaveBeenCalledTimes(4);
+    again.unregister();
     expect(await names()).toHaveLength(4);
   });
 
@@ -92,24 +89,21 @@ describe("registration", () => {
     const orig = mc.registerTool.bind(mc);
     vi.spyOn(mc, "registerTool").mockImplementation((t, o) => (o?.signal && signals.push(o.signal), orig(t, o)));
     tour = createTour();
-    auto = registerAutoTools();
-    await auto.ready;
+    reg = await registerAsWebMcpTool(tour);
     expect(signals).toHaveLength(4);
     expect(new Set(signals).size).toBe(4);
     expect(signals.every((s) => !s.aborted)).toBe(true);
-    auto.stop();
+    reg.unregister();
     expect(signals.every((s) => s.aborted)).toBe(true);
     expect(await names()).toEqual([]);
-    expect(slots[AUTO_KEY]).toBeUndefined();
   });
 
-  it("stop() beats a pending registration and the observer: nothing registers afterwards", async () => {
+  it("unregister() beats a pending registration: nothing registers afterwards", async () => {
     document.body.innerHTML = PLAIN;
     tour = createTour();
-    auto = registerAutoTools();
-    auto.stop(); // before the first registerTool settles
-    await auto.ready;
-    document.body.insertAdjacentHTML("beforeend", `<button data-tour-id="late">Late</button>`);
+    const pending = registerAsWebMcpTool(tour);
+    // Registration has started but not settled: unregister once the call returns.
+    (await pending).unregister();
     await new Promise((r) => setTimeout(r, 400));
     expect(await names()).toEqual([]);
     expect(console.warn).not.toHaveBeenCalled(); // an abort is not a failure
@@ -120,8 +114,7 @@ describe("registration", () => {
     const own = new AbortController();
     await (ctx() as any).registerTool({ name: "tour_dismiss", description: "mine", execute: async () => ({ mine: true }) }, { signal: own.signal });
     tour = createTour();
-    auto = registerAutoTools();
-    await auto.ready;
+    reg = await registerAsWebMcpTool(tour);
     expect(await names()).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]);
     expect(await call("tour_dismiss")).toEqual({ mine: true });
     expect(console.warn).toHaveBeenCalledTimes(1);
@@ -129,7 +122,7 @@ describe("registration", () => {
     own.abort();
   });
 
-  it("custom names through registerAutoTools", async () => {
+  it("custom names through createTour({ names })", async () => {
     await start(PAGE, { names: { showStep: "point_at", dismiss: "unpoint", listTargets: "pointables" } });
     expect(await names()).toEqual(["point_at", "pointables", "tour_wait_for_interaction", "unpoint"]);
     expect((await ctx().getTools()).find((t) => t.name === "pointables")!.description).toContain("point_at");
@@ -318,18 +311,91 @@ describe("getModelContext", () => {
     }
   });
 
-  it("registerAutoTools is a quiet no-op without the API, and a later call can still register", async () => {
-    vi.spyOn(console, "info").mockImplementation(() => {});
+  it("registerAsWebMcpTool is a quiet no-op without the API, and a later call can still register", async () => {
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
     strip("modelContext");
     document.body.innerHTML = PLAIN;
-    const h = registerAutoTools();
-    await h.ready;
-    h.stop();
-    expect(slots[AUTO_KEY]).toBeUndefined();
+    tour = createTour();
+    const h = await registerAsWebMcpTool(tour);
+    await registerAsWebMcpTool(tour);
+    h.unregister();
+    expect(info).toHaveBeenCalledTimes(1);
     delete (document as any).modelContext;
-    auto = registerAutoTools();
-    await auto.ready;
+    reg = await registerAsWebMcpTool(tour);
     expect(await names()).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]);
+  });
+});
+
+describe("registerAsWebMcpTool", () => {
+  const FOUR = ["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"];
+
+  it("registers one tour", async () => {
+    document.body.innerHTML = PLAIN;
+    const t = createTour();
+    const h = await registerAsWebMcpTool(t);
+    expect(await names()).toEqual(FOUR);
+    h.unregister();
+    expect(await names()).toEqual([]);
+    t.destroy();
+  });
+
+  it("registers an array of tours under prefixes and names, each driving its own tour", async () => {
+    document.body.innerHTML = PLAIN;
+    const a = createTour({ toolPrefix: "billing" });
+    const b = createTour({ names: { showStep: "point_at", listTargets: "what_is_here", dismiss: "unpoint", waitForInteraction: "wait_for_user" } });
+    const h = await registerAsWebMcpTool([a, b]);
+    expect(await names()).toEqual(["billing_dismiss", "billing_list_targets", "billing_show_step", "billing_wait_for_interaction", "point_at", "unpoint", "wait_for_user", "what_is_here"]);
+    expect((await ctx().getTools()).find((t) => t.name === "billing_list_targets")!.description).toContain("billing_show_step");
+    const ev: string[] = [];
+    a.on("show", () => ev.push("a"));
+    b.on("show", () => ev.push("b"));
+    await call("billing_show_step", { text: "Save changes", message: "m" });
+    await call("point_at", { text: "Cancel", message: "m" });
+    expect(ev).toEqual(["a", "b"]);
+    h.unregister();
+    expect(await names()).toEqual([]);
+    a.destroy();
+    b.destroy();
+  });
+
+  it("throws a clear error on duplicate names across tours, before registering anything", async () => {
+    const a = createTour({ toolPrefix: "x" });
+    const b = createTour({ toolPrefix: "x" });
+    const c = createTour(); // default names
+    const d = createTour(); // default names again
+    await expect(registerAsWebMcpTool([a, b])).rejects.toThrow(/more than one tool is named "x_show_step"/);
+    await expect(registerAsWebMcpTool([c, a, d])).rejects.toThrow(TypeError);
+    expect(await names()).toEqual([]);
+    for (const t of [a, b, c, d]) t.destroy();
+  });
+
+  it("rejects a bad prefix up front", async () => {
+    const t = createTour({ toolPrefix: "has space" });
+    await expect(registerAsWebMcpTool(t)).rejects.toThrow(TypeError);
+    t.destroy();
+  });
+
+  it("unregisters when the signal aborts, and registers nothing for an aborted signal", async () => {
+    document.body.innerHTML = PLAIN;
+    const t = createTour();
+    const ctl = new AbortController();
+    await registerAsWebMcpTool(t, { signal: ctl.signal });
+    expect(await names()).toEqual(FOUR);
+    ctl.abort();
+    expect(await names()).toEqual([]);
+    await registerAsWebMcpTool(t, { signal: ctl.signal });
+    expect(await names()).toEqual([]);
+    t.destroy();
+  });
+
+  it("unregister is idempotent and registering again afterwards works", async () => {
+    const t = createTour();
+    const h = await registerAsWebMcpTool(t);
+    h.unregister();
+    h.unregister();
+    reg = await registerAsWebMcpTool(t);
+    expect(await names()).toEqual(FOUR);
+    t.destroy();
   });
 });
 
@@ -339,17 +405,6 @@ describe("entries", () => {
     const registerTool = vi.spyOn(ctx() as unknown as { registerTool: () => unknown }, "registerTool");
     await import("../src/index.js");
     expect(registerTool).not.toHaveBeenCalled();
-    expect(slots[AUTO_KEY]).toBeUndefined();
-    expect(slots[TOUR_KEY]).toBeUndefined();
     expect(document.querySelector("[data-webmcp-tour-root]")).toBeNull();
-  });
-
-  it("webmcp-tour/auto registers on import", async () => {
-    vi.resetModules();
-    document.body.innerHTML = PLAIN;
-    await import("../src/auto.js");
-    auto = slots[AUTO_KEY] as AutoHandle;
-    await auto.ready;
-    expect(await names()).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]);
   });
 });

@@ -2,8 +2,8 @@
 import { installWebMCP } from "@w3c/webmcp-polyfill";
 import { commands } from "vitest/browser";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createTour, registerAutoTools } from "../src/index.js";
-import type { AutoHandle, Tour, WaitResult } from "../src/index.js";
+import { createTour, registerAsWebMcpTool } from "../src/index.js";
+import type { Registration, Tour, WaitResult } from "../src/index.js";
 
 installWebMCP(); // a no-op where the browser has the API natively
 
@@ -38,7 +38,7 @@ const total = () => [...live.values()].reduce((a, b) => a + b, 0);
 const browserCount = () => input.windowListeners(TYPES);
 
 let tour: Tour;
-let auto: AutoHandle | undefined;
+let reg: Registration | undefined;
 const el = (id: string) => document.getElementById(id)!;
 const card = () => document.querySelector("[data-webmcp-tour-root]")?.shadowRoot?.querySelector<HTMLElement>("[part~=popover]") ?? null;
 const show = (id: string) => tour.show({ selector: `#${id}`, message: "Do this." });
@@ -69,9 +69,9 @@ beforeEach(() => {
 afterEach(() => {
   window.addEventListener = realAdd;
   window.removeEventListener = realRemove;
-  auto?.stop();
-  auto = undefined;
-  (slots[Symbol.for("webmcp-tour")] as Tour | undefined)?.destroy();
+  reg?.unregister();
+  reg = undefined;
+  tour?.destroy();
   document.body.innerHTML = "";
   vi.useRealTimers();
   vi.restoreAllMocks();
@@ -318,8 +318,7 @@ describe("errors", () => {
 
 describe("through the registered tool", () => {
   async function start(): Promise<void> {
-    auto = registerAutoTools();
-    await auto.ready;
+    reg = await registerAsWebMcpTool(tour);
   }
 
   it("is registered, read-only, and resolves on a real press", async () => {
