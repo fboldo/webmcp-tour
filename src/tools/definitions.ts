@@ -74,12 +74,12 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       name: n.showStep,
       title: "Show me where",
       description:
-        "Highlight an element with a short explanation beside it, so the user sees which control you mean and acts on it themselves. " +
+        "Highlight an element with a short explanation beside it; the user sees which control you mean and acts themselves. " +
         "Point at it by a declared `target` id, its visible `text` (label, link text, aria-label), or a CSS `selector`. " +
-        "Prefer `text` or `target`; use `selector` only for something you saw in the page snapshot; `:has()` and attribute-value selectors are refused. " +
+        "Prefer `text` or `target`; `selector` is for what you saw in the snapshot (`:has()` and attribute-value selectors are refused). " +
         "`message` is required unless the target has its own description. " +
         "`page` (a page id) asks the user to go to another page; so does a target on another page (`other_page`). Nothing navigates unless they press Go. " +
-        `If a control is not found, check ${n.listTargets} for this page and others; do not highlight a guess. ` +
+        `Not found? Check ${n.listTargets} for this page and others; never highlight a guess. ` +
         "This only points: it never clicks or changes anything.",
       inputSchema: {
         type: "object",
