@@ -62,7 +62,7 @@ Without any declaration, `tour_list_targets` still returns a page outline and ag
 |---|---|
 | `data-tour-id` | Stable id the agent can use as `target`. |
 | `data-tour-label` | Accessible-name override in target lists. |
-| `data-tour-description` | Default card text when the agent gives no `message`. Author-written, so it is trustworthy. |
+| `data-tour-description` | Default card text when the agent gives no `message`. Page markup: shown to users and agents as the page's own text. |
 | `data-tour-reveal` | Hint returned when the element is hidden ("Open X, then expand Y"). |
 | `data-tour-page` | Page id the target lives on (see step 3). |
 | `data-tour-exclude` | Never pointed at, anywhere in its subtree. |
@@ -119,6 +119,8 @@ await document.modelContext.registerTool({
 - Tools are `readOnlyHint`; they only draw an overlay. Text is plain (`textContent`), never HTML.
 - Never exposed: field values, attributes, URLs or hidden content. The outline lists visible names only.
 - `exclude`, `data-tour-exclude`, `scope`, `aria-hidden`, `inert` and the tour's own overlay are never pointed at. Mark destructive or sensitive controls (delete, billing secrets, API keys) with `data-tour-exclude`.
+- `data-tour-*` is page markup, and HTML sanitisers keep `data-*` by default. If the page renders user-written HTML (comments, profiles, tickets), strip `data-tour-*` in the sanitiser (DOMPurify: `FORBID_ATTR`, or an `uponSanitizeAttribute` hook that drops names starting `data-tour-`), declare targets with `defineTarget` instead, and consider `domTargets: false`. A duplicated `data-tour-id` is refused as `ambiguous_target`.
+- `selector` refuses `:has()` and attribute value operators (`[a^=x]`, `[value]`…); plain `[attr=name]` is fine.
 - Do not put secrets, tokens or personal data in descriptions, labels, or `reveal` hints: agents read them.
 - `window.webmcpTour` is page-global: any same-origin script can drive the overlay. Add `data-no-global` to the script tag to opt out.
 - The resume nonce is single-use, expires in 2 minutes, and unknown nonces show nothing.

@@ -12,6 +12,7 @@ Input: exactly one of `target`, `selector`, `text`, `page`; optional `index` (0-
 | `{ ok: true, suggested: { id, title }, note }` | `page` locator: a Go / Not now card is showing. |
 | `{ ok: false, error: "other_page", page, message }` | Target is on another page; a card asks the user. Nothing moved. |
 | `invalid_input` (`message`), `invalid_selector` | Bad arguments (e.g. missing `message`, two locators, text too long). |
+| `ambiguous_target` (`candidates`, `count`) | The id is declared on several elements; none is trusted. Use `text` or a plain selector. |
 | `target_not_found` (`available`) | Unknown id; the list says what exists. |
 | `not_found` (`near`) | No visible match; `near` lists visible names. |
 | `not_visible` (`reveal?`) | Exists but hidden; `reveal` says what to open. |

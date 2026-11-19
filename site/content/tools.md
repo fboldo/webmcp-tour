@@ -78,7 +78,8 @@ Suggesting a page (`page` input):
 
 | `error` | Extra fields | Meaning and what to do |
 |---|---|---|
-| `invalid_input` | `message` | Wrong shape: not exactly one locator, an empty or non-string value, `text` over 200 characters, a bad `index` (also "index out of range: N candidates"), `title` or `message` over its limit, a bad `placement`, a locator turned off with `locators`, a missing `message` (when the target has no description), or `page` is the page the user is already on. Fix the call. |
+| `invalid_input` | `message` | Wrong shape: not exactly one locator, an empty or non-string value, `text` over 200 characters, a bad `index` (also "index out of range: N candidates"), `title` or `message` over its limit, a bad `placement`, a selector that uses `:has()` or tests attribute values (use `text` or `target`), a locator turned off with `locators`, a missing `message` (when the target has no description), or `page` is the page the user is already on. Fix the call. |
+| `ambiguous_target` | `candidates`, `count` | The declared id is on more than one element, so none is trusted. `candidates` lists them (up to 10). Use `text` or a selector, and tell the site's owner the id is duplicated. |
 | `invalid_selector` | — | The CSS selector does not parse. |
 | `target_not_found` | `available: string[]` | No such declared target (or it is excluded or out of scope). `available` lists up to 50 ids. |
 | `not_found` | `near: string[]` | Nothing visible matched. `near` lists up to 8 visible control names that look close. A hidden element looks exactly like no match. Do not highlight a guess: call `tour_list_targets`. |

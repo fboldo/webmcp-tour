@@ -21,13 +21,37 @@ The library has one job: draw a highlight and a card. The defaults are built so 
 
 ## It cannot be used to read the page
 
-- `selector` matches **visible** elements only. A selector that hits a hidden element looks exactly like no match, so it is no oracle for what exists in the DOM.
+- `selector` matches **visible** elements only, and it can say only *where* an element is, never what a hidden element holds. Selectors that test attribute values (`[attr^=…]`, `$=`, `*=`, `~=`, `|=`, anything on `value`) or use `:has()` are refused with `invalid_input`, because "found / not found" would otherwise answer questions about content the user cannot see, one character at a time. Plain `[attr=name]`, ids, classes and tags still work; the error tells the agent to use `text` or `target`.
 - Results carry only visible names, clipped in count and length: up to 8 `near` names, 10 `candidates`, 50 `available` ids, 60 outline controls. They never carry field values (password, hidden inputs and text fields included) or attribute values.
-- Names come from the accessible name of visible elements. `aria-hidden`, `inert`, `data-tour-exclude`, the `exclude` option, the `scope` option and the tour's own overlay are never searched, and excluded content inside an element does not leak through that element's text.
+- Names come from the accessible name of visible elements. `aria-hidden`, `inert`, `data-tour-exclude`, the `exclude` option, the `scope` option and the tour's own overlay are never searched, and excluded content does not leak: not through an element's text, not through the row or heading context of an ambiguous match or of the outline, and not through `aria-labelledby` pointing at an excluded node.
+- **What a person typed is never a name.** `input`, `textarea`, `select`, `contenteditable` and `role=textbox|searchbox|combobox|spinbutton` are named only by `aria-label`, `aria-labelledby`, a `<label>`, `title` or `placeholder`. A rich-text editor's content does not reach the agent.
 - `tour_wait_for_interaction` reports the element (tag and name) and the kind of event, never a value, and ignores `input` events.
 - `tour_list_targets` is annotated `untrustedContentHint: true`: the text in it is the page's own.
 
 Mark whatever must not be pointed at with `data-tour-exclude` (or `exclude`): delete workspace, a secret reveal. Use `scope` to limit the tour to part of the page, and `locators: { selector: false }` to allow only declared ids and visible text.
+
+## Markup from your users
+
+`data-tour-*` attributes are page markup. HTML sanitisers allow `data-*` attributes by default (DOMPurify's `ALLOW_DATA_ATTR` is `true`), so a comment, profile or support ticket you render could carry `data-tour-id`, `data-tour-description` or `data-tour-page`. The library defends itself in three ways:
+
+- An id declared on more than one element is **ambiguous**: pointing at it returns `ambiguous_target` with every match listed (up to 10), it is left out of `tour_list_targets`, and the console warns once. Earlier markup cannot take over a target.
+- DOM targets are read only inside `scope` when you set one.
+- `domTargets: false` ignores `data-tour-*` markup altogether; only `defineTarget` targets exist.
+
+If your site renders user-written HTML, also strip the attributes in the sanitiser and declare your targets in code:
+
+```js
+// DOMPurify
+DOMPurify.sanitize(html, { FORBID_ATTR: ["data-tour-id", "data-tour-label", "data-tour-description", "data-tour-reveal", "data-tour-page", "data-tour-exclude"] });
+// or, to drop every data-tour-* attribute:
+DOMPurify.addHook("uponSanitizeAttribute", (_node, data) => {
+  if (data.attrName.startsWith("data-tour-")) data.keepAttr = false;
+});
+
+tour.defineTarget({ id: "change-plan", selector: "#change-plan" });
+```
+
+A description shown on a card is still the page's text, shown under the assistant's label; treat `data-tour-description` as content that only your own templates should produce.
 
 ## Where the code runs
 

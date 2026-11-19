@@ -38,7 +38,7 @@ const pick = ({ target, selector, text, index }: ResolveInput): ResolveInput => 
 });
 
 function build(options: TourOptions): Tour {
-  const { scope, exclude, locators, pages: initialPages, navigate, pageSuggestion, resume: resumeOpt, names, toolPrefix, ...rest } = options;
+  const { scope, exclude, domTargets, locators, pages: initialPages, navigate, pageSuggestion, resume: resumeOpt, names, toolPrefix, ...rest } = options;
   const toolNameOptions = (): Partial<ToolNames> | undefined => (toolPrefix === undefined ? names : { ...prefixed(toolPrefix), ...names });
   if (exclude !== undefined && typeof document !== "undefined") {
     try {
@@ -58,7 +58,7 @@ function build(options: TourOptions): Tour {
   const overlay = new Overlay(overlayOptions);
   overlay.mount(); // the live region exists from load; no-op headless or without a document
   const pages = new Pages();
-  const targets = new Targets(() => pages.current()?.id);
+  const targets = new Targets(() => pages.current()?.id, scope, domTargets !== false);
   let suggestion: (Pending & { url: string }) | undefined; // the page suggestion on screen: Go navigates, nothing else does
   let resumed: { page: string; target?: string } | undefined; // told to the agent once, on its next result
   let resuming: Promise<void> | undefined; // a resume waiting for its target to appear
