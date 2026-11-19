@@ -65,3 +65,16 @@ dialog h2 { margin-top: 0; }
 #chat-form input { flex: 1; min-width: 0; padding: .35rem .5rem; font: inherit; }
 #toast { position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 10; padding: .6rem 1rem; border-radius: 8px; background: #1c1c28; color: #fff; }
 #toast[hidden] { display: none; }
+
+/* Collapsible control panel: collapsed, it shrinks to a pill in the bottom-right corner. */
+#panel-toggle > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: .5rem; }
+#panel-toggle > summary::-webkit-details-marker { display: none; }
+#panel-toggle > summary::after { content: "▾"; font-size: .9rem; color: #666; }
+#panel-toggle:not([open]) > summary::after { content: "▸"; }
+#panel-toggle > summary h2 { display: inline; margin: 0; }
+#panel-toggle[open] > summary { margin-bottom: .75rem; }
+.panel:has(> #panel-toggle:not([open])) { top: auto; bottom: 1rem; right: 1rem; width: auto; padding: .5rem .9rem; border: 1px solid #c9cbe0; border-radius: 999px; box-shadow: 0 2px 8px rgb(20 20 60 / .12); }
+.panel:has(> #panel-toggle:not([open])) h2 { font-size: .95rem; }
+body:has(#panel-toggle:not([open])) { padding-right: 0; }
+.assistant .webmcp-status { margin: 0 0 .5rem; font-size: 12px; color: #555; }
+.assistant .webmcp-status:empty { display: none; }
