@@ -52,6 +52,9 @@
     "demo": "pnpm build && node scripts/serve-demo.mjs",
     "example:script-tag": "pnpm build && node examples/serve.mjs script-tag",
     "example:embed": "pnpm build && node examples/serve.mjs embed",
+    "docs:dev": "pnpm build && node site/build.mjs --dev",
+    "docs:build": "pnpm build && node site/build.mjs",
+    "docs:deploy": "pnpm build && node site/deploy.mjs",
     "example:bundled": "pnpm build && pnpm --filter webmcp-tour-example-bundled dev"
   },
   "devDependencies": {
@@ -60,6 +63,7 @@
     "@w3c/webmcp-polyfill": "0.1.1",
     "axe-core": "^4.14.1",
     "esbuild": "^0.28.2",
+    "marked": "^18.2.1",
     "playwright": "^1.65.1",
     "tsup": "^9.0.0",
     "typescript": "^6.0.3",
