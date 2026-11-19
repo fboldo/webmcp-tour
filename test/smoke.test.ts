@@ -21,6 +21,6 @@ describe("smoke", () => {
   });
 
   it("imports the public entry", () => {
-    expect(VERSION).toBe("0.0.0");
+    expect(VERSION).toMatch(/^\d+\.\d+\.\d+/);
   });
 });

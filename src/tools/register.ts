@@ -14,8 +14,10 @@ export interface Registration {
 
 /**
  * Register the tour's four tools on the page's model context. For several tours every tool name must be
- * distinct (`createTour({ toolPrefix })` or `{ names }`); a duplicate throws before anything registers.
- * Where WebMCP is unavailable it is a no-op with one `console.info`. A tool the browser refuses is skipped with a warning.
+ * distinct (`createTour({ toolPrefix })` or `{ names }`).
+ * All or nothing: if any tool cannot be registered (a duplicate name, a browser refusal), the ones that did register
+ * are unregistered and the returned promise **rejects**. It is `async`, so it never throws synchronously: `await` it
+ * or add a `.catch`. Where WebMCP is unavailable it resolves to a no-op registration with one `console.info`.
  * There are no unload listeners (they would cost bfcache).
  */
 export async function registerAsWebMcpTool(tours: Tour | Tour[], options: RegisterOptions = {}): Promise<Registration> {
@@ -42,14 +44,23 @@ export async function registerAsWebMcpTool(tours: Tour | Tour[], options: Regist
     own.add(ctl);
     try {
       await mc!.registerTool(def, { signal: ctl.signal });
-      if (!stopped) return;
     } catch (e) {
-      if (!ctl.signal.aborted) console.warn(`webmcp-tour: could not register "${def.name}" (${(e as Error)?.name}); skipped.`);
+      own.delete(ctl);
+      if (!ctl.signal.aborted) throw e;
+      return;
     }
-    own.delete(ctl);
-    ctl.abort(); // no-op unless stopped mid-registration, when it unregisters
+    if (stopped) {
+      own.delete(ctl);
+      ctl.abort(); // stopped mid-registration: unregister what just landed
+    }
   };
-  // Started together, in order: an agent that lists the tools sees all of them or none.
-  await Promise.all(defs.map(register));
+  // All or nothing for this call: the tools register together, and if the browser refuses any of them
+  // (a duplicate name from another copy of the library, say) the ones that succeeded are unregistered.
+  const results = await Promise.allSettled(defs.map(register));
+  const failed = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
+  if (failed) {
+    unregister();
+    throw failed.reason;
+  }
   return { unregister };
 }

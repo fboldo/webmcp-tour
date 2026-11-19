@@ -49,4 +49,4 @@ Uses the engine directly. It creates a tour, registers an app tool of its own an
 
 Try: "Switch us to the Business plan.", "Change the plan to Enterprise." (not a valid plan: expect an error and no highlight).
 
-The example sources are in the [repository](https://github.com/fboldo/webmcp-tour/tree/main/examples). While it is private you need access to it.
+The example sources are in the [repository](https://github.com/fboldo/webmcp-tour/tree/main/examples).

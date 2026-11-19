@@ -16,4 +16,4 @@
 | Excluded control still mentioned in an agent's answer | The tour never points at it, but the agent may know it from elsewhere. Remove it from its own tool descriptions too. |
 | `tour_wait_for_interaction` returns `timeout` | Not a failure: the user has not acted. Call again or ask. Playwright MCP cuts calls at 30 s. |
 | `defineTarget` throws | Needs a non-empty `id` and exactly one of `selector` or `element` (or only `page`); the selector must be valid. |
-| Tool registration "skipped" warning | A duplicate tool name (`InvalidStateError`). Do not register the same tour's tools twice; use `names` or `toolPrefix` to avoid collisions with your own tools. |
+| `registerAsWebMcpTool` rejects (`InvalidStateError`) and no tour tools appear | A duplicate tool name; registration is all or nothing. Do not register the same tour's tools twice; use `names` or `toolPrefix` to avoid collisions with your own tools. |

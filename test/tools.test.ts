@@ -73,13 +73,12 @@ describe("registration", () => {
     }
   });
 
-  it("a second registration of the same tour is skipped with a warning, the first stays", async () => {
+  it("a second registration of the same tour rejects, the first stays", async () => {
     await start(PAGE);
-    const again = await registerAsWebMcpTool(tour);
+    await expect(registerAsWebMcpTool(tour)).rejects.toThrow();
     expect(await names()).toHaveLength(4);
-    expect(console.warn).toHaveBeenCalledTimes(4);
-    again.unregister();
-    expect(await names()).toHaveLength(4);
+    reg!.unregister();
+    expect(await names()).toEqual([]);
   });
 
   it("gives each registration its own AbortController, aborted on stop", async () => {
@@ -109,16 +108,14 @@ describe("registration", () => {
     expect(console.warn).not.toHaveBeenCalled(); // an abort is not a failure
   });
 
-  it("skips a name the page already registered, says so, and registers the rest", async () => {
+  it("rejects when the page already registered one of the names, and registers none of the rest", async () => {
     document.body.innerHTML = PAGE;
     const own = new AbortController();
     await (ctx() as any).registerTool({ name: "tour_dismiss", description: "mine", execute: async () => ({ mine: true }) }, { signal: own.signal });
     tour = createTour();
-    reg = await registerAsWebMcpTool(tour);
-    expect(await names()).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]);
+    await expect(registerAsWebMcpTool(tour)).rejects.toThrow();
+    expect(await names()).toEqual(["tour_dismiss"]);
     expect(await call("tour_dismiss")).toEqual({ mine: true });
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(String((console.warn as any).mock.calls[0][0])).toContain("tour_dismiss");
     own.abort();
   });
 

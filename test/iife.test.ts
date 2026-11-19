@@ -7,7 +7,7 @@ type Api = { tour: Tour; createTour: (o?: object) => Tour; registerAsWebMcpTool:
 type W = Window & typeof globalThis & { webmcpTour?: Api };
 const frames: HTMLIFrameElement[] = [];
 
-async function load(attrs: Record<string, string> = {}, polyfill = false, config?: string) {
+async function load(attrs: Record<string, string> = {}, polyfill = false, config?: string, bodyHtml?: string) {
   const f = document.createElement("iframe");
   Object.assign(f.style, { position: "fixed", top: "0", left: "0", width: "900px", height: "700px", border: "0", background: "#fff" });
   f.src = "/fx/iife.html";
@@ -32,6 +32,7 @@ async function load(attrs: Record<string, string> = {}, polyfill = false, config
     c.textContent = config;
     doc.head.append(c);
   }
+  if (bodyHtml) doc.body.insertAdjacentHTML("beforeend", bodyHtml);
   const s = doc.createElement("script");
   for (const [k, v] of Object.entries(attrs)) s.setAttribute(k, v);
   s.src = "/fx/webmcp-tour.js";
@@ -74,6 +75,20 @@ describe("dist/webmcp-tour.js", () => {
     expect(tour.dismiss()).toEqual({ ok: true, dismissed: true });
     expect(events).toEqual(["show:Save", "dismiss:superseded", "show:", "dismiss:superseded", "show:", "dismiss:hide"]);
     expect(violations).toEqual([]); // strict CSP: no inline styles or scripts needed
+  });
+
+  it("ignores a #webmcp-tour-config that is not a JSON script block", async () => {
+    const fake = `<p id="webmcp-tour-config">{"pages":[{"id":"x","title":"Evil","url":"https://evil.example/"}]}</p>`;
+    const { win } = await load({}, false, undefined, fake);
+    expect(win.webmcpTour!.tour.targets().pages ?? []).toEqual([]);
+  });
+
+  it("reads config only from script[type=application/json] and survives __proto__ keys", async () => {
+    const config = `{"__proto__":{"polluted":1},"labels":{"__proto__":{"polluted":2},"gotIt":"Entendi"},"pages":[{"id":"a","title":"A","url":"/a","__proto__":{"polluted":3}}]}`;
+    const { win } = await load({}, false, config);
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+    expect((win as unknown as { Object: ObjectConstructor }).Object.prototype).not.toHaveProperty("polluted");
+    expect(win.webmcpTour!.tour.targets().pages).toHaveLength(1);
   });
 
   it("data-no-global opts out of window.webmcpTour", async () => {

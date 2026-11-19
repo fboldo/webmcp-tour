@@ -12,7 +12,7 @@ order: 1
 
 It is a zero-dependency TypeScript library for the browser. It registers four [WebMCP](https://github.com/webmachinelearning/webmcp) tools on the page, so any agent that can call WebMCP tools (a browser's built-in assistant, an MCP client driving Chrome, or a model called from your own page script) can point at things.
 
-The library is **pre-release**. These docs describe the code in the repository as it is.
+The library is **experimental** (0.x): the API may change between minor versions, and WebMCP itself is still evolving. These docs describe the code in the repository as it is.
 
 ## Guidance instead of automation
 

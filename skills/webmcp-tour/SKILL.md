@@ -37,7 +37,7 @@ import { createTour, registerAsWebMcpTool } from "webmcp-tour";
 await registerAsWebMcpTool(createTour());
 ```
 
-Pin an exact `<VERSION>` and add SRI: compute `<HASH>` with `curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A`. Use the real current version; do not use `@latest` with SRI. If the package is not published yet, install from the repo's build (`pnpm build`, serve `dist/webmcp-tour.js`).
+Pin an exact `<VERSION>` and add SRI: compute `<HASH>` with `curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A`. Use the real current version; do not use `@latest` with SRI. If the CDN is not an option, serve `dist/webmcp-tour.js` yourself.
 
 The script tag takes JSON-safe options from `<script type="application/json" id="webmcp-tour-config">` (`pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`). `navigate` is a function, so for it use `data-manual` on the script tag and `window.webmcpTour.createTour(...)` + `registerAsWebMcpTool(...)`, or import `createTour` (see [references/api.md](references/api.md)). `window.webmcpTour.tour` is the default tour: call `definePage` / `defineTarget` on it.
 
@@ -128,7 +128,7 @@ await document.modelContext.registerTool({
 
 ## Testing
 
-1. **Polyfill** (no native WebMCP): load `@w3c/webmcp-polyfill` (`dist/polyfill.js`) before the library, on https or localhost; it installs nothing when the browser already has `document.modelContext`, so detect first: `if (!document.modelContext) load the polyfill`. It provides `document.modelContext`; call a tool by hand with `await document.modelContext.executeTool("tour_list_targets", {})` (the result may be a JSON string).
+1. **Polyfill** (no native WebMCP): load `@w3c/webmcp-polyfill` (`dist/polyfill.js`) before the library, on https or localhost; it installs nothing when the browser already has `document.modelContext`, so detect first: `if (!document.modelContext) load the polyfill`. It provides `document.modelContext`; call a tool by hand with the `Tool` object from `getTools()`, and parse the result (it is always a JSON string): `const [t] = (await document.modelContext.getTools()).filter((t) => t.name === "tour_list_targets"); JSON.parse(await document.modelContext.executeTool(t, {}))`.
 2. **Playwright MCP + native WebMCP**: launch Chrome with the feature on:
    ```json
    { "browser": { "launchOptions": { "args": ["--enable-features=WebMCP"] } } }

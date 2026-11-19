@@ -36,7 +36,7 @@ Returns a **new tour on every call**, with its own options. Tours on one page sh
 | `toolPrefix` | `string` | — | Shorthand for `names`: `"billing"` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`. |
 | `describeTarget` | `boolean` | `false` | Also point the target's `aria-describedby` at a hidden copy of the message while the step shows (restored on dismiss). |
 
-`PageDefinition`: `{ id, url, title, description?, match? }`. `id`, `url` and `title` are non-empty strings; `match` is a string (pathname prefix), a `RegExp` or `(location) => boolean`. A page that fails these checks throws a `TypeError` from `definePage`.
+`PageDefinition`: `{ id, url, title, description?, match?, allowCrossOrigin? }`. `id`, `url` and `title` are non-empty strings; `url` must be `http(s)` (or relative) and on the page's own origin, unless you set `allowCrossOrigin: true` or pass your own `navigate`; `match` is a string (pathname prefix), a `RegExp` or `(location) => boolean`. A page that fails these checks throws a `TypeError` from `definePage`.
 
 `TargetDefinition`: `{ id, selector?, element?, page?, label?, description?, reveal? }`. Give exactly one of `selector` or `element`, or neither when only `page` is set. Bad input throws a `TypeError`.
 
@@ -77,7 +77,7 @@ A listener that throws does not break the overlay (the error is rethrown asynchr
 
 `createTour()` returns a **new tour on every call**; options belong to the tour you pass them to. Tours on one page share the screen: showing a step in one clears the step (and a pending wait) of another.
 
-- **`registerAsWebMcpTool(tour | tour[], { signal? })`** registers the tour's four tools on `document.modelContext`. It returns `Promise<{ unregister() }>`; `unregister()` (or aborting `signal`) removes every tool that call registered. It is a no-op with one `console.info` where WebMCP is unavailable, and a tool the browser refuses is skipped with a warning.
+- **`registerAsWebMcpTool(tour | tour[], { signal? })`** registers the tour's four tools on `document.modelContext`. It returns `Promise<{ unregister() }>`; `unregister()` (or aborting `signal`) removes every tool that call registered. It is a no-op with one `console.info` where WebMCP is unavailable. Registration is all or nothing: if the browser refuses any tool (a duplicate name from another copy of the library, say), the ones that did register are unregistered and the promise **rejects**. It is `async`, so it never throws synchronously: `await` it or add a `.catch` (`void registerAsWebMcpTool(tour)` would leave an unhandled rejection).
 - **`tour.tools({ names? })`**: definitions only, for you to register under your own names and timing:
 
 ```ts
@@ -87,7 +87,7 @@ const tour = createTour({ pages, navigate });
 const { unregister } = await registerAsWebMcpTool(tour);
 ```
 
-For several tours, every tool name must be distinct. Give each tour a `toolPrefix` (`"billing"` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`) or `names`; a duplicate across the array throws a `TypeError` before anything registers:
+For several tours, every tool name must be distinct. Give each tour a `toolPrefix` (`"billing"` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`) or `names`; a duplicate across the array rejects the returned promise with a `TypeError` before anything registers:
 
 ```ts
 await registerAsWebMcpTool([

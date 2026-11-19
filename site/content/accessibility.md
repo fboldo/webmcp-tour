@@ -17,7 +17,7 @@ The overlay is built to be usable without a mouse or a screen, and it is tested 
 
 - The buttons are real `<button>` elements in the tab order: **Got it**, **Take me there** (if enabled), **Go to …**, **Not now**, and ×.
 - **Escape** dismisses the step or suggestion, from inside the card or when nothing else on the page claimed the key.
-- The card never steals focus. A page suggestion is focusable (`tabindex="-1"`) so keyboard users can reach it, but is not focused for you.
+- The card never steals focus. The card is not focused for you, and it sits at the end of the page, so a keyboard user reaches **Got it** or **Go** by tabbing to the end; **Escape** dismisses it from anywhere.
 - **Take me there** (opt-in) scrolls the control into view and moves focus to it with a visible focus ring. A control that cannot take focus gets `tabindex="-1"` until it blurs.
 - The spotlight is `pointer-events: none`, so it never blocks a click on the control. A page-suggestion backdrop never blocks the page either.
 

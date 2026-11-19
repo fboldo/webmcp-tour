@@ -4,7 +4,7 @@ description: The four WebMCP tools (tour_show_step, tour_list_targets, tour_dism
 order: 4
 ---
 
-The tour registers four tools. All are annotated `readOnlyHint: true` (they never change the page's data), and `tour_list_targets` also `untrustedContentHint: true` (its text comes from the page). Registration is all-or-nothing in order: an agent that lists the tools sees all four or none.
+The tour registers four tools. All are annotated `readOnlyHint: true` (they never change the page's data), and `tour_list_targets` also `untrustedContentHint: true` (its text comes from the page). The four are registered together, and if the browser refuses any of them the rest are unregistered and `registerAsWebMcpTool` rejects.
 
 Names can be changed ([Engine API](engine-api.md)); bridges may prefix them (Playwright MCP exposes `webmcp_tour_show_step`, see [Agent hosts](agent-hosts.md)). The tool descriptions refer to their siblings by role and fill in the configured names.
 

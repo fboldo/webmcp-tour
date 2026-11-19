@@ -18,7 +18,7 @@ No. A script tag is enough: the agent reads the visible outline and points by te
 
 ## How big is it?
 
-Zero dependencies. The gate in `scripts/check-size.mjs` keeps each build under **16 KB gzipped**: the engine alone (`createTour`) and the script-tag file (default tour and tool registration included). `pnpm size` prints the current numbers.
+Zero dependencies. The gate in `scripts/check-size.mjs` keeps each build under **17 KB gzipped**: the engine alone (`createTour`) and the script-tag file (default tour and tool registration included). `pnpm size` prints the current numbers.
 
 ## Does it work with server-side rendering?
 
@@ -46,7 +46,7 @@ The overlay is tested in Chromium and Firefox. Card placement uses CSS anchor po
 
 ## Is there a version I can install?
 
-The library is pre-release and not on npm yet. Use a build of the repository until it is.
+Yes: `npm install webmcp-tour`, or a pinned script tag (see [Quick start](quick-start.md)). It is experimental and 0.x, so the API may change between minor versions.
 
 ## Is there an `llms.txt`?
 

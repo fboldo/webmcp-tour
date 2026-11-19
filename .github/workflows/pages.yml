@@ -1,7 +1,6 @@
 name: Docs
 
-# Manual only: the account has no Actions minutes, and GitHub Pages on a private
-# repository needs a paid plan (or make the repository public). See site/README.md.
+# Manual: run it from the Actions tab. See site/README.md.
 # Before the first run: Settings > Pages > Source: GitHub Actions.
 on:
   workflow_dispatch:

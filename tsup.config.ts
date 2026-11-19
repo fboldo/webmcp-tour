@@ -1,4 +1,8 @@
+import { readFileSync } from "node:fs";
 import { defineConfig } from "tsup";
+
+const { version } = JSON.parse(readFileSync("package.json", "utf8")) as { version: string };
+const define = { __VERSION__: JSON.stringify(version) };
 
 export default defineConfig([
   {
@@ -10,6 +14,7 @@ export default defineConfig([
     dts: true,
     sourcemap: true,
     treeshake: true,
+    define,
   },
   {
     // Script-tag build: dist/webmcp-tour.js, sets `window.webmcpTour` (see src/iife.ts).
@@ -18,6 +23,7 @@ export default defineConfig([
     platform: "browser",
     target: "es2022",
     minify: true,
+    define,
     sourcemap: true,
     outExtension: () => ({ js: ".js" }),
   },
