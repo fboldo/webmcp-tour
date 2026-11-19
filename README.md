@@ -51,7 +51,7 @@ Optional settings go in a JSON block that the script tag points to with `data-co
 Install it, create a tour, register it:
 
 ```sh
-npm install webmcp-tour   # not published yet: see Contributing to run it from source
+npm install webmcp-tour
 ```
 
 ```ts
