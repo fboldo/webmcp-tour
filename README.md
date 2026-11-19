@@ -20,7 +20,7 @@
 
 Any WebMCP agent can now list what is on the page (`tour_list_targets` returns a visible outline of headings and controls) and point at anything by its visible text. No markup, no config.
 
-Optional settings go in a JSON block; add `data-manual` to the script tag to opt out of automatic registration.
+Optional settings go in a JSON block (JSON-safe options only: `pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`; `navigate` is a function, so it cannot be set here). Add `data-manual` to the script tag to skip the automatic registration, or `data-no-global` to not expose `window.webmcpTour` (`{ tour, createTour, registerAsWebMcpTool }`).
 
 ```html
 <script type="application/json" id="webmcp-tour-config">
@@ -40,8 +40,10 @@ npm install webmcp-tour   # not published yet: see Contributing to run it from s
 import { createTour, registerAsWebMcpTool } from "webmcp-tour";
 
 const tour = createTour();
-await registerAsWebMcpTool(tour);
+const { unregister } = await registerAsWebMcpTool(tour); // or pass { signal } to unregister on abort
 ```
+
+There is one package entry (`webmcp-tour`) and it is side-effect free (`sideEffects: false`), so it is safe to import on the server.
 
 **Declare a target** so the agent answers in your words, not its guess:
 
@@ -68,7 +70,8 @@ tour.defineTarget({ id: "two-factor", page: "security", label: "Set up two-facto
 **Embed it in your own tools**, so your agent's answer and the highlight arrive together:
 
 ```ts
-await tour.show({ target: "two-factor", message: "Press this to start." });
+const result = await tour.show({ target: "two-factor", message: "Press this to start." });
+// { ok: true, matched } | { ok: false, error: "other_page", page, message } | { ok: true, suggested } | ...
 ```
 
 Several tours on one page (say, per product area) need distinct tool names: `createTour({ toolPrefix: "billing" })` gives `billing_show_step` and friends, and `registerAsWebMcpTool([billingTour, teamTour])` registers them together.
@@ -142,7 +145,7 @@ Node ≥ 22.18 and pnpm (pinned via `packageManager`; `corepack enable`).
 ```sh
 pnpm install
 pnpm exec playwright install chromium   # once: tests run in real browsers
-pnpm check       # typecheck, build, tests, size budget
+pnpm check       # typecheck, build, tests, size budget (gzip: engine ≤ 16 KB, script tag ≤ 16 KB)
 pnpm demo        # http://127.0.0.1:4173/demo/
 pnpm docs:dev    # preview the docs site
 pnpm example:script-tag   # also: example:embed, example:bundled
