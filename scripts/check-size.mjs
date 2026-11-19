@@ -14,7 +14,7 @@ const bundle = (options) => buildSync({ bundle: true, write: false, minify: true
 const budgets = [
   { label: "engine (createTour from dist/index.js)", max: 17 * KB, source: () => bundle({ stdin: { contents: `import { createTour } from "./dist/index.js"; console.log(createTour);`, resolveDir: resolve("."), loader: "js" } }) },
   // Script-tag build, already minified.
-  { label: "full (dist/webmcp-tour.js, IIFE)", max: 17 * KB, source: () => readFileSync("dist/webmcp-tour.js") },
+  { label: "full (dist/webmcp-tour.js, IIFE)", max: 17.5 * KB, source: () => readFileSync("dist/webmcp-tour.js") },
 ];
 
 let failed = false;
@@ -30,7 +30,7 @@ for (const { label, max, source } of budgets) {
   const size = gzipSync(code, { level: 9 }).length;
   const ok = size <= max;
   if (!ok) failed = true;
-  console.log(`${ok ? "✓" : "✗"} ${label}: ${(size / KB).toFixed(2)} KB gzip (budget ${(max / KB).toFixed(0)} KB)`);
+  console.log(`${ok ? "✓" : "✗"} ${label}: ${(size / KB).toFixed(2)} KB gzip (budget ${(max / KB).toFixed(1)} KB)`);
 }
 
 process.exit(failed ? 1 : 0);

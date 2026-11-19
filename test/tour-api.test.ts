@@ -32,7 +32,7 @@ afterEach(() => {
 
 describe("instances", () => {
   it("returns a new tour on every call, each with its own options", () => {
-    const other = createTour({ attribution: "Other" });
+    const other = createTour({ labels: { attribution: "Other" } });
     expect(other).not.toBe(tour);
     expect(createTour()).not.toBe(createTour());
     other.destroy();
@@ -166,6 +166,19 @@ describe("show: failure envelopes", () => {
     expect(card()?.matches(":popover-open") ?? false).toBe(false);
     // Inside the dialog it works.
     expect(await tour.show({ text: "In dialog", message: "m" })).toMatchObject({ ok: true });
+  });
+
+  it("obscured: the page behind the modal is not scrolled before the refusal", async () => {
+    page('<div style="height:3000px"></div><button id="far">Far</button><dialog id="d"><button>In dialog</button></dialog>');
+    (document.getElementById("d") as HTMLDialogElement).showModal();
+    window.scrollTo(0, 0);
+    expect(await tour.show({ selector: "#far", message: "m" })).toMatchObject({ ok: false, error: "obscured" });
+    expect(window.scrollY).toBe(0);
+  });
+
+  it("a step card has no unfilled {page} template, hidden buttons included", async () => {
+    expect(await tour.show({ text: "Save changes", message: "m" })).toMatchObject({ ok: true });
+    expect(card()!.textContent).not.toContain("{page}");
   });
 
   it("a failed show leaves the current step in place", async () => {
@@ -316,7 +329,7 @@ describe("options", () => {
   });
 
   it("attribution is overridable", async () => {
-    fresh({ attribution: "Acme helper" });
+    fresh({ labels: { attribution: "Acme helper" } });
     await tour.show({ text: "Save changes", message: "m" });
     expect(part("attribution")).toBe("Acme helper");
   });

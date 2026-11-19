@@ -78,11 +78,11 @@ describe("Got it", () => {
     expect(await p).toEqual({ ok: true, status: "acknowledged" });
   });
 
-  it("closing with × does not acknowledge", async () => {
+  it("closing with × does not acknowledge: the wait reports dismissed", async () => {
     await tour.show({ target: "billing-plan" });
     const wait = tour.waitForInteraction({}, { timeoutMs: 150 });
     q("close").click();
-    expect(await wait).toEqual({ ok: true, status: "timeout" });
+    expect(await wait).toEqual({ ok: true, status: "dismissed" });
   });
 });
 
@@ -120,15 +120,12 @@ describe("labels", () => {
     expect(q("notnow").textContent).toBe("Agora não");
   });
 
-  it("default to English and merge partially; the old attribution option still works", async () => {
-    fresh({ pages: PAGES, labels: { gotIt: "OK" }, attribution: "Acme" });
+  it("default to English and merge partially", async () => {
+    fresh({ pages: PAGES, labels: { gotIt: "OK", attribution: "Acme" } });
     await tour.show({ target: "billing-plan" });
     expect(q("gotit").textContent).toBe("OK");
     expect(q("close").getAttribute("aria-label")).toBe("Dismiss");
     expect(q("attribution").textContent).toBe("Acme");
-    fresh({ labels: { attribution: "New" }, attribution: "Old" });
-    await tour.show({ target: "billing-plan" });
-    expect(q("attribution").textContent).toBe("New");
   });
 
   it("are plain text: markup in a label is not parsed", async () => {

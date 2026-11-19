@@ -29,6 +29,7 @@ function text(value: unknown, name: string, max: number): string | Invalid | und
   return value.trim() || undefined;
 }
 
+const OBSCURED = "A modal dialog is open; the page behind it cannot be pointed at.";
 const MAX_LIST = 50;
 const pick = ({ target, selector, text, index }: ResolveInput): ResolveInput => ({
   ...(target !== undefined && { target }),
@@ -50,7 +51,6 @@ function build(options: TourOptions): Tour {
   const overlayOptions: OverlayOptions = {};
   if (rest.render !== undefined) overlayOptions.render = rest.render;
   if (rest.renderPopover) overlayOptions.renderPopover = rest.renderPopover;
-  if (rest.attribution !== undefined) overlayOptions.attribution = rest.attribution;
   if (rest.labels) overlayOptions.labels = rest.labels;
   if (rest.takeMeThere) overlayOptions.takeMeThere = true;
   if (pageSuggestion?.placement === "corner") overlayOptions.noticePlacement = "corner";
@@ -77,8 +77,11 @@ function build(options: TourOptions): Tour {
   overlay.on("dismiss", ({ reason }) => {
     const s = suggestion;
     suggestion = undefined;
+    // Every end settles the wait; only a newer step or wait ("superseded") is the agent's own doing.
     if (reason === "acknowledged") pending?.({ ok: true, status: "acknowledged" });
-    else if (s && reason === "declined") pending?.({ ok: true, status: "dismissed" });
+    else if (reason === "closed" || reason === "declined") pending?.({ ok: true, status: "dismissed" });
+    else if (reason === "obscured") pending?.({ ok: false, error: "obscured", message: OBSCURED });
+    else if (reason === "hide") supersede();
     else if (s && reason === "navigating") {
       pending?.({ ok: true, status: "navigating" });
       const kept = param ? stash(s, s.url, param) : undefined;
@@ -118,7 +121,7 @@ function build(options: TourOptions): Tour {
     overlay.hide();
     supersede();
   };
-  const obscured = (): StepResult => ({ ok: false, error: "obscured", message: "A modal dialog is open; the page behind it cannot be pointed at." });
+  const obscured = (): StepResult => ({ ok: false, error: "obscured", message: OBSCURED });
 
   /**
    * Show the step stored under `nonce` once its target is on the page (a mutation, a definition, or 5 s, whichever ends it).
@@ -196,9 +199,10 @@ function build(options: TourOptions): Tour {
       }
       if (message === undefined) return invalid("message is required unless the target is declared with a description.");
 
+      if (overlay.blocks(found.element)) return obscured(); // before reveal: a refused step must not scroll the page
       const seen = reveal(found.element);
       const where = locationOf(found.element);
-      const announcement = `${message} — ${where.name || found.matched.tag}${where.landmark ? `, ${where.landmark}` : ""}`;
+      const announcement = `${title ? `${title}. ` : ""}${message} — ${where.name || found.matched.tag}${where.landmark ? `, ${where.landmark}` : ""}`;
       const shown = overlay.show(found.element, { title: title ?? "", message, announcement, ...(placement ? { placement } : {}) });
       if (!shown.shown) return obscured();
       claim();
@@ -316,7 +320,7 @@ function build(options: TourOptions): Tour {
 
 /**
  * A new tour on every call. Tours on one page share the screen: showing a step
- * in one clears the step of another. Touches no DOM until used.
+ * in one clears the step of another. Mounts only a hidden live region until a step is shown.
  */
 export function createTour(options: TourOptions = {}): Tour {
   return build(options);

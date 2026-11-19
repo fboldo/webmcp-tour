@@ -164,6 +164,7 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
   const roots = searchRoots(root);
   let candidates: Element[];
   let q = "";
+  let more = false; // the text search stopped early: there are more candidates than listed
   if (by === "selector") {
     if (probing(value)) return invalid("That selector tests attribute values or uses :has(), which is not allowed. Point with `text` or `target`, or use a plain selector such as #id, .class, tag or [attr=name].");
     try {
@@ -175,7 +176,9 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
   } else {
     q = norm(value);
     if (!q) return invalid("text must contain letters or digits.");
-    candidates = inDocumentOrder(roots, textHits(root, q, allowed, skip).map((h) => h.target));
+    const found = textHits(root, q, allowed, skip);
+    more = found.capped;
+    candidates = inDocumentOrder(roots, found.hits.map((h) => h.target));
   }
 
   if (!candidates.length) return { ok: false, error: "not_found", near: nearNames(root, q, allowed, skip) };
@@ -190,7 +193,7 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
       const m = describe(by, el, opts);
       return { index: i, tag: m.tag, ...(m.role ? { role: m.role } : {}), name: m.name || clip(norm(accName(el, cache).name), 80), disabled: m.disabled, ...candidateContext(el, skip) };
     });
-    return { ok: false, error: "ambiguous", candidates: list, count: candidates.length };
+    return { ok: false, error: "ambiguous", candidates: list, count: candidates.length, ...(more ? { truncated: true as const } : {}) };
   }
   return { ok: true, element: chosen, matched: describe(by, chosen, opts) };
 }

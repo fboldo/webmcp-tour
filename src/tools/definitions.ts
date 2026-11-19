@@ -127,11 +127,12 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       name: n.waitForInteraction,
       title: "Wait for the user",
       description:
-        `Wait until the user interacts with the highlighted element, or with one you name by \`target\`, \`selector\` or \`text\`. Use it after ${n.showStep} to pause while the user does the step themselves. ` +
-        "It returns the kind of interaction and the element, never field values. " +
-        "`acknowledged` means the user read the step (Got it) and wants to continue; `navigating` or `dismissed` is their answer to a page suggestion. " +
-        "A `timeout` or `superseded` status is not a failure: the user has not acted, and the highlight stays, so call again or ask them. " +
-        "If this call fails, never returns, or returns after the page has changed, check the page: the user most likely clicked the control.",
+        `Wait until the user interacts with the highlighted element, or with one you name by \`target\`, \`selector\` or \`text\`. Use it after ${n.showStep} while the user does the step. ` +
+        "Returns the interaction and element name, never values. " +
+        "`acknowledged`: Got it, continue. `navigating`/`dismissed` answer a page suggestion. " +
+        "`dismissed` on a step: the user closed the card; do not re-show it unasked. " +
+        "`timeout`: not a failure, the highlight stays; call again or ask. `superseded`: replaced by a newer step, wait or dismissal. `obscured`: a modal opened. " +
+        "If the call fails or returns late, check the page: the user probably clicked the control.",
       inputSchema: {
         type: "object",
         properties: {

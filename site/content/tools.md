@@ -62,7 +62,7 @@ Highlighting an element:
 
 - `by` is the locator that matched (`target`, `selector` or `text`); `role` is present when the element has one.
 - `inViewport`: it was inside the viewport before the call scrolled. `scrolledIntoView`: the call scrolled it. `occluded`: a fixed or sticky element still covers the element's centre afterwards.
-- The highlight stays until dismissed, superseded, or the user presses Got it, ×, or Escape.
+- The highlight stays until dismissed, superseded, a modal dialog opens, or the user presses Got it, ×, or Escape.
 
 Suggesting a page (`page` input):
 
@@ -84,7 +84,7 @@ Suggesting a page (`page` input):
 | `target_not_found` | `available: string[]` | No such declared target (or it is excluded or out of scope). `available` lists up to 50 ids. |
 | `not_found` | `near: string[]` | Nothing visible matched. `near` lists up to 8 visible control names that look close. A hidden element looks exactly like no match. Do not highlight a guess: call `tour_list_targets`. |
 | `not_visible` | `reveal?` | The declared target exists but is hidden. `reveal` says what to do first (for example "Open Security, then expand Advanced."). Tell the user, then try again. |
-| `ambiguous` | `candidates`, `count` | More than one match. `candidates` has up to 10 entries: `{ index, tag, role?, name, disabled, heading?, row?, landmark? }`. Retry with `index`, or a more specific locator. `count` is the total. |
+| `ambiguous` | `candidates`, `count` | More than one match. `candidates` has up to 10 entries: `{ index, tag, role?, name, disabled, heading?, row?, landmark? }`. Retry with `index`, or a more specific locator. `count` is the total; with `truncated: true` the search stopped early and `count` is a lower bound (50+). |
 | `other_page` | `page`, `message` | The target is declared for another page. A suggestion card is now showing; nothing moved. |
 | `page_not_found` | `available: string[]` | No such page id. `available` lists the declared page ids. |
 | `obscured` | `message` | A modal dialog is open and the target is not inside it (or a page suggestion cannot be shown over it). |
@@ -153,11 +153,11 @@ Wait until the user interacts with the highlighted element, or with one named by
 | `{ status: "interacted", event: "click" \| "change", target: { tag, name } }` | The user clicked or changed the element. |
 | `{ status: "acknowledged" }` | The user read the step and pressed **Got it**. They want to continue. |
 | `{ status: "navigating" }` | A page suggestion was on screen and the user pressed **Go**. |
-| `{ status: "dismissed" }` | A page suggestion was on screen and the user pressed **Not now**, ×, or Escape. |
+| `{ status: "dismissed" }` | The user closed the card: **Not now**, ×, or Escape. On a step, do not re-show it unasked. |
 | `{ status: "timeout" }` | Nothing happened within about **20 seconds**. Not a failure: the highlight stays; call again or ask the user. |
-| `{ status: "superseded" }` | A newer `tour_show_step` or wait replaced this one. Not a failure. |
+| `{ status: "superseded" }` | A newer `tour_show_step` or wait, or `tour_dismiss`, replaced this one. Not a failure. |
 
-The wait holds its own deadline, shorter than the 30 s some hosts cut calls at. Only **trusted** events count; `el.click()` from script is ignored. A CDP-driven agent click is trusted, so `interacted` means an interaction happened, not that a person did it. The listener is on `window` in the capture phase and re-resolves the element on every event, so a re-render cannot strand it.
+The wait holds its own deadline, shorter than the 30 s some hosts cut calls at. Only **trusted** events count; `el.click()` from script is ignored. A CDP-driven agent click is trusted, so `interacted` means an interaction happened, not that a person did it. The listener is on `window` in the capture phase and looks the element up again when the first match has left the page, so a re-render cannot strand it.
 
 If the call fails, never returns, or returns after the page changed, check the page: the user most likely clicked the control.
 
@@ -168,6 +168,7 @@ The same codes as `tour_show_step` for the locator (`invalid_input`, `invalid_se
 | `error` | Extra | Meaning |
 |---|---|---|
 | `no_step` | `message` | No locator given and nothing is highlighted. Point at an element first, or name the one to wait for. |
+| `obscured` | `message` | A modal dialog opened while waiting, which ended the highlight. |
 | `cancelled` | `message` | The host aborted the call; nobody is listening. |
 | `unavailable` | `message` | There is no document. |
 | `internal` | `message` | Unexpected failure. |

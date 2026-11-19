@@ -14,8 +14,8 @@ export function defaultEvent(el: Element): WaitEvent {
 
 /**
  * Listen on `window` in the capture phase, so the app's own handlers (and
- * `stopPropagation`) cannot hide the event, and re-resolve the target on every
- * event, so a re-render cannot strand the listener on a detached node. Only
+ * `stopPropagation`) cannot hide the event, and re-resolve the target when the
+ * first match has left the page, so a re-render cannot strand the listener on a detached node. Only
  * trusted events count; script-made ones (`el.click()`) are ignored. The result
  * names the element, never a value. Everything is released on the first of:
  * interaction, deadline, `settle` (supersede) or abort.
@@ -34,7 +34,7 @@ export function watch(
     const on = (e: Event) => {
       if (!e.isTrusted || (e.type === "pointerdown" && (e as PointerEvent).button !== 0)) return;
       const path = e.composedPath();
-      const el = first.isConnected && path.includes(first) ? first : find();
+      const el = first.isConnected ? first : find(); // only a detached node (a re-render) needs the page searched again
       if (!el || !path.includes(el) || el.matches(":disabled")) return;
       settle({ ok: true, status: "interacted", event: e.type === "change" ? "change" : "click", target: name(el) });
     };

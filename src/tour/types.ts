@@ -81,19 +81,22 @@ export interface WaitOptions {
 
 /**
  * Never carries a field value. A timeout or a supersede is a success: the user has not
- * acted (yet) and the highlight stays. A CDP-driven agent click is trusted, so
+ * acted (yet). After a timeout the highlight stays; after a supersede a newer step or wait
+ * replaced it. `dismissed` means the user closed the card. A CDP-driven agent click is trusted, so
  * `interacted` means an interaction happened, not that a person did it.
  */
 export type WaitResult =
   | { ok: true; status: "interacted"; event: WaitEvent; target: { tag: string; name: string } }
   /** "Got it": the user read the step and wants to continue. */
   | { ok: true; status: "acknowledged" }
-  /** A page suggestion: the user pressed Go (`navigating`) or Not now / close (`dismissed`). */
+  /** A page suggestion: the user pressed Go (`navigating`) or Not now / close (`dismissed`). A step card the user closed (close, Escape) is `dismissed` too. */
   | { ok: true; status: "navigating" | "dismissed" }
   | { ok: true; status: "timeout" | "superseded" }
   | ResolveError
   /** No locator given and nothing is highlighted. */
   | { ok: false; error: "no_step"; message: string }
+  /** A modal dialog opened, so the highlight ended and the page behind it cannot be pointed at. */
+  | { ok: false; error: "obscured"; message: string }
   /** The signal aborted, so nobody is listening for this. */
   | { ok: false; error: "cancelled"; message: string }
   | { ok: false; error: "unavailable"; message: string };
@@ -134,8 +137,6 @@ export interface TourOptions {
   renderPopover?: (step: RenderStep, defaultEl: HTMLElement) => HTMLElement;
   /** `false` = headless: no DOM is created, only `show` / `dismiss` events fire. */
   render?: boolean;
-  /** Provenance label on the card. Default "From your assistant". Deprecated: use `labels.attribution`. */
-  attribution?: string;
   /** Every user-facing string (and the card's aria labels). `goToPage` and `otherPage` take `{page}`. English defaults. */
   labels?: Partial<Labels>;
   /** Also show "Take me there" (scroll, focus, pulse) next to "Got it". Default off. */
