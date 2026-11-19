@@ -74,6 +74,11 @@ describe("announcement", () => {
     await poll(live).toBe("Type it here. — Email, main");
   });
 
+  it("starts with the title, so a screen-reader user hears it", async () => {
+    await tour.show({ text: "Change plan", title: "Pick a plan", message: "Opens the plan picker." });
+    await poll(live).toBe("Pick a plan. Opens the plan picker. — Change plan, Billing");
+  });
+
   it("clears when dismissed", async () => {
     await tour.show({ text: "Change plan", message: "m" });
     await poll(live).not.toBe("");

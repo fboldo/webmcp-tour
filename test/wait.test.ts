@@ -292,6 +292,47 @@ describe("one wait at a time, and it always lets go", () => {
     expect(total()).toBe(0);
   });
 
+  it("× on the card settles the wait as dismissed, and nothing stays listening", async () => {
+    await show("save");
+    const reasons: string[] = [];
+    tour.on("dismiss", (e) => reasons.push(e.reason));
+    const w = tour.waitForInteraction();
+    card()!.querySelector<HTMLElement>("[part~=close]")!.click();
+    expect(await settled(w, 500)).toBe(true);
+    expect(await w).toEqual({ ok: true, status: "dismissed" });
+    expect(reasons).toEqual(["closed"]);
+    expect(total()).toBe(0);
+  });
+
+  it("Escape settles the wait as dismissed", async () => {
+    await show("save");
+    const w = tour.waitForInteraction();
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    expect(await w).toEqual({ ok: true, status: "dismissed" });
+    expect(total()).toBe(0);
+  });
+
+  it("tour.dismiss() settles the wait as superseded and releases its listeners", async () => {
+    await show("save");
+    const w = tour.waitForInteraction();
+    tour.dismiss();
+    expect(await w).toEqual({ ok: true, status: "superseded" });
+    expect(total()).toBe(0);
+    await input.waitInput("#save", "press", 20); // the old wait must not report this
+  });
+
+  it("a modal opening settles the wait as obscured", async () => {
+    await show("save");
+    const w = tour.waitForInteraction();
+    const dlg = document.createElement("dialog");
+    dlg.innerHTML = "<p>Sure?</p>";
+    document.body.append(dlg);
+    dlg.showModal();
+    expect(await w).toMatchObject({ ok: false, error: "obscured" });
+    expect(total()).toBe(0);
+    dlg.close();
+  });
+
   it("a wait that cannot resolve its element does not supersede the pending one", async () => {
     await show("save");
     const w = tour.waitForInteraction({}, { timeoutMs: 200 });

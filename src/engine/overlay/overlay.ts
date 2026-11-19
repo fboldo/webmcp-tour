@@ -18,6 +18,7 @@ import type {
 
 type Parts = { host: HTMLElement; root: ShadowRoot; ring: HTMLElement; card: HTMLElement; live: HTMLElement };
 const ANNOUNCE_DELAY = 50;
+const FIELD = "input,textarea,select,[contenteditable]:not([contenteditable=false])";
 let describedSeq = 0;
 
 function supportsAnchor(): boolean {
@@ -69,7 +70,7 @@ export class Overlay {
 
   #label(k: keyof Labels, page?: string): string {
     const o = this.#opts;
-    const t = o.labels?.[k] ?? (k === "attribution" ? o.attribution : undefined) ?? LABELS[k];
+    const t = o.labels?.[k] ?? LABELS[k];
     return page === undefined ? t : t.replaceAll("{page}", page);
   }
 
@@ -114,6 +115,11 @@ export class Overlay {
         });
       }
     }
+  }
+
+  /** A modal dialog is open and `el` is not inside it, so `el` is inert and `show` would refuse. */
+  blocks(el: Element): boolean {
+    return !modalAncestor(el) && !!document.querySelector("dialog:modal");
   }
 
   show(target: Element, step: OverlayStep = {}): ShowResult {
@@ -236,7 +242,7 @@ export class Overlay {
     d.close.setAttribute("aria-label", this.#label("close"));
     d.title.textContent = title;
     d.message.textContent = message;
-    const texts = [this.#label("gotIt"), this.#label("takeMeThere"), this.#label("goToPage", page), this.#label("notNow")];
+    const texts = [this.#label("gotIt"), this.#label("takeMeThere"), this.#label("goToPage", page ?? ""), this.#label("notNow")];
     const shown = page !== undefined ? [2, 3] : this.#opts.takeMeThere ? [0, 1] : [0];
     d.actions.forEach((b, i) => {
       b.textContent = texts[i]!;
@@ -272,7 +278,7 @@ export class Overlay {
     for (const n of e.composedPath()) {
       if (!(n instanceof Element)) continue;
       const is = (p: string) => n.part.contains(p);
-      if (is("close") || is("notnow")) return void this.#end(this.#notice ? "declined" : "hide");
+      if (is("close") || is("notnow")) return void this.#end(this.#notice ? "declined" : "closed");
       if (is("gotit")) return void this.#end("acknowledged");
       if (is("go")) return void this.#end("navigating");
       if (is("goto")) return this.#goto();
@@ -299,8 +305,10 @@ export class Overlay {
   /** Escape dismisses from inside the card, or when nothing else claimed the key. */
   #key = (e: KeyboardEvent): void => {
     if (e.key !== "Escape" || e.isComposing || !this.#target) return;
-    if (e.defaultPrevented && !e.composedPath().includes(this.#card!)) return;
-    this.#end(this.#notice ? "declined" : "hide");
+    const path = e.composedPath();
+    // Outside the card, a key the page's own handler used, or one typed in a field (Escape cancels the field), is not ours.
+    if (!path.includes(this.#card!) && (e.defaultPrevented || (path[0] instanceof Element && path[0].matches(FIELD)))) return;
+    this.#end(this.#notice ? "declined" : "closed");
   };
 
   /** Announce through the persistent region: clear, then set after a beat so repeats are heard. */

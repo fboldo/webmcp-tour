@@ -80,7 +80,8 @@ export type ResolveError =
   | { ok: false; error: "not_found"; near: string[] }
   | { ok: false; error: "not_visible"; reveal?: string }
   | { ok: false; error: "ambiguous_target"; candidates: Candidate[]; count: number }
-  | { ok: false; error: "ambiguous"; candidates: Candidate[]; count: number };
+  /** `truncated`: the search stopped early, so `count` is a lower bound ("50+"). */
+  | { ok: false; error: "ambiguous"; candidates: Candidate[]; count: number; truncated?: true };
 
 /** Pure lookup: no scrolling, no DOM mutation. */
 export type LocateResult = { ok: true; element: Element; matched: Matched } | ResolveError;

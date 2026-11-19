@@ -14,7 +14,7 @@ Exports: `createTour`, `registerAsWebMcpTool`, `defineTools`, `DEFAULT_NAMES`, `
 
 ## `createTour(options?)`
 
-Returns a **new tour on every call**, with its own options. Tours on one page share the screen (see [Registering the tools](#registering-the-tools)). It touches no DOM until used.
+Returns a **new tour on every call**, with its own options. Tours on one page share the screen (see [Registering the tools](#registering-the-tools)). It mounts only a hidden live region until a step is shown.
 
 ### Options
 
@@ -26,7 +26,6 @@ Returns a **new tour on every call**, with its own options. Tours on one page sh
 | `render` | `boolean` | `true` | `false` = headless: no DOM is created, only `show` / `dismiss` events fire. |
 | `renderPopover` | `(step, defaultEl) => HTMLElement` | — | Replace the card's markup; the library keeps positioning and dismissal. See [Custom card](#custom-card). |
 | `labels` | `Partial<Labels>` | English | Every user-facing string. See [Concepts](concepts.md#labels-and-translations). |
-| `attribution` | `string` | "From your assistant" | Deprecated: use `labels.attribution`. |
 | `takeMeThere` | `boolean` | `false` | Also show **Take me there** (scroll, focus, pulse) next to **Got it**. |
 | `pages` | `PageDefinition[]` | — | The app's pages. |
 | `navigate` | `(url: string) => void` | `location.assign` | Called only when the user presses **Go** on a suggestion. |
@@ -68,7 +67,7 @@ const off = tour.on("dismiss", (e) => console.log(e.reason));
 | Event | Payload |
 |---|---|
 | `show` | `{ target: Element, title, message, placement }` |
-| `dismiss` | `{ target: Element, reason }`. `reason` is `hide` (dismissed by call, ×, or Escape), `superseded` (replaced by a newer step), `obscured` (a modal dialog took over), `acknowledged` (**Got it**), `navigating` (**Go**), or `declined` (a suggestion closed with **Not now**, ×, or Escape). |
+| `dismiss` | `{ target: Element, reason }`. `reason` is `hide` (dismissed by call), `closed` (the user pressed × or Escape on a step), `superseded` (replaced by a newer step), `obscured` (a modal dialog took over), `acknowledged` (**Got it**), `navigating` (**Go**), or `declined` (a suggestion closed with **Not now**, ×, or Escape). |
 | `targets` | `{}`. Fires when `defineTarget` or `definePage` adds or removes something. `data-tour-id` elements are read at call time and fire nothing. |
 
 A listener that throws does not break the overlay (the error is rethrown asynchronously).

@@ -167,6 +167,17 @@ describe("Escape", () => {
     expect(fx.overlay.target).toBeUndefined();
   });
 
+  it("is not for a field: Escape typed in a page input leaves the step, but the card's own Escape closes it", async () => {
+    const fx = await openFixture();
+    const field = fx.doc.createElement("input");
+    fx.doc.body.append(field);
+    fx.overlay.show(fx.el("t-plain"), { message: "m" });
+    key(fx, {}, field);
+    expect(fx.overlay.target).toBe(fx.el("t-plain"));
+    key(fx, {}, fx.el("t-plain"));
+    expect(fx.overlay.target).toBeUndefined();
+  });
+
   it("ignores other keys and IME composition, and stops listening afterwards", async () => {
     const fx = await openFixture();
     fx.overlay.show(fx.el("t-plain"), { message: "m" });

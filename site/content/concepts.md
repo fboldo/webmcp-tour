@@ -124,7 +124,7 @@ createTour({
 });
 ```
 
-`{page}` is replaced in `goToPage` and `otherPage`. Labels are set as text, never parsed as HTML. The older `attribution` option still works (deprecated); `labels.attribution` wins when both are set. Titles and messages come from the agent, so they are in whatever language the agent writes; your `data-tour-description` text is in yours.
+`{page}` is replaced in `goToPage` and `otherPage`. Labels are set as text, never parsed as HTML. Titles and messages come from the agent, so they are in whatever language the agent writes; your `data-tour-description` text is in yours.
 
 ### "Got it" and "Take me there"
 

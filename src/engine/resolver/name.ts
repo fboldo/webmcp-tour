@@ -2,7 +2,7 @@
  * Simplified accessible name: aria-labelledby > aria-label > <label> > text
  * content > title/alt/SVG <title> > placeholder. No extra "visible text" name.
  */
-const SKIP = new Set(["SCRIPT", "STYLE", "TEMPLATE", "NOSCRIPT", "HEAD", "TITLE", "META", "LINK"]);
+export const SKIP = new Set(["SCRIPT", "STYLE", "TEMPLATE", "NOSCRIPT", "HEAD", "TITLE", "META", "LINK"]);
 const FIELDS = new Set(["INPUT", "SELECT", "TEXTAREA"]);
 
 /**
@@ -10,7 +10,7 @@ const FIELDS = new Set(["INPUT", "SELECT", "TEXTAREA"]);
  * it only answers for author exclusions, not for `aria-hidden` and `inert`.
  */
 export type Skip = (el: Element, hard?: boolean) => boolean;
-type Cache = Map<Element, string> & { skip?: Skip | undefined };
+type Cache = Map<Element, string> & { skip?: Skip | undefined; labelled?: Map<Node, Map<Element, HTMLLabelElement[]>> };
 
 /** Fields and editors: what a person typed or chose in them is never a name. */
 const EDITOR = "[contenteditable]:not([contenteditable=false]),[role=textbox],[role=searchbox],[role=combobox],[role=spinbutton]";
@@ -91,7 +91,25 @@ function referenced(el: Element, ids: string, cache: Cache): string {
     .join(" ");
 }
 
-export const newCache = (skip?: Skip): Cache => Object.assign(new Map<Element, string>(), { skip });
+export const newCache = (skip?: Skip): Cache => Object.assign(new Map<Element, string>(), { skip, labelled: new Map<Node, Map<Element, HTMLLabelElement[]>>() });
+
+/**
+ * `el.labels`, worked out once per tree from each label's control: asking every control
+ * for `labels` walks the tree each time, which on a big page is most of the lookup.
+ */
+function labelsOf(el: Element, cache: Cache): HTMLLabelElement[] | undefined {
+  const root = el.getRootNode() as ParentNode;
+  let map = cache.labelled?.get(root);
+  if (!map) {
+    map = new Map();
+    for (const l of root.querySelectorAll("label")) {
+      const c = l.control;
+      if (c) map.set(c, [...(map.get(c) ?? []), l]);
+    }
+    cache.labelled?.set(root, map);
+  }
+  return map.get(el);
+}
 
 export function accName(el: Element, cache: Cache): { name: string; source: string } {
   const by = el.getAttribute("aria-labelledby");
@@ -101,7 +119,7 @@ export function accName(el: Element, cache: Cache): { name: string; source: stri
   }
   const al = el.getAttribute("aria-label");
   if (al?.trim()) return { name: al, source: "aria-label" };
-  const labels = (el as HTMLInputElement).labels;
+  const labels = labelsOf(el, cache);
   if (labels?.length) {
     const t = [...labels].map((l) => contentText(l, cache)).join(" ");
     if (t.trim()) return { name: t, source: "label" };

@@ -18,8 +18,11 @@ export interface RenderStep {
   placement: Placement;
 }
 
-/** `acknowledged`: Got it. `navigating`: Go on a page suggestion. `declined`: the suggestion was closed (Not now, close, Escape). */
-export type DismissReason = "hide" | "superseded" | "obscured" | "acknowledged" | "navigating" | "declined";
+/**
+ * `hide`: the host called `hide()`. `closed`: the user closed a step card (close, Escape). `acknowledged`: Got it.
+ * `navigating`: Go on a page suggestion. `declined`: the suggestion was closed (Not now, close, Escape).
+ */
+export type DismissReason = "hide" | "closed" | "superseded" | "obscured" | "acknowledged" | "navigating" | "declined";
 
 /** Every user-facing string. `goToPage` and `otherPage` are templates: `{page}` is the page title. */
 export interface Labels {
@@ -62,8 +65,6 @@ export interface OverlayOptions {
   renderPopover?: (step: RenderStep, defaultEl: HTMLElement) => HTMLElement;
   /** "auto" (default) uses CSS anchor positioning where supported, with a per-step fixed fallback. */
   positioning?: "auto" | "anchor" | "fixed";
-  /** Provenance label. Present by default; overridable. Same as `labels.attribution`. */
-  attribution?: string;
   /** Translations; English defaults. */
   labels?: Partial<Labels>;
   /** Add a "Take me there" button (scroll, focus, pulse) next to "Got it". Default off. */
