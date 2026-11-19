@@ -48,6 +48,7 @@
     "size": "node scripts/check-size.mjs",
     "prepublishOnly": "pnpm check",
     "sri": "node scripts/sri.mjs",
+    "release:prepare": "node scripts/release-prepare.mjs",
     "check": "pnpm typecheck && pnpm build && pnpm test && pnpm size",
     "demo": "pnpm build && node scripts/serve-demo.mjs",
     "example:script-tag": "pnpm build && node examples/serve.mjs script-tag",

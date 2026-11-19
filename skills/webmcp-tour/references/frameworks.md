@@ -8,7 +8,7 @@ Script tag with a pinned version and SRI (see SKILL.md), then markup attributes.
 
 ```html
 <script type="module">
-  import { createTour, registerAsWebMcpTool } from "https://unpkg.com/webmcp-tour@<VERSION>/dist/index.js";
+  import { createTour, registerAsWebMcpTool } from "https://unpkg.com/webmcp-tour@0.1.0/dist/index.js";
   const tour = createTour({ pages: [{ id: "billing", url: "/billing.html", title: "Billing" }, { id: "security", url: "/security.html", title: "Security" }] });
   registerAsWebMcpTool(tour);
 </script>
