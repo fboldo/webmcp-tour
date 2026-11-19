@@ -22,7 +22,7 @@ Zero dependencies. The gate in `scripts/check-size.mjs` keeps each build under *
 
 ## Does it work with server-side rendering?
 
-Importing is safe on a server: the package does no DOM access at import time and registers nothing until you call `registerAsWebMcpTool`. Calls that need a page return `unavailable` ("There is no document") rather than throwing. Create and use the tour on the client, in an effect or a client-only module.
+Importing is safe on a server: the package does no DOM access at import time and registers nothing until you call `registerAsWebMcpTool`. Calls that need a page return `unavailable` ("There is no document") rather than throwing. Create and use the tour on the client, in an effect or a client-only module. If you server-render the script-tag config block, escape `<` as `\u003c` in the JSON.
 
 ## Which frameworks?
 

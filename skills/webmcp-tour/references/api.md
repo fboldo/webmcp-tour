@@ -7,7 +7,7 @@ Verified against `src/`. Everything is exported from `webmcp-tour`. Nothing runs
 | Import | Effect |
 |---|---|
 | `webmcp-tour` | `createTour`, `registerAsWebMcpTool`, `defineTools`, `getModelContext`, `Overlay`, `resolve`, `DEFAULT_NAMES`, `MAX_TITLE` (80), `MAX_MESSAGE` (500), `VERSION`. No side effects. |
-| `dist/webmcp-tour.js` (script tag) | Creates a default tour (options from `<script type="application/json" id="webmcp-tour-config">`: `pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`), registers its tools, sets `window.webmcpTour = { tour, createTour, registerAsWebMcpTool }`. `data-no-global` skips the global; `data-manual` skips registration. |
+| `dist/webmcp-tour.js` (script tag) | Creates a default tour (options from the JSON block named by the tag's `data-config` (or inline JSON): `pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`), registers its tools, sets `window.webmcpTour = { tour, createTour, registerAsWebMcpTool }`. All `data-*` flags and `data-config` need `document.currentScript` (null in a module). A second copy does nothing if `window.webmcpTour` exists. `data-no-global` skips the global; `data-manual` skips registration. |
 
 **`createTour(options)` returns a new tour on every call.** Tours on one page share the screen: a step in one clears the other's.
 

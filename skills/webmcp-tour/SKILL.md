@@ -39,7 +39,7 @@ await registerAsWebMcpTool(createTour());
 
 Pin an exact `<VERSION>` and add SRI: compute `<HASH>` with `curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A`. Use the real current version; do not use `@latest` with SRI. If the CDN is not an option, serve `dist/webmcp-tour.js` yourself.
 
-The script tag takes JSON-safe options from `<script type="application/json" id="webmcp-tour-config">` (`pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`). `navigate` is a function, so for it use `data-manual` on the script tag and `window.webmcpTour.createTour(...)` + `registerAsWebMcpTool(...)`, or import `createTour` (see [references/api.md](references/api.md)). `window.webmcpTour.tour` is the default tour: call `definePage` / `defineTarget` on it.
+The script tag takes JSON-safe options from a `<script type="application/json" id="tour-config">` block named by `data-config="tour-config"` on the tag (exactly one block, or inline JSON when the value starts with `{`; read via `document.currentScript`, so not when bundled as a module; escape `<` as `\u003c` in server-rendered JSON) (`pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`). `navigate` is a function, so for it use `data-manual` on the script tag and `window.webmcpTour.createTour(...)` + `registerAsWebMcpTool(...)`, or import `createTour` (see [references/api.md](references/api.md)). `window.webmcpTour.tour` is the default tour: call `definePage` / `defineTarget` on it.
 
 Where WebMCP is missing the library registers nothing and logs one `console.info`. It never throws.
 

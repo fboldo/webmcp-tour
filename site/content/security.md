@@ -58,6 +58,7 @@ A description shown on a card is still the page's text, shown under the assistan
 - No network requests, no storage except the one-use resume entry in `sessionStorage`, no cookies, no dependencies, no telemetry.
 - The overlay is an open shadow root, so page CSS cannot restyle it by accident. Its stylesheet is adopted with `adoptedStyleSheets`, which is CSP-safe under `style-src 'self'` (no `unsafe-inline`). It is tested against such a header.
 - The script-tag build sets `window.webmcpTour`, which any same-origin script can use to drive the overlay. Add `data-no-global` to the script tag to opt out; the tours you create stay private to your code.
+- The script tag reads its JSON config only from the block its own `data-config` names (exactly one `<script type="application/json">`; duplicates are refused) or from inline JSON in that attribute. Only allowlisted keys are copied, so `__proto__` and unknown keys are ignored. In server-rendered JSON, escape `<` as `\u003c`.
 - There are no `unload` listeners (they would cost the back/forward cache).
 - Where WebMCP is missing the library registers nothing and says why in one `console.info`.
 

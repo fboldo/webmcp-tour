@@ -7,7 +7,8 @@ type Api = { tour: Tour; createTour: (o?: object) => Tour; registerAsWebMcpTool:
 type W = Window & typeof globalThis & { webmcpTour?: Api };
 const frames: HTMLIFrameElement[] = [];
 
-async function load(attrs: Record<string, string> = {}, polyfill = false, config?: string, bodyHtml?: string) {
+// `config` becomes <script type=application/json id="cfg">; pass attrs {"data-config": "cfg"} to point at it.
+async function load(attrs: Record<string, string> = {}, polyfill = false, config?: string, bodyHtml?: string, asModule = false) {
   const f = document.createElement("iframe");
   Object.assign(f.style, { position: "fixed", top: "0", left: "0", width: "900px", height: "700px", border: "0", background: "#fff" });
   f.src = "/fx/iife.html";
@@ -28,7 +29,7 @@ async function load(attrs: Record<string, string> = {}, polyfill = false, config
   if (config !== undefined) {
     const c = doc.createElement("script");
     c.type = "application/json";
-    c.id = "webmcp-tour-config";
+    c.id = "cfg";
     c.textContent = config;
     doc.head.append(c);
   }
@@ -36,6 +37,7 @@ async function load(attrs: Record<string, string> = {}, polyfill = false, config
   const s = doc.createElement("script");
   for (const [k, v] of Object.entries(attrs)) s.setAttribute(k, v);
   s.src = "/fx/webmcp-tour.js";
+  if (asModule) s.type = "module";
   const done = new Promise<void>((res, rej) => {
     s.onload = () => res();
     s.onerror = () => rej(new Error("dist/webmcp-tour.js did not load: run `pnpm build` first"));
@@ -77,18 +79,90 @@ describe("dist/webmcp-tour.js", () => {
     expect(violations).toEqual([]); // strict CSP: no inline styles or scripts needed
   });
 
-  it("ignores a #webmcp-tour-config that is not a JSON script block", async () => {
-    const fake = `<p id="webmcp-tour-config">{"pages":[{"id":"x","title":"Evil","url":"https://evil.example/"}]}</p>`;
-    const { win } = await load({}, false, undefined, fake);
+  const CFG = { "data-config": "cfg" };
+  it("ignores a same-id element that is not a JSON script block", async () => {
+    const fake = `<p id="cfg">{"pages":[{"id":"x","title":"Evil","url":"https://evil.example/"}]}</p>`;
+    const { win } = await load(CFG, false, undefined, fake);
     expect(win.webmcpTour!.tour.targets().pages ?? []).toEqual([]);
   });
 
-  it("reads config only from script[type=application/json] and survives __proto__ keys", async () => {
-    const config = `{"__proto__":{"polluted":1},"labels":{"__proto__":{"polluted":2},"gotIt":"Entendi"},"pages":[{"id":"a","title":"A","url":"/a","__proto__":{"polluted":3}}]}`;
-    const { win } = await load({}, false, config);
+  it("reads config from the block named by data-config, ignoring unknown and function-only options", async () => {
+    const config = JSON.stringify({
+      labels: { gotIt: "Entendi" },
+      pages: [{ id: "billing", title: "Billing", url: "/billing" }],
+      takeMeThere: true,
+      navigate: "nope",
+      resume: false,
+    });
+    const { win, doc } = await load(CFG, false, config);
+    const { tour } = win.webmcpTour!;
+    expect(tour.targets().pages?.map((p) => p.id)).toEqual(["billing"]);
+    await tour.show({ text: "Save changes", message: "m" });
+    const shadow = doc.querySelector("[data-webmcp-tour-root]")!.shadowRoot!;
+    expect(shadow.textContent).toContain("Entendi");
+    expect(shadow.querySelector("[part~=goto]")).not.toBeNull();
+  });
+
+  it("reads inline JSON when data-config starts with {", async () => {
+    const { win } = await load({ "data-config": '{"pages":[{"id":"a","title":"A","url":"/a"}]}' });
+    expect(win.webmcpTour!.tour.targets().pages?.map((p) => p.id)).toEqual(["a"]);
+  });
+
+  const pagesOf = (win: W) => win.webmcpTour!.tour.targets().pages ?? [];
+  const PAGE = `{"pages":[{"id":"a","title":"A","url":"/a"}]}`;
+
+  it("uses defaults when data-config names no element", async () => {
+    const { win } = await load({ "data-config": "nope" });
+    expect(win.webmcpTour).toBeDefined();
+    expect(pagesOf(win)).toEqual([]);
+  });
+
+  it("uses defaults when the id is duplicated", async () => {
+    const dup = `<script type="application/json" id="cfg">${PAGE}</script>`;
+    const { win } = await load(CFG, false, PAGE, dup);
+    expect(pagesOf(win)).toEqual([]);
+  });
+
+  it("uses defaults on invalid JSON, a non-object, or wrong shapes", async () => {
+    for (const bad of ["{ nope", "[1]", "42", "null", '{"labels":{"gotIt":1}}', '{"labels":"x"}', '{"pages":{"id":"a"}}', '{"pages":[1]}']) {
+      const { win } = await load(CFG, false, bad);
+      expect(win.webmcpTour, bad).toBeDefined();
+      expect(pagesOf(win), bad).toEqual([]);
+      expect(await win.webmcpTour!.tour.show({ text: "Save changes", message: "m" }), bad).toMatchObject({ ok: true });
+    }
+  });
+
+  it("survives __proto__ and constructor keys", async () => {
+    const config = `{"__proto__":{"polluted":1},"constructor":{"prototype":{"polluted":4}},"labels":{"__proto__":"x","gotIt":"Entendi"},"pages":[{"id":"a","title":"A","url":"/a","__proto__":{"polluted":3}}]}`;
+    const { win } = await load(CFG, false, config);
     expect(({} as Record<string, unknown>).polluted).toBeUndefined();
     expect((win as unknown as { Object: ObjectConstructor }).Object.prototype).not.toHaveProperty("polluted");
-    expect(win.webmcpTour!.tour.targets().pages).toHaveLength(1);
+    expect(pagesOf(win)).toHaveLength(1);
+  });
+
+  it("without data-config the page's JSON blocks are not read", async () => {
+    const { win } = await load({}, false, PAGE);
+    expect(pagesOf(win)).toEqual([]);
+  });
+
+  it("a second copy does not register tools again", async () => {
+    const { win, doc } = await load({}, true);
+    const first = win.webmcpTour;
+    await vi.waitFor(async () => expect(await toolNames(win)).toEqual(FOUR));
+    const s = doc.createElement("script");
+    s.src = "/fx/webmcp-tour.js";
+    s.setAttribute("data-config", '{"takeMeThere":true}');
+    const done = new Promise((r) => s.addEventListener("load", r, { once: true }));
+    doc.head.append(s);
+    await done;
+    expect(win.webmcpTour).toBe(first);
+    expect(await toolNames(win)).toEqual(FOUR);
+  });
+
+  it("with currentScript null (loaded as a module) there is no config and no data-* flags", async () => {
+    const { win } = await load({ ...CFG, "data-no-global": "" }, false, PAGE, undefined, true);
+    expect(win.webmcpTour).toBeDefined(); // data-no-global is not seen
+    expect(pagesOf(win)).toEqual([]); // data-config is not seen
   });
 
   it("data-no-global opts out of window.webmcpTour", async () => {
@@ -115,29 +189,6 @@ describe("dist/webmcp-tour.js", () => {
     expect(await toolNames(win)).toEqual([]);
     await registerAsWebMcpTool([tour, createTour({ toolPrefix: "billing" })]);
     expect(await toolNames(win)).toHaveLength(8);
-  });
-
-  it("reads the default tour's options from the JSON config block, ignoring unknown and function-only ones", async () => {
-    const config = JSON.stringify({
-      labels: { gotIt: "Entendi" },
-      pages: [{ id: "billing", title: "Billing", url: "/billing" }],
-      takeMeThere: true,
-      navigate: "nope",
-      resume: false,
-    });
-    const { win, doc } = await load({}, false, config);
-    const { tour } = win.webmcpTour!;
-    expect(tour.targets().pages?.map((p) => p.id)).toEqual(["billing"]);
-    await tour.show({ text: "Save changes", message: "m" });
-    const shadow = doc.querySelector("[data-webmcp-tour-root]")!.shadowRoot!;
-    expect(shadow.textContent).toContain("Entendi");
-    expect(shadow.querySelector("[part~=goto]")).not.toBeNull();
-  });
-
-  it("warns and carries on with defaults when the config is not valid JSON", async () => {
-    const { win } = await load({}, false, "{ nope");
-    expect(win.webmcpTour).toBeDefined();
-    expect(await win.webmcpTour!.tour.show({ text: "Save changes", message: "m" })).toMatchObject({ ok: true });
   });
 
   it("is a quiet no-op without the API", async () => {

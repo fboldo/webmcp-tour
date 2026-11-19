@@ -20,13 +20,16 @@ Pin the version. To also lock the file, add `integrity="sha384-…"` next to `cr
 
 Any WebMCP agent can now list what is on the page (`tour_list_targets` returns a visible outline of headings and controls) and point at anything by its visible text. No markup, no config.
 
-Optional settings go in a JSON block (JSON-safe options only: `pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`; `navigate` is a function, so it cannot be set here). Add `data-manual` to the script tag to skip the automatic registration, or `data-no-global` to not expose `window.webmcpTour` (`{ tour, createTour, registerAsWebMcpTool }`).
+Optional settings go in a JSON block that the script tag points to with `data-config` (JSON-safe options only: `pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`; `navigate` is a function, so it cannot be set here). Add `data-manual` to the script tag to skip the automatic registration, or `data-no-global` to not expose `window.webmcpTour` (`{ tour, createTour, registerAsWebMcpTool }`).
 
 ```html
-<script type="application/json" id="webmcp-tour-config">
+<script type="application/json" id="tour-config">
   { "takeMeThere": true, "labels": { "gotIt": "Entendi" } }
 </script>
+<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" data-config="tour-config" crossorigin="anonymous"></script>
 ```
+
+`data-config` is the id of exactly one `<script type="application/json">` (none or several: a warning and defaults), or inline JSON when the value starts with `{`. Invalid JSON or the wrong shape also gives a warning and defaults. Config and `data-*` flags are read from `document.currentScript`, so they do not work when the file is bundled as a module. When the server renders the JSON block, escape `<` as `\u003c` (`JSON.stringify(config).replace(/</g, "\\u003c")`) so the content can never close the tag early.
 
 ### 2. Craft the experience
 

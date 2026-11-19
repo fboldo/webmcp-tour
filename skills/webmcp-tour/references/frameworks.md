@@ -4,7 +4,7 @@ Rule for all of them: `createTour(options)` returns a new tour with its own opti
 
 ## Plain HTML
 
-Script tag with a pinned version and SRI (see SKILL.md), then markup attributes. For pages or labels, either put them in a `<script type="application/json" id="webmcp-tour-config">` block before the script tag, or use a module (needed for `navigate`):
+Script tag with a pinned version and SRI (see SKILL.md), then markup attributes. For pages or labels, either put them in a `<script type="application/json" id="tour-config">` block and add `data-config="tour-config"` to the script tag, or use a module (needed for `navigate`):
 
 ```html
 <script type="module">
