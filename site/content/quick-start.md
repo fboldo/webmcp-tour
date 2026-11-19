@@ -31,21 +31,22 @@ That is the whole setup. `window.webmcpTour` is `{ tour, createTour, registerAsW
 </script>
 ```
 
-To give the default tour its options, add a JSON block anywhere before the script. Only JSON-safe options are read: `pages`, `labels`, `pageSuggestion`, `resume` and `takeMeThere`.
+To give the default tour its options, add a JSON block and point the script tag at it with `data-config`. The block can be anywhere on the page, before or after the tag. Only JSON-safe options are read: `pages`, `labels`, `pageSuggestion`, `resume` and `takeMeThere`.
 
 ```html
-<script type="application/json" id="webmcp-tour-config">
+<script type="application/json" id="tour-config">
   { "pages": [{ "id": "billing", "url": "/billing", "title": "Billing" }], "labels": { "gotIt": "Entendi" } }
 </script>
-<script src="/webmcp-tour.js"></script>
+<script src="/webmcp-tour.js" data-config="tour-config"></script>
 ```
 
-The config must be a `<script type="application/json" id="webmcp-tour-config">` element; any other element with that id is ignored. A page `url` must be `http(s)` on the page's own origin; for another origin add `"allowCrossOrigin": true`. `navigate` is a function and cannot be JSON. For that, or for several tours, use `data-manual` and build the tours yourself with `webmcpTour.createTour(options)` and `webmcpTour.registerAsWebMcpTool(tour)`, or use a bundler as below.
+`data-config` is the id of exactly one `<script type="application/json">` element; any other element with that id is ignored. With none or several, or with invalid JSON, labels that are not strings or pages that are not objects, the script warns once in the console and uses the defaults. A value starting with `{` is read as inline JSON instead: `data-config='{"takeMeThere":true}'`. When the server renders the JSON block, escape `<` as `\u003c` (`JSON.stringify(config).replace(/</g, "\\u003c")`) so the content can never close the tag early. A second copy of the script on the page does not register the tools again. A page `url` must be `http(s)` on the page's own origin; for another origin add `"allowCrossOrigin": true`. `navigate` is a function and cannot be JSON. For that, or for several tours, use `data-manual` and build the tours yourself with `webmcpTour.createTour(options)` and `webmcpTour.registerAsWebMcpTool(tour)`, or use a bundler as below.
 
-Attributes on the script tag:
+Attributes on the script tag. They are read from `document.currentScript`, which is null when the file is bundled as a module: there is then no config and no flag (use `createTour(options)` instead).
 
 | Attribute | Effect |
 |---|---|
+| `data-config` | Id of the JSON config block, or inline JSON starting with `{`. |
 | `data-no-global` | Do not set `window.webmcpTour`. `window.webmcpTour` is page-global: any same-origin script can drive the overlay, so opt out if that matters. |
 | `data-manual` | Create the default tour but do not register its tools. Register them yourself with `webmcpTour.registerAsWebMcpTool(...)` ([Engine API](engine-api.md)). |
 

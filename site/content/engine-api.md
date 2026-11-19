@@ -142,3 +142,7 @@ The shadow parts are also styleable with `::part()` on `[data-webmcp-tour-root]`
 - `resolve({ target | selector | text, index? }, options?)` finds an element exactly as `show` does (and scrolls it into view), without drawing anything. It returns `{ ok: true, element, matched }` or an error envelope.
 - `Overlay` is the card and spotlight on their own: `new Overlay(options).show(element, { title, message, placement })`.
 - `getModelContext()` returns the page's WebMCP model context, or `null` (with one `console.info` saying why).
+
+## Script-tag configuration
+
+The script-tag build (`dist/webmcp-tour.js`) is configured on its own tag: `data-config` (the id of one `<script type="application/json">` block, or inline JSON), `data-manual`, `data-no-global`. These are read from `document.currentScript`, which is null when the file is bundled as a module, so there is no config and no flag in that case. With the `webmcp-tour` package, pass options to `createTour` instead.
