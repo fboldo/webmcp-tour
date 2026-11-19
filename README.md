@@ -1,5 +1,12 @@
 # webmcp-tour
 
+[![npm version](https://img.shields.io/npm/v/webmcp-tour?color=3a3ac8)](https://www.npmjs.com/package/webmcp-tour)
+[![npm downloads](https://img.shields.io/npm/dm/webmcp-tour)](https://www.npmjs.com/package/webmcp-tour)
+[![minzipped size](https://img.shields.io/bundlephobia/minzip/webmcp-tour)](https://bundlephobia.com/package/webmcp-tour)
+[![CI](https://github.com/fboldo/webmcp-tour/actions/workflows/ci.yml/badge.svg)](https://github.com/fboldo/webmcp-tour/actions/workflows/ci.yml)
+[![license: MIT](https://img.shields.io/npm/l/webmcp-tour)](LICENSE)
+[![zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](package.json)
+
 **Your app, narrated by whichever AI agent your user already has.** One script tag lets any WebMCP agent point at a control, explain it in a short card, and step back while the user clicks. It never clicks for them.
 
 > **Experimental (0.x).** The API may change between minor versions, and WebMCP itself is still experimental in browsers.
