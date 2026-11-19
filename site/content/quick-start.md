@@ -12,11 +12,19 @@ Two requirements: a **secure context** (https, or `http://localhost`), and a bro
 
 `dist/webmcp-tour.js` is a single file (an IIFE). Include it and it creates a default tour and registers its four tools; nothing else is needed.
 
+Try it (quick experiments only: always the newest version, no integrity check):
+
 ```html
-<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/webmcp-tour"></script>
 ```
 
-Pin the version, and add `integrity="sha384-…"` to lock the file: the hash of a release is `curl -s https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js | openssl dgst -sha384 -binary | openssl base64 -A` (in a clone, `pnpm build && pnpm sri`). You can also serve `dist/webmcp-tour.js` yourself.
+Production: pin the exact version and lock the file with Subresource Integrity:
+
+```html
+<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" integrity="sha384-ZFV7oLCiB6T5KDOyhLF+G6M+t6L1P0nugi+feJ6QYJnKy8pJ1ThykxOFoV7mnn2A" crossorigin="anonymous"></script>
+```
+
+Do not use `@latest` in production: SRI is impossible and 0.x releases can break silently. The hash of a release is `curl -s https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js | openssl dgst -sha384 -binary | openssl base64 -A` (in a clone, `pnpm build && pnpm sri`). You can also serve `dist/webmcp-tour.js` yourself.
 
 That is the whole setup. `window.webmcpTour` is `{ tour, createTour, registerAsWebMcpTool }`: `tour` is the default tour, so you can configure it from your own script:
 

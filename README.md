@@ -19,11 +19,19 @@
 
 ### 1. Zero setup: one script tag
 
+Try it (quick experiments only: always the newest version, no integrity check):
+
 ```html
-<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/webmcp-tour"></script>
 ```
 
-Pin the version. To also lock the file, add `integrity="sha384-…"` next to `crossorigin`: the hash of each release is `curl -s https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js | openssl dgst -sha384 -binary | openssl base64 -A`. (In a clone, `pnpm build && pnpm sri` prints the hash of your local build and a ready tag.) Or install from npm: `npm install webmcp-tour`.
+Production: pin the exact version and lock the file with Subresource Integrity:
+
+```html
+<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" integrity="sha384-ZFV7oLCiB6T5KDOyhLF+G6M+t6L1P0nugi+feJ6QYJnKy8pJ1ThykxOFoV7mnn2A" crossorigin="anonymous"></script>
+```
+
+Do not use `@latest` in production: SRI is impossible and 0.x releases can break silently. The hash of a release is `curl -s https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js | openssl dgst -sha384 -binary | openssl base64 -A` (in a clone, `pnpm build && pnpm sri`). Or install from npm: `npm install webmcp-tour`.
 
 Any WebMCP agent can now list what is on the page (`tour_list_targets` returns a visible outline of headings and controls) and point at anything by its visible text. No markup, no config.
 
@@ -33,7 +41,7 @@ Optional settings go in a JSON block that the script tag points to with `data-co
 <script type="application/json" id="tour-config">
   { "takeMeThere": true, "labels": { "gotIt": "Entendi" } }
 </script>
-<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" data-config="tour-config" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" data-config="tour-config" integrity="sha384-ZFV7oLCiB6T5KDOyhLF+G6M+t6L1P0nugi+feJ6QYJnKy8pJ1ThykxOFoV7mnn2A" crossorigin="anonymous"></script>
 ```
 
 `data-config` is the id of exactly one `<script type="application/json">` (none or several: a warning and defaults), or inline JSON when the value starts with `{`. Invalid JSON or the wrong shape also gives a warning and defaults. Config and `data-*` flags are read from `document.currentScript`, so they do not work when the file is bundled as a module. When the server renders the JSON block, escape `<` as `\u003c` (`JSON.stringify(config).replace(/</g, "\\u003c")`) so the content can never close the tag early.

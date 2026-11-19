@@ -27,8 +27,8 @@ Pick one:
 
 ```html
 <!-- script tag: creates a default tour, registers its tools, sets window.webmcpTour -->
-<script src="https://unpkg.com/webmcp-tour@<VERSION>/dist/webmcp-tour.js"
-        integrity="sha384-<HASH>" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js"
+        integrity="sha384-ZFV7oLCiB6T5KDOyhLF+G6M+t6L1P0nugi+feJ6QYJnKy8pJ1ThykxOFoV7mnn2A" crossorigin="anonymous"></script>
 ```
 
 ```ts
@@ -37,7 +37,7 @@ import { createTour, registerAsWebMcpTool } from "webmcp-tour";
 await registerAsWebMcpTool(createTour());
 ```
 
-Pin an exact `<VERSION>` and add SRI: compute `<HASH>` with `curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A`. Use the real current version; do not use `@latest` with SRI. If the CDN is not an option, serve `dist/webmcp-tour.js` yourself.
+That tag is the production form: an exact version plus SRI. Never use `@latest` in production (no SRI possible, silent breaking updates on 0.x). For a quick experiment only, `<script src="https://unpkg.com/webmcp-tour"></script>` (unpinned, no integrity) works. To pin another version, compute the hash with `curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A`. If the CDN is not an option, serve `dist/webmcp-tour.js` yourself.
 
 The script tag takes JSON-safe options from a `<script type="application/json" id="tour-config">` block named by `data-config="tour-config"` on the tag (exactly one block, or inline JSON when the value starts with `{`; read via `document.currentScript`, so not when bundled as a module; escape `<` as `\u003c` in server-rendered JSON) (`pages`, `labels`, `pageSuggestion`, `resume`, `takeMeThere`). `navigate` is a function, so for it use `data-manual` on the script tag and `window.webmcpTour.createTour(...)` + `registerAsWebMcpTool(...)`, or import `createTour` (see [references/api.md](references/api.md)). `window.webmcpTour.tour` is the default tour: call `definePage` / `defineTarget` on it.
 
