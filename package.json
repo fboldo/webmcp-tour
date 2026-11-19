@@ -1,7 +1,7 @@
 {
   "name": "webmcp-tour",
   "version": "0.1.0",
-  "description": "Agent-callable guided-tour tools for WebMCP: highlight an element and explain it, the user clicks it themselves.",
+  "description": "Guided tours for AI agents via WebMCP: one script tag, and any agent can highlight and explain your app's controls.",
   "license": "MIT",
   "author": "Filipe Boldo",
   "repository": {
