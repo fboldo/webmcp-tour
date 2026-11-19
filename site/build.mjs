@@ -156,7 +156,7 @@ function llms(all) {
 
 > ${SUMMARY}
 
-The library is pre-release. The pages below are plain Markdown; llms-full.txt has all of them in one file. Tool names and envelopes in the Tools reference are exact.
+The library is experimental (0.x). The pages below are plain Markdown; llms-full.txt has all of them in one file. Tool names and envelopes in the Tools reference are exact.
 
 ## Docs
 

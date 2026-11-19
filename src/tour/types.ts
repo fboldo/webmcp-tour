@@ -5,8 +5,13 @@ import type { ToolDefinition, ToolNames } from "../tools/definitions.js";
 /** A page of the app, for suggesting navigation. */
 export interface PageDefinition {
   id: string;
-  /** Where Go sends the user (relative or absolute), via the `navigate` option. */
+  /**
+   * Where Go sends the user, via the `navigate` option. Only `http(s)` URLs, relative or absolute; another origin
+   * needs `allowCrossOrigin: true` (or a custom `navigate`).
+   */
   url: string;
+  /** Allow `url` on another origin than the page's. Default false. */
+  allowCrossOrigin?: boolean;
   /** Shown in the suggestion card and in target lists. */
   title: string;
   /** Short; shown to the agent in `tour_list_targets`. */

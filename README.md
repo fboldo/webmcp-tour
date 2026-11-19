@@ -2,9 +2,9 @@
 
 **Your app, narrated by whichever AI agent your user already has.** One script tag lets any WebMCP agent point at a control, explain it in a short card, and step back while the user clicks. It never clicks for them.
 
-> **Pre-release / experimental.** Not on npm yet, the API may change, and WebMCP itself is still experimental in browsers.
+> **Experimental (0.x).** The API may change between minor versions, and WebMCP itself is still experimental in browsers.
 
-![An agent is asked "How do I set up two-factor?" on the Billing page. A centred card offers "Go to Security"; after Go, Set up two-factor is highlighted with a "Got it" card.](site/content/images/demo.gif)
+![An agent is asked "How do I set up two-factor?" on the Billing page. A centred card offers "Go to Security"; after Go, Set up two-factor is highlighted with a "Got it" card.](https://raw.githubusercontent.com/fboldo/webmcp-tour/main/site/content/images/demo.gif)
 
 [Live demo](https://fboldo.github.io/webmcp-tour/demo/) · [Docs](https://fboldo.github.io/webmcp-tour/) · [Agent hosts](https://fboldo.github.io/webmcp-tour/agent-hosts/)
 
@@ -13,10 +13,10 @@
 ### 1. Zero setup: one script tag
 
 ```html
-<script src="https://unpkg.com/webmcp-tour"></script>
+<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" crossorigin="anonymous"></script>
 ```
 
-(Not published yet: until then, build it and serve `dist/webmcp-tour.js` yourself, as the [examples](examples) do.)
+Pin the version. To also lock the file, add `integrity="sha384-…"` next to `crossorigin`: the hash of each release is `curl -s https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js | openssl dgst -sha384 -binary | openssl base64 -A`. (In a clone, `pnpm build && pnpm sri` prints the hash of your local build and a ready tag.) Or install from npm: `npm install webmcp-tour`.
 
 Any WebMCP agent can now list what is on the page (`tour_list_targets` returns a visible outline of headings and controls) and point at anything by its visible text. No markup, no config.
 
@@ -121,7 +121,7 @@ Honest status:
 |---|---|
 | Chrome with WebMCP (flag `chrome://flags/#enable-webmcp-testing`, or the origin trial) | Works |
 | Playwright MCP with Chrome started with `--enable-features=WebMCP` | Works |
-| In-page agents (on-device or hosted model called from your script) | Works, with the [W3C polyfill](https://github.com/webmachinelearning/webmcp) where the browser has no WebMCP |
+| In-page agents (on-device or hosted model called from your script) | Works, with the [W3C polyfill](https://github.com/w3c-oss/webmcp-polyfill) where the browser has no WebMCP |
 | ChatGPT Desktop, Edge, Brave, others | Untested |
 
 Setup and caveats: [agent hosts](https://fboldo.github.io/webmcp-tour/agent-hosts/).
@@ -134,26 +134,24 @@ An [Agent Skill](skills/webmcp-tour) teaches Claude Code, Cursor, Codex and othe
 npx skills add fboldo/webmcp-tour --skill webmcp-tour
 ```
 
-The repository is private for now, so the install needs GitHub access.
-
 ## Docs
 
 [Quick start](https://fboldo.github.io/webmcp-tour/quick-start/) · [Concepts](https://fboldo.github.io/webmcp-tour/concepts/) · [Tools](https://fboldo.github.io/webmcp-tour/tools/) · [Engine API](https://fboldo.github.io/webmcp-tour/engine-api/) · [Examples](https://fboldo.github.io/webmcp-tour/examples/) · [FAQ](https://fboldo.github.io/webmcp-tour/faq/)
 
 ## Contributing
 
-Node ≥ 22.18 and pnpm (pinned via `packageManager`; `corepack enable`).
+Developing needs Node ≥ 22.18 and pnpm (pinned via `packageManager`; `corepack enable`).
 
 ```sh
 pnpm install
 pnpm exec playwright install chromium   # once: tests run in real browsers
-pnpm check       # typecheck, build, tests, size budget (gzip: engine ≤ 16 KB, script tag ≤ 16 KB)
+pnpm check       # typecheck, build, tests, size budget (gzip: engine ≤ 17 KB, script tag ≤ 17 KB)
 pnpm demo        # http://127.0.0.1:4173/demo/
 pnpm docs:dev    # preview the docs site
 pnpm example:script-tag   # also: example:embed, example:bundled
 ```
 
-`node scripts/readme-gif.mjs` re-records the GIF above (needs ffmpeg). There is no CI yet; run `pnpm check` before opening a PR.
+`node scripts/readme-gif.mjs` re-records the GIF above (needs ffmpeg). CI runs `pnpm check` on every push and pull request; run it locally first.
 
 ## License
 

@@ -11,7 +11,7 @@ Verified against `src/`. Everything is exported from `webmcp-tour`. Nothing runs
 
 **`createTour(options)` returns a new tour on every call.** Tours on one page share the screen: a step in one clears the other's.
 
-`registerAsWebMcpTool(tour | tour[], { signal? })` returns `Promise<{ unregister() }>` (aborting `signal` also unregisters). It registers all four tools, even with zero declarations. No-op with one `console.info` where WebMCP is unavailable. For an array every tool name must be distinct (`createTour({ toolPrefix: "billing" })` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`; or `names`); a duplicate throws before anything registers.
+`registerAsWebMcpTool(tour | tour[], { signal? })` returns `Promise<{ unregister() }>` (aborting `signal` also unregisters). It registers all four tools, even with zero declarations. No-op with one `console.info` where WebMCP is unavailable. For an array every tool name must be distinct (`createTour({ toolPrefix: "billing" })` gives `billing_show_step`, `billing_list_targets`, `billing_dismiss`, `billing_wait_for_interaction`; or `names`); a duplicate rejects the promise before anything registers. It is `async`: it rejects, never throws, so `await` it or `.catch`. Registration is all or nothing: if the browser refuses any tool, the rest are unregistered and it rejects.
 
 ## createTour(options)
 

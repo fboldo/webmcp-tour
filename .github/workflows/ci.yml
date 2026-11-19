@@ -1,8 +1,9 @@
 name: CI
 
-# Manual only while the account has no Actions minutes; run `pnpm check`
-# locally meanwhile. Restore push + pull_request when billing is back.
 on:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -28,10 +29,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Install Chromium for Vitest browser mode
-        run: pnpm exec playwright install --with-deps chromium
+      - name: Install Chromium and Firefox for Vitest browser mode
+        run: pnpm exec playwright install --with-deps chromium firefox
 
-      - run: pnpm typecheck
-      - run: pnpm build
-      - run: pnpm test
-      - run: pnpm size
+      - run: pnpm check
+      - run: pnpm docs:build

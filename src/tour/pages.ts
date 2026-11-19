@@ -13,6 +13,12 @@ const pathOf = (url: string): string => {
 export class Pages {
   readonly #all = new Map<string, PageDefinition>();
   readonly #listeners = new Set<() => void>();
+  readonly #customNavigate: boolean;
+
+  /** `customNavigate`: the app supplies `navigate`, so it owns where cross-origin pages lead. */
+  constructor(customNavigate = false) {
+    this.#customNavigate = customNavigate;
+  }
 
   onChange(fn: () => void): () => void {
     this.#listeners.add(fn);
@@ -23,6 +29,7 @@ export class Pages {
     const m = def?.match;
     if (!["id", "url", "title"].every((k) => typeof def?.[k as "id"] === "string" && def[k as "id"].trim()) || (m !== undefined && !["string", "function"].includes(typeof m) && !(m instanceof RegExp)))
       throw new TypeError("webmcp-tour: a page needs non-empty `id`, `url` and `title`, and `match` as a string, RegExp or function");
+    this.#checkUrl(def);
     const copy = { ...def };
     this.#all.set(def.id, copy);
     this.#listeners.forEach((fn) => fn());
@@ -31,6 +38,19 @@ export class Pages {
       this.#all.delete(def.id);
       this.#listeners.forEach((fn) => fn());
     };
+  }
+
+  /** Go navigates to `url`: only http(s), and the page's own origin unless the app opted out. */
+  #checkUrl({ url, allowCrossOrigin }: PageDefinition): void {
+    let u: URL;
+    try {
+      u = new URL(url, typeof location === "undefined" ? undefined : location.href);
+    } catch {
+      throw new TypeError(`webmcp-tour: page url "${url}" is not a valid URL`);
+    }
+    if (u.protocol !== "http:" && u.protocol !== "https:") throw new TypeError("webmcp-tour: a page url must be http(s) or relative");
+    if (typeof location !== "undefined" && u.origin !== location.origin && !allowCrossOrigin && !this.#customNavigate)
+      throw new TypeError(`webmcp-tour: page url "${url}" is on another origin; set allowCrossOrigin: true or pass \`navigate\``);
   }
 
   get = (id: string): PageDefinition | undefined => this.#all.get(id);

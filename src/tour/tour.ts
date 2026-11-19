@@ -57,7 +57,7 @@ function build(options: TourOptions): Tour {
   if (rest.describeTarget) overlayOptions.describeTarget = true;
   const overlay = new Overlay(overlayOptions);
   overlay.mount(); // the live region exists from load; no-op headless or without a document
-  const pages = new Pages();
+  const pages = new Pages(!!navigate);
   const targets = new Targets(() => pages.current()?.id, scope, domTargets !== false);
   let suggestion: (Pending & { url: string }) | undefined; // the page suggestion on screen: Go navigates, nothing else does
   let resumed: { page: string; target?: string } | undefined; // told to the agent once, on its next result

@@ -1,6 +1,6 @@
 {
   "name": "webmcp-tour",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Agent-callable guided-tour tools for WebMCP: highlight an element and explain it, the user clicks it themselves.",
   "license": "MIT",
   "author": "Filipe Boldo",
@@ -23,6 +23,7 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./script": "./dist/webmcp-tour.js",
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
@@ -32,8 +33,11 @@
   "files": [
     "dist"
   ],
-  "engines": {
-    "node": ">=22.18"
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.18"
+    }
   },
   "packageManager": "pnpm@11.20.0",
   "scripts": {
@@ -42,6 +46,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "size": "node scripts/check-size.mjs",
+    "prepublishOnly": "pnpm check",
+    "sri": "node scripts/sri.mjs",
     "check": "pnpm typecheck && pnpm build && pnpm test && pnpm size",
     "demo": "pnpm build && node scripts/serve-demo.mjs",
     "example:script-tag": "pnpm build && node examples/serve.mjs script-tag",

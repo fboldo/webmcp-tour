@@ -6,15 +6,17 @@ order: 2
 
 Two requirements: a **secure context** (https, or `http://localhost`), and a browser or bridge that provides WebMCP (`document.modelContext`). See [Agent hosts](agent-hosts.md) for how to get one, including a polyfill for development.
 
-> The package is not published to npm yet. Until it is, build it from the repository (`pnpm install && pnpm build`) and use the files in `dist/`. The names below are what the published package will use.
+> Install with `npm install webmcp-tour`, or use the script tag below. The library is experimental (0.x), so pin the version.
 
 ## With a script tag
 
 `dist/webmcp-tour.js` is a single file (an IIFE). Include it and it creates a default tour and registers its four tools; nothing else is needed.
 
 ```html
-<script src="/webmcp-tour.js"></script>
+<script src="https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js" crossorigin="anonymous"></script>
 ```
+
+Pin the version, and add `integrity="sha384-…"` to lock the file: the hash of a release is `curl -s https://unpkg.com/webmcp-tour@0.1.0/dist/webmcp-tour.js | openssl dgst -sha384 -binary | openssl base64 -A` (in a clone, `pnpm build && pnpm sri`). You can also serve `dist/webmcp-tour.js` yourself.
 
 That is the whole setup. `window.webmcpTour` is `{ tour, createTour, registerAsWebMcpTool }`: `tour` is the default tour, so you can configure it from your own script:
 
@@ -38,7 +40,7 @@ To give the default tour its options, add a JSON block anywhere before the scrip
 <script src="/webmcp-tour.js"></script>
 ```
 
-`navigate` is a function and cannot be JSON. For that, or for several tours, use `data-manual` and build the tours yourself with `webmcpTour.createTour(options)` and `webmcpTour.registerAsWebMcpTool(tour)`, or use a bundler as below.
+The config must be a `<script type="application/json" id="webmcp-tour-config">` element; any other element with that id is ignored. A page `url` must be `http(s)` on the page's own origin; for another origin add `"allowCrossOrigin": true`. `navigate` is a function and cannot be JSON. For that, or for several tours, use `data-manual` and build the tours yourself with `webmcpTour.createTour(options)` and `webmcpTour.registerAsWebMcpTool(tour)`, or use a bundler as below.
 
 Attributes on the script tag:
 
@@ -97,4 +99,4 @@ An [Agent Skill](https://agentskills.io) teaches a coding agent (Claude Code, Cu
 npx skills add fboldo/webmcp-tour --skill webmcp-tour
 ```
 
-The repository is private for now, so the install needs GitHub access to it. The skill also has an audit script, `node skills/webmcp-tour/scripts/audit.mjs src/`, which lists controls that lack `data-tour-id` and `data-tour-description`.
+The skill also has an audit script, `node skills/webmcp-tour/scripts/audit.mjs src/`, which lists controls that lack `data-tour-id` and `data-tour-description`.

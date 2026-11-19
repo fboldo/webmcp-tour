@@ -42,7 +42,7 @@ WebMCP in Chrome is experimental and its status changes; check Chrome's own docu
 
 An agent that runs inside your page (Chrome's on-device Prompt API, or a hosted model you call from script) cannot see the page, but it can call tools through `document.modelContext.executeTool`. That is what `tour_list_targets`' `outline` is for.
 
-Where the browser has no WebMCP, load the [W3C polyfill](https://github.com/webmachinelearning/webmcp) (`@w3c/webmcp-polyfill`) before the tour, and `document.modelContext` appears. The polyfill installs nothing when the browser already has native WebMCP, so loading it unconditionally is safe, and detecting first is cheaper:
+Where the browser has no WebMCP, load the [W3C polyfill](https://github.com/w3c-oss/webmcp-polyfill) (`@w3c/webmcp-polyfill`) before the tour, and `document.modelContext` appears. The polyfill installs nothing when the browser already has native WebMCP, so loading it unconditionally is safe, and detecting first is cheaper:
 
 ```html
 <script src="/vendor/polyfill.js"></script>
