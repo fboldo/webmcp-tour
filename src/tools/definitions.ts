@@ -47,10 +47,12 @@ export function toolNames(names: Partial<ToolNames> = {}): ToolNames {
 const wrap = (r: { ok: boolean } & Record<string, unknown>): ToolResult => (r.ok ? r : { ...r, isError: true }) as ToolResult;
 
 const safe =
-  (fn: (input: Record<string, unknown>, options?: { signal?: AbortSignal }) => unknown): ToolDefinition["execute"] =>
+  (tour: Tour, fn: (input: Record<string, unknown>, options?: { signal?: AbortSignal }) => unknown): ToolDefinition["execute"] =>
   async (input, options) => {
     try {
-      return wrap((await fn(input ?? {}, options)) as Parameters<typeof wrap>[0]);
+      const r = wrap((await fn(input ?? {}, options)) as Parameters<typeof wrap>[0]);
+      const resumed = tour.takeResumed(); // the step was resumed after navigation: say so on the next result
+      return resumed ? { ...r, resumed } : r;
     } catch {
       return wrap({ ok: false, error: "internal", message: "The tour failed unexpectedly; check the page and try again." });
     }
@@ -87,7 +89,7 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
         },
       },
       annotations: ro,
-      execute: safe(async (input) => {
+      execute: safe(tour, async (input) => {
         const r = await tour.show(input as StepInput);
         if (!r.ok) return r;
         return { ...r, note: "suggested" in r ? "A card asks the user whether to go. Nothing navigates unless they press Go." : `The highlight stays until dismissed. Call ${n.dismiss} when the user moves on.` };
@@ -102,7 +104,7 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
         `If the list is empty, do not stop: point at the element directly with ${n.showStep}, by its visible text or a CSS selector.`,
       inputSchema: { type: "object", properties: {} },
       annotations: { ...ro, untrustedContentHint: true },
-      execute: safe(() => {
+      execute: safe(tour, () => {
         const { targets, total, page, pages } = tour.targets();
         return { ok: true, ...(page ? { page } : {}), ...(pages ? { pages } : {}), targets, count: total, ...(total > targets.length ? { truncated: true } : {}) };
       }),
@@ -113,7 +115,7 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
       description: "Remove the current highlight and explanation. Call when the user moves on, asks a different question, or says they found it.",
       inputSchema: { type: "object", properties: {} },
       annotations: ro,
-      execute: safe(() => tour.dismiss()),
+      execute: safe(tour, () => tour.dismiss()),
     },
     {
       name: n.waitForInteraction,
@@ -135,7 +137,7 @@ export function defineTools(tour: Tour, names?: Partial<ToolNames>): ToolDefinit
         },
       },
       annotations: ro,
-      execute: safe((input, options) => tour.waitForInteraction(input as WaitInput, options)),
+      execute: safe(tour, (input, options) => tour.waitForInteraction(input as WaitInput, options)),
     },
   ];
 }

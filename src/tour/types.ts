@@ -132,6 +132,18 @@ export interface TourOptions {
   takeMeThere?: boolean;
   /** The app's pages, so the agent can suggest going to another one. */
   pages?: PageDefinition[];
+  /**
+   * Where the page suggestion card goes. `center` (default): centred in the viewport over a light backdrop that does not block the page.
+   * `anchor`: next to the element marked `data-tour-page="<page id>"` (a nav link; one without `data-tour-id`), ringed; falls back to `center`
+   * when none is visible. `corner`: bottom-right.
+   */
+  pageSuggestion?: { placement?: "center" | "anchor" | "corner" };
+  /**
+   * Resume the step on the page the user was sent to. On Go the step is kept in `sessionStorage` under a random nonce and only the nonce is
+   * added to the destination URL, as the `param` query parameter (default `webmcp-tour`); the destination shows the step when it loads
+   * (or, for a single-page app, once the target appears). `false` turns it off. An unknown or expired nonce shows nothing.
+   */
+  resume?: false | { param?: string };
   /** Called only when the user presses Go on a suggestion. Default `location.assign`; give your router's push for an SPA. */
   navigate?: (url: string) => void;
   /** Also point the target's `aria-describedby` at a hidden copy of the message while the step shows. Default off. */
@@ -169,6 +181,8 @@ export interface Tour {
    * Throws on bad names. Each `execute` returns an envelope and never throws.
    */
   tools(options?: { names?: Partial<ToolNames> }): ToolDefinition[];
+  /** After a resume, `{ page, target? }` once (the tools put it on the next result as `resumed`); then undefined. */
+  takeResumed(): { page: string; target?: string } | undefined;
   /** Dismiss, remove the overlay and release the singleton. */
   destroy(): void;
 }

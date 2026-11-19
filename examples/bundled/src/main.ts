@@ -13,7 +13,9 @@ const view = document.getElementById("view")!;
 // Pages let the agent say "that control is on another page": the user gets a card with
 // Go / Not now, and Go calls navigate(), here the SPA router, so the agent survives.
 function go(url: string): void {
-  history.pushState(null, "", url + location.search);
+  const u = new URL(url, location.href); // carries the tour's resume nonce; keep it, add our own params
+  for (const [k, v] of new URLSearchParams(location.search)) if (!u.searchParams.has(k)) u.searchParams.append(k, v);
+  history.pushState(null, "", u.pathname + u.search + u.hash);
   render();
 }
 const tour = createTour({

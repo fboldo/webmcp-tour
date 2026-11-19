@@ -68,6 +68,8 @@ export interface OverlayOptions {
   labels?: Partial<Labels>;
   /** Add a "Take me there" button (scroll, focus, pulse) next to "Got it". Default off. */
   takeMeThere?: boolean;
+  /** Where a page suggestion without an `anchor` goes: centred over a light backdrop (default) or in the bottom-right corner. */
+  noticePlacement?: "center" | "corner";
   /** Also set `aria-describedby` on the target (a light-DOM copy of the message), restored on dismiss. Default off. */
   describeTarget?: boolean;
 }
@@ -82,4 +84,6 @@ export interface OverlayNotice {
   title?: string;
   /** Page title, filled into the `{page}` templates. */
   page: string;
+  /** Ring this element and put the card next to it, instead of centring or cornering it. */
+  anchor?: Element | undefined;
 }

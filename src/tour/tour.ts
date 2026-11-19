@@ -1,11 +1,13 @@
 import { Overlay } from "../engine/overlay/index.js";
 import type { OverlayEvents, OverlayOptions } from "../engine/overlay/index.js";
 import type { TargetInfo } from "../engine/resolver/index.js";
-import { describe, listTargets, locate, locationOf, reveal } from "../engine/resolver/index.js";
+import { describe, isVisible, listTargets, locate, locationOf, reveal } from "../engine/resolver/index.js";
 import type { ResolveInput, ResolverOptions } from "../engine/resolver/index.js";
 import { defineTools } from "../tools/definitions.js";
 import { MAX_MESSAGE, MAX_TITLE } from "./limits.js";
 import { Pages } from "./pages.js";
+import { drop, peek, stash, strip } from "./resume.js";
+import type { Pending } from "./resume.js";
 import { Targets } from "./targets.js";
 import type { DismissResult, PageInfo, StepInput, StepResult, Tour, TourEvents, TourOptions, WaitEvent, WaitInput, WaitOptions, WaitResult } from "./types.js";
 import { WAIT_MS, defaultEvent, watch } from "./wait.js";
@@ -34,7 +36,7 @@ const pick = ({ target, selector, text, index }: ResolveInput): ResolveInput => 
 });
 
 function build(options: TourOptions): Tour {
-  const { scope, exclude, locators, pages: initialPages, navigate, ...rest } = options;
+  const { scope, exclude, locators, pages: initialPages, navigate, pageSuggestion, resume: resumeOpt, ...rest } = options;
   if (exclude !== undefined && typeof document !== "undefined") {
     try {
       document.createDocumentFragment().querySelector(exclude);
@@ -48,12 +50,17 @@ function build(options: TourOptions): Tour {
   if (rest.attribution !== undefined) overlayOptions.attribution = rest.attribution;
   if (rest.labels) overlayOptions.labels = rest.labels;
   if (rest.takeMeThere) overlayOptions.takeMeThere = true;
+  if (pageSuggestion?.placement === "corner") overlayOptions.noticePlacement = "corner";
   if (rest.describeTarget) overlayOptions.describeTarget = true;
   const overlay = new Overlay(overlayOptions);
   overlay.mount(); // the live region exists from load; no-op headless or without a document
   const pages = new Pages();
   const targets = new Targets(() => pages.current()?.id);
-  let suggestion: { url: string } | undefined; // the page suggestion on screen: Go navigates, nothing else does
+  let suggestion: (Pending & { url: string }) | undefined; // the page suggestion on screen: Go navigates, nothing else does
+  let resumed: { page: string; target?: string } | undefined; // told to the agent once, on its next result
+  let resuming: Promise<void> | undefined; // a resume waiting for its target to appear
+  let stopResume: (() => void) | undefined;
+  const param = resumeOpt === false ? undefined : (resumeOpt?.param || "webmcp-tour");
   let pending: ((r: WaitResult) => void) | undefined; // the wait in flight, if any
   let anchor: ResolveInput | undefined; // how the current step was located
   const supersede = () => pending?.({ ok: true, status: "superseded" });
@@ -71,22 +78,71 @@ function build(options: TourOptions): Tour {
     else if (s && reason === "declined") pending?.({ ok: true, status: "dismissed" });
     else if (s && reason === "navigating") {
       pending?.({ ok: true, status: "navigating" });
+      const kept = param ? stash(s, s.url, param) : undefined;
       try {
-        (navigate ?? ((url: string) => location.assign(url)))(s.url);
+        (navigate ?? ((url: string) => location.assign(url)))(kept?.url ?? s.url);
       } catch {
         // The app's router failing must not break the tour.
       }
+      // A single-page app is still here and shows the step once its target appears; a full load starts over in the new page.
+      if (kept) resuming = resume(kept.nonce, false);
     }
   });
+  /** The visible element marked `data-tour-page="<id>"` (not a target itself), for the anchored card. */
+  const anchorOf = (id: string): Element | undefined =>
+    [...document.querySelectorAll(`[data-tour-page="${CSS.escape(id)}"]:not([data-tour-id])`)].find(
+      (e) => !overlay.host?.contains(e) && (!scope || scope.contains(e)) && !(exclude && e.closest(exclude)) && !e.closest("[data-tour-exclude]") && isVisible(e),
+    );
   /** Show the suggestion card for `page`; the caller builds the envelope. */
-  const suggest = (page: { id: string; url: string; title: string }, title: string | undefined): boolean => {
-    if (!overlay.notice({ page: page.title, ...(title ? { title } : {}) }).shown) return false;
-    suggestion = { url: page.url };
+  const suggest = (page: { id: string; url: string; title: string }, title: string | undefined, target?: string, message?: string): boolean => {
+    const a = pageSuggestion?.placement === "anchor" ? anchorOf(page.id) : undefined;
+    if (!overlay.notice({ page: page.title, ...(title ? { title } : {}), anchor: a }).shown) return false;
+    suggestion = { page: page.id, url: page.url, target, title, message };
     anchor = undefined;
     supersede();
     return true;
   };
   const obscured = (): StepResult => ({ ok: false, error: "obscured", message: "A modal dialog is open; the page behind it cannot be pointed at." });
+
+  /**
+   * Show the step stored under `nonce` once its target is on the page (a mutation, a definition, or 5 s, whichever ends it).
+   * `consume`: a load takes the entry for good; after `navigate()` it is only dropped on success, since a full page load
+   * is about to unload this page and the new one needs it.
+   */
+  const resume = (nonce: string, consume: boolean): Promise<void> => {
+    const s = peek(nonce);
+    if (consume || !s) drop(nonce);
+    if (!s) return (strip(param!, nonce), Promise.resolve());
+    return new Promise<void>((resolve) => {
+      let over = false;
+      const mo = new MutationObserver(() => void attempt());
+      const subs = [targets.onChange(() => void attempt()), pages.onChange(() => void attempt())];
+      const timer = setTimeout(() => finish(), 5000);
+      const finish = (ok?: boolean): void => {
+        if (over) return;
+        over = true;
+        mo.disconnect();
+        subs.forEach((off) => off());
+        clearTimeout(timer);
+        if (ok) drop(nonce);
+        strip(param!, nonce);
+        stopResume = resuming = undefined;
+        resolve();
+      };
+      const attempt = async (): Promise<void> => {
+        if (over) return;
+        if (s.target === undefined) {
+          if (pages.get(s.page) === pages.current()) (resumed = { page: s.page }), finish(true);
+        } else if (!targets.offPage(s.target)) {
+          const r = await tour.show({ target: s.target, title: s.title, message: s.message } as StepInput);
+          if (r.ok && !over) (resumed = { page: s.page, target: s.target }), finish(true);
+        }
+      };
+      stopResume = finish;
+      mo.observe(document, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden", "style", "class", "open", "data-tour-id"] });
+      void attempt();
+    });
+  };
 
   const tour: Tour = {
     async show(step: StepInput): Promise<StepResult> {
@@ -107,12 +163,12 @@ function build(options: TourOptions): Tour {
         const p = pages.get(step.page);
         if (!p) return { ok: false, error: "page_not_found", available: pages.all().map((x) => x.id) };
         if (p === pages.current()) return invalid("The user is already on that page.");
-        return suggest(p, title) ? { ok: true, suggested: info(p) } : obscured();
+        return suggest(p, title, undefined, message) ? { ok: true, suggested: info(p) } : obscured();
       }
       const away = typeof step.target === "string" ? targets.offPage(step.target) : undefined;
       const awayPage = away && pages.get(away.page);
       if (awayPage) {
-        if (!suggest(awayPage, title)) return obscured();
+        if (!suggest(awayPage, title, step.target, message)) return obscured();
         return { ok: false, error: "other_page", page: info(awayPage), message: `That control is on ${awayPage.title}. The user was asked whether to go; nothing moved.` };
       }
 
@@ -144,6 +200,7 @@ function build(options: TourOptions): Tour {
       const blocked = off(named);
       if (blocked) return blocked;
       let loc = pick(named);
+      if (!Object.keys(loc).length && !overlay.target) await resuming; // a resume in flight lands first
       const asked = !Object.keys(loc).length && !!suggestion && !!overlay.target; // waiting on the suggestion card, not an element
       if (!Object.keys(loc).length && !asked) {
         if (!overlay.target || !anchor) return { ok: false, error: "no_step", message: "Nothing is highlighted. Point at an element first, or name the one to wait for." };
@@ -218,7 +275,14 @@ function build(options: TourOptions): Tour {
 
     defineTarget: (def) => targets.define(def),
 
+    takeResumed() {
+      const r = resumed;
+      resumed = undefined;
+      return r;
+    },
+
     destroy(): void {
+      stopResume?.();
       supersede();
       overlay.destroy();
       const slot = globalThis as Slot;
@@ -226,6 +290,8 @@ function build(options: TourOptions): Tour {
     },
   };
   for (const p of initialPages ?? []) pages.define(p);
+  const nonce = param && typeof document !== "undefined" ? new URLSearchParams(location.search).get(param) : null;
+  if (nonce) resuming = resume(nonce, true);
   return tour;
 }
 

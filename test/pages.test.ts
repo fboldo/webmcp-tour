@@ -283,7 +283,7 @@ describe("Go, Not now and navigation", () => {
     q("go").click();
     expect(await wait).toEqual({ ok: true, status: "navigating" });
     expect(navigate).toHaveBeenCalledOnce();
-    expect(navigate).toHaveBeenCalledWith("/security");
+    expect(navigate.mock.calls[0]![0]).toMatch(/^\/security\?webmcp-tour=[0-9a-f]{24}$/);
     expect(open("popover")).toBe(false);
     expect(reasons).toEqual(["navigating"]);
   });
