@@ -27,7 +27,9 @@ function render() {
 
 /** SPA navigation: pushState and swap the visible view; nothing reloads, so the in-page agent keeps running. */
 export function navigate(url) {
-  history.pushState(null, "", url + location.search);
+  const u = new URL(url, location.href);
+  for (const [k, v] of new URLSearchParams(location.search)) if (!u.searchParams.has(k)) u.searchParams.append(k, v); // keep ?agent=… and friends
+  history.pushState(null, "", u.pathname + u.search + u.hash);
   render();
 }
 document.addEventListener("click", (e) => {
@@ -63,7 +65,7 @@ plan.addEventListener("close", () => {
 document.querySelector('[data-tour-id="invoices"]').addEventListener("click", () => say("Downloaded invoices.zip (12 PDFs)."));
 document.querySelector('[data-tour-id="invite-member"]').addEventListener("click", () => say("Invite sent."));
 
-// Security -> Advanced -> Set up two-factor -> a setup step.
+// Security -> Set up two-factor -> a setup step.
 const tfa = $("tfa-dialog");
 document.querySelector('[data-tour-id="two-factor"]').addEventListener("click", () => tfa.showModal());
 tfa.addEventListener("close", () => {

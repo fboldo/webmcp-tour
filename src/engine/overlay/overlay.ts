@@ -122,7 +122,7 @@ export class Overlay {
 
   /** A card with no target and no spotlight, offering to go to another page. Plain text only. */
   notice(n: OverlayNotice): ShowResult {
-    return this.#present(null, { title: n.title ?? "", message: this.#label("otherPage", n.page) }, n.page);
+    return this.#present(n.anchor ?? null, { title: n.title ?? "", message: this.#label("otherPage", n.page) }, n.page);
   }
 
   #present(el: Element | null, step: OverlayStep, page?: string): ShowResult {
@@ -137,14 +137,14 @@ export class Overlay {
     const message = step.message ?? "";
     this.#placement = step.placement ?? "auto";
     this.#target = target;
-    this.#notice = !el;
+    this.#notice = page !== undefined;
     this.#modal = modal;
     let positioning: ShowResult["positioning"] = "none";
 
     if (this.#opts.render !== false) {
       const p = (this.#parts ??= this.#build());
       this.#fill(el, title, message, page);
-      if (el) this.#describe(target, message);
+      if (el && !this.#notice) this.#describe(target, message);
       // The overlay lives inside the modal so it is not inert.
       const mount = modal ?? document.body ?? document.documentElement;
       if (p.host.parentNode !== mount) mount.append(p.host);
@@ -242,10 +242,15 @@ export class Overlay {
       b.textContent = texts[i]!;
       b.hidden = !shown.includes(i);
     });
-    d.card.toggleAttribute("data-notice", page !== undefined);
+    // Notices: centred or cornered unless anchored to `target`. Focusable (not focused) so keyboard users can reach the card.
+    const where = page === undefined || target ? undefined : (this.#opts.noticePlacement ?? "center");
+    if (where) d.card.dataset["notice"] = where;
+    else delete d.card.dataset["notice"];
+    if (page === undefined) d.card.removeAttribute("tabindex");
+    else d.card.tabIndex = -1;
     let card = d.card;
     const hook = this.#opts.renderPopover;
-    if (hook && target) {
+    if (hook && target && page === undefined) {
       const step: RenderStep = { target, title, message, placement: this.#placement };
       try {
         const custom = hook(step, d.card);
@@ -266,8 +271,7 @@ export class Overlay {
   #click = (e: Event): void => {
     for (const n of e.composedPath()) {
       if (!(n instanceof Element)) continue;
-      const parts = n.getAttribute("part") ?? "";
-      const is = (p: string) => new RegExp(`(^|\\s)${p}(\\s|$)`).test(parts);
+      const is = (p: string) => n.part.contains(p);
       if (is("close") || is("notnow")) return void this.#end(this.#notice ? "declined" : "hide");
       if (is("gotit")) return void this.#end("acknowledged");
       if (is("go")) return void this.#end("navigating");

@@ -50,8 +50,10 @@ border-radius:6px;padding:2px 8px;margin:0;cursor:pointer}
 [part~=actions]{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 [part~=gotit],[part~=go]{font-weight:600}
 [part~=popover] button[hidden]{display:none}
-/* Page suggestion: no target, so a plain corner card. */
+/* Page suggestion without an anchor: centred over a light backdrop, or a plain corner card. */
 [part~=popover][data-notice]{position-anchor:none;position-area:none;position-try-fallbacks:none;position-visibility:always;inset:auto 16px 16px auto;margin:0}
+[part~=popover][data-notice=center]{inset:0;margin:auto;height:fit-content}
+[part~=popover][data-notice=center]::backdrop{background:rgb(0 0 0/.2);pointer-events:none}
 [part~=live]{position:fixed;top:0;left:0;contain:strict;width:1px;height:1px;margin:0;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 [part~=title]:empty,[part~=message]:empty{display:none}
 /* JS fixed-position path: the engine writes top/left/width/height. */

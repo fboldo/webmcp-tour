@@ -61,8 +61,34 @@ tour.defineTarget({ id: "two-factor", page: "security", label: "Set up two-facto
 - **Current page.** The first page whose `match` accepts `location`. `match` is optional: a string is a `location.pathname` prefix, a `RegExp` is tested against the pathname, a function gets `location`. Without it, the page's `url` path must equal `location.pathname`.
 - **Targets on a page.** `defineTarget({ id, page, label, description })` needs no element: it only says where the control lives. On its own page the real element comes from `data-tour-id="two-factor"` (or `selector` / `element` on the definition). `data-tour-page="<page id>"` does the same in markup. A target whose page is not the current one is off-page: it is never highlighted.
 - **`tour_list_targets`** returns the current `page`, the other `pages`, and every target; off-page ones carry `page: { id, title }` and `onThisPage: false`. It is registered whenever there are pages or targets, even if none is on the current page.
-- **`tour_show_step`** takes a fifth locator, `{ page: "security" }`. For an off-page target, or an explicit `page`, it shows a card with no spotlight: the `otherPage` text, **Go to Security** and **Not now**. The envelope is `{ ok: false, error: "other_page", page }` for a target, and `{ ok: true, suggested: page }` for a `page` locator. A call never navigates; only the user's click on **Go** calls `navigate(url)`.
+- **`tour_show_step`** takes a fifth locator, `{ page: "security" }`. For an off-page target, or an explicit `page`, it shows a card with no spotlight (unless anchored, below): the `otherPage` text, **Go to Security** and **Not now**. The envelope is `{ ok: false, error: "other_page", page }` for a target, and `{ ok: true, suggested: page }` for a `page` locator. A call never navigates; only the user's click on **Go** calls `navigate(url)`.
 - **Waiting.** With a suggestion on screen, `tour_wait_for_interaction` resolves `{ status: "navigating" }` on **Go** and `{ status: "dismissed" }` on **Not now**, ×, or Escape.
+
+### Where the suggestion card goes
+
+```ts
+createTour({ pageSuggestion: { placement: "center" } }); // "center" (default) | "anchor" | "corner"
+```
+
+- **`center`**: the card is centred in the viewport, in the top layer, over a light backdrop that never blocks the page (`pointer-events: none`, and the card is a non-modal popover). It is focusable (`tabindex="-1"`, not focused for you) and announced through the live region. Escape and **Not now** dismiss it.
+- **`anchor`**: the card attaches to an on-page element marked `data-tour-page="<page id>"` (say, the nav link) and rings it. The marked element must not also carry `data-tour-id` (that marks a target) and must be visible, in `scope` and not excluded; when none is, the card is centred instead.
+- **`corner`**: bottom-right, as before.
+
+Forced-colors, reduced-motion and `labels` apply to all three.
+
+### Resuming the step after navigation
+
+On **Go** the tour keeps the step it was heading for (page id, target, title, message, a timestamp) in `sessionStorage` under a random nonce, and adds only that nonce to the destination URL:
+
+```ts
+createTour({ resume: { param: "webmcp-tour" } }); // the default; `resume: false` turns it off
+// Go -> navigate("/security?webmcp-tour=9f2c…")
+```
+
+- **On load**, or, for a single-page app, after `navigate()` returns, the tour looks the nonce up. A fresh entry (at most 2 minutes old) is shown as the step, as soon as its target is on the page (a `MutationObserver` watches for it, at most 5 seconds). Then the parameter is removed with `history.replaceState` and the entry deleted: **one use**.
+- **Security.** The message, title and target never go in the URL. A link with an unknown, expired or already used nonce shows nothing (and the parameter is removed), so nobody can use a crafted link to make your site display text "from your assistant". The nonce is only looked up in this tab's `sessionStorage`; same-origin destinations only (a URL on another origin is used as is, with no nonce).
+- **Agents.** The next tool result after a resume carries `resumed: { page, target? }` (`tour.takeResumed()` gives the same once). A `tour_wait_for_interaction` that ended with `navigating` is finished for good, but one called with no arguments while a resume is still looking for its target waits for it, then waits on the resumed highlight as usual.
+- **Full page loads.** An agent embedded in the page restarts, but the highlight still resumes: it does not depend on the agent. If your `navigate` appends its own query string, build it from the URL it is given (it already carries the nonce).
 
 Agents embedded in the page restart after a full page load, so after **Go** they begin again on the new page. For a single-page app, pass `navigate` (your router's push) so the page does not reload and the agent stays alive. A script-tag build cannot take options; use `window.webmcpTour.definePage(...)`, or import `createTour` from the package, to set pages and `navigate`.
 
@@ -79,7 +105,7 @@ pnpm exec playwright install chromium   # once: Vitest runs tests in real Chromi
 pnpm typecheck
 pnpm build       # tsup → dist/index.js, dist/auto.js (ESM), dist/webmcp-tour.js (IIFE, sets window.webmcpTour)
 pnpm test        # Vitest browser mode (Chromium + Firefox); the IIFE test needs the build
-pnpm size        # gzip budget gate: engine-only ≤ 14 KB; full (/auto, script tag) ≤ 15 KB each
+pnpm size        # gzip budget gate: engine-only ≤ 15 KB; full (/auto, script tag) ≤ 16 KB each
 pnpm check       # all of the above, as CI runs it
 pnpm demo        # build, then serve http://127.0.0.1:4173/demo/ (PORT overrides); see demo/README.md
 ```

@@ -287,18 +287,22 @@ describe("demo page (scripted mode, end to end)", () => {
     expect(doc.location.pathname).toBe(path);
     expect(view(doc)).toEqual(["billing"]);
 
+    // The card is centred, over a backdrop that lets the page through.
+    const pop = card(doc).querySelector<HTMLElement>("[part~=popover]")!;
+    const r = pop.getBoundingClientRect();
+    expect(Math.abs(r.left + r.width / 2 - doc.defaultView!.innerWidth / 2)).toBeLessThan(2);
+
     card(doc).querySelector<HTMLElement>("[part~=go]")!.click();
     expect(doc.location.pathname).toBe("/demo/security");
     expect(view(doc)).toEqual(["security"]);
 
-    // The control sits under Security → Advanced: the reveal hint says so until the user opens it.
-    await ask(doc, "How do I set up two-factor?");
-    expect(doc.querySelector("#transcript li.answer")!.textContent).toContain("Advanced");
-    doc.querySelector("details")!.open = true;
-    await ask(doc, "How do I set up two-factor?");
+    // The step resumes on Security by itself: two-factor highlighted, the nonce gone from the URL.
+    await vi.waitFor(() => expect(card(doc).querySelector<HTMLElement>("[part~=spotlight]")!.matches(":popover-open")).toBe(true));
     expect(card(doc).querySelector("[part~=message]")!.textContent).toContain("two-factor setup");
-    expect(card(doc).querySelector<HTMLElement>("[part~=spotlight]")!.matches(":popover-open")).toBe(true);
     expect(card(doc).querySelector<HTMLElement>("[part~=gotit]")!.hidden).toBe(false);
+    expect(doc.location.search).toBe("?agent=scripted");
+    expect(Object.keys(doc.defaultView!.sessionStorage).filter((k) => k.startsWith("webmcp-tour:"))).toEqual([]);
+    expect((doc.getElementById("tfa-dialog") as HTMLDialogElement).open).toBe(false);
   }, 20_000);
 
   it("Not now leaves the page where it is", async () => {
