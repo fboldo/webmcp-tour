@@ -1,138 +1,154 @@
 # webmcp-tour
 
-Agent-callable guided-tour tools for WebMCP: an agent answering "how do I change X?" highlights the control and explains it, while the user clicks it themselves.
+**Your app, narrated by whichever AI agent your user already has.** One script tag lets any WebMCP agent point at a control, explain it in a short card, and step back while the user clicks. It never clicks for them.
 
-Status: pre-release, under construction.
+> **Pre-release / experimental.** Not on npm yet, the API may change, and WebMCP itself is still experimental in browsers.
 
-## Playwright MCP
+![An agent is asked "How do I set up two-factor?" on the Billing page. A centred card offers "Go to Security"; after Go, Set up two-factor is highlighted with a "Got it" card.](site/content/images/demo.gif)
 
-Playwright MCP reaches WebMCP tools only in Chrome launched with the feature on. In its config:
+[Live demo](https://fboldo.github.io/webmcp-tour/demo/) · [Docs](https://fboldo.github.io/webmcp-tour/) · [Agent hosts](https://fboldo.github.io/webmcp-tour/agent-hosts/)
 
-```json
-{ "browser": { "launchOptions": { "args": ["--enable-features=WebMCP"] } } }
+## Two ways to use it
+
+### 1. Zero setup: one script tag
+
+```html
+<script src="https://unpkg.com/webmcp-tour"></script>
 ```
 
-The tools show up as `webmcp_<name>` (for example `webmcp_tour_show_step`) after a page snapshot. The snapshot lists the raw names (`tour_show_step`); call the prefixed ones. Each call is capped at 30 s, so a long `tour_wait_for_interaction` ends early: call it again or ask the user.
+(Not published yet: until then, build it and serve `dist/webmcp-tour.js` yourself, as the [examples](examples) do.)
 
-## The step card
+Any WebMCP agent can now list what is on the page (`tour_list_targets` returns a visible outline of headings and controls) and point at anything by its visible text. No markup, no config.
 
-Each step shows a card with **Got it** next to the highlighted control. Pressing it dismisses the step and tells the agent: a pending `tour_wait_for_interaction` resolves `{ ok: true, status: "acknowledged" }` (the user read it and wants to continue), and `tour.on("dismiss")` reports `reason: "acknowledged"`. For a card that also scrolls to the control, focuses it and pulses the spotlight, opt in with **Take me there**:
+Optional settings go in a JSON block; add `data-manual` to the script tag to opt out of automatic registration.
+
+```html
+<script type="application/json" id="webmcp-tour-config">
+  { "takeMeThere": true, "labels": { "gotIt": "Entendi" } }
+</script>
+```
+
+### 2. Craft the experience
+
+Install it, create a tour, register it:
+
+```sh
+npm install webmcp-tour   # not published yet: see Contributing to run it from source
+```
 
 ```ts
-createTour({ takeMeThere: true });
+import { createTour, registerAsWebMcpTool } from "webmcp-tour";
+
+const tour = createTour();
+await registerAsWebMcpTool(tour);
 ```
 
-### Translations
+**Declare a target** so the agent answers in your words, not its guess:
 
-Every user-facing string, and the card's aria labels, comes from `labels`. All keys are optional; these are the defaults:
-
-```ts
-createTour({
-  labels: {
-    gotIt: "Got it",
-    takeMeThere: "Take me there",
-    close: "Dismiss", // aria label of the × button
-    attribution: "From your assistant", // visible, and the card's aria label
-    goToPage: "Go to {page}", // {page} is the page title
-    notNow: "Not now",
-    otherPage: "Your assistant suggests going to {page}",
-  },
-});
+```html
+<button data-tour-id="change-plan"
+        data-tour-description="Opens the plan picker. Changes apply after you confirm.">
+  Change plan
+</button>
 ```
 
-The older `attribution` option still works (deprecated); `labels.attribution` wins when both are set. Labels are set as text, never parsed as HTML.
-
-### Pages
-
-Tell the tour about the app's pages and the agent can say "that control is on another page":
+**Declare pages** so an agent can say "that control is on another page", offer a **Go to Security** card, and have the step resume there after the user presses Go:
 
 ```ts
 const tour = createTour({
   pages: [
-    { id: "billing", url: "/billing", title: "Billing", description: "Plan and invoices." },
+    { id: "billing", url: "/billing", title: "Billing" },
     { id: "security", url: "/security", title: "Security" },
   ],
   navigate: (url) => router.push(url), // default: location.assign
 });
-tour.definePage({ id: "team", url: "/team", title: "Team" }); // later, for dynamic apps
 tour.defineTarget({ id: "two-factor", page: "security", label: "Set up two-factor", description: "Starts two-factor setup." });
 ```
 
-- **Current page.** The first page whose `match` accepts `location`. `match` is optional: a string is a `location.pathname` prefix, a `RegExp` is tested against the pathname, a function gets `location`. Without it, the page's `url` path must equal `location.pathname`.
-- **Targets on a page.** `defineTarget({ id, page, label, description })` needs no element: it only says where the control lives. On its own page the real element comes from `data-tour-id="two-factor"` (or `selector` / `element` on the definition). `data-tour-page="<page id>"` does the same in markup. A target whose page is not the current one is off-page: it is never highlighted.
-- **`tour_list_targets`** also returns the page `outline` (below), and the current `page`, the other `pages`, and every target; off-page ones carry `page: { id, title }` and `onThisPage: false`.
-- **`tour_show_step`** takes a fifth locator, `{ page: "security" }`. For an off-page target, or an explicit `page`, it shows a card with no spotlight (unless anchored, below): the `otherPage` text, **Go to Security** and **Not now**. The envelope is `{ ok: false, error: "other_page", page }` for a target, and `{ ok: true, suggested: page }` for a `page` locator. A call never navigates; only the user's click on **Go** calls `navigate(url)`.
-- **Waiting.** With a suggestion on screen, `tour_wait_for_interaction` resolves `{ status: "navigating" }` on **Go** and `{ status: "dismissed" }` on **Not now**, ×, or Escape.
-
-### The page outline
-
-Agents inside the page (an on-device model, a hosted model called from page script) cannot see it, so `tour_list_targets` also returns what a person sees: `outline: { headings: [...], controls: [{ role, name, context }] }`. Controls are visible links, buttons, fields (by label), selects, tabs and menu items; `name` is the accessible name and `context` the nearest landmark or heading. The agent points at one with `tour_show_step({ text })`. The tool is registered whenever a document exists, even with nothing declared.
-
-Same privacy rules as the `near` list of a miss: visible elements only, never field values, attributes, URLs or hidden content; `scope`, `exclude`, `data-tour-exclude`, `aria-hidden`, `inert` and the tour's own overlay are honoured. At most 60 controls and 30 headings, names clipped to 60 characters; `truncated: true` when capped. Also `tour.outline()`.
-
-### Where the suggestion card goes
+**Embed it in your own tools**, so your agent's answer and the highlight arrive together:
 
 ```ts
-createTour({ pageSuggestion: { placement: "center" } }); // "center" (default) | "anchor" | "corner"
+await tour.show({ target: "two-factor", message: "Press this to start." });
 ```
 
-- **`center`**: the card is centred in the viewport, in the top layer, over a light backdrop that never blocks the page (`pointer-events: none`, and the card is a non-modal popover). It is focusable (`tabindex="-1"`, not focused for you) and announced through the live region. Escape and **Not now** dismiss it.
-- **`anchor`**: the card attaches to an on-page element marked `data-tour-page="<page id>"` (say, the nav link) and rings it. The marked element must not also carry `data-tour-id` (that marks a target) and must be visible, in `scope` and not excluded; when none is, the card is centred instead.
-- **`corner`**: bottom-right, as before.
+Several tours on one page (say, per product area) need distinct tool names: `createTour({ toolPrefix: "billing" })` gives `billing_show_step` and friends, and `registerAsWebMcpTool([billingTour, teamTour])` registers them together.
 
-Forced-colors, reduced-motion and `labels` apply to all three.
+Translations, card placement, `resume`, and the rest are in the [concepts](https://fboldo.github.io/webmcp-tour/concepts/) and [engine API](https://fboldo.github.io/webmcp-tour/engine-api/) pages.
 
-### Resuming the step after navigation
+## Why guide instead of click?
 
-On **Go** the tour keeps the step it was heading for (page id, target, title, message, a timestamp) in `sessionStorage` under a random nonce, and adds only that nonce to the destination URL:
+An agent that clicks for the user needs the user's trust and the user's session. Guidance does not:
 
-```ts
-createTour({ resume: { param: "webmcp-tour" } }); // the default; `resume: false` turns it off
-// Go -> navigate("/security?webmcp-tour=9f2c…")
-```
+- **Auth and two-factor**: the user types their own secrets.
+- **Payments and irreversible actions**: the agent shows the button; a person decides to press it.
+- **Learning the app**: the user ends up knowing where things are.
+- **The worst case is small**: a wrong highlight is ignored, not a wrong purchase.
 
-- **On load**, or, for a single-page app, after `navigate()` returns, the tour looks the nonce up. A fresh entry (at most 2 minutes old) is shown as the step, as soon as its target is on the page (a `MutationObserver` watches for it, at most 5 seconds). Then the parameter is removed with `history.replaceState` and the entry deleted: **one use**.
-- **Security.** The message, title and target never go in the URL. A link with an unknown, expired or already used nonce shows nothing (and the parameter is removed), so nobody can use a crafted link to make your site display text "from your assistant". The nonce is only looked up in this tab's `sessionStorage`; same-origin destinations only (a URL on another origin is used as is, with no nonce).
-- **Agents.** The next tool result after a resume carries `resumed: { page, target? }` (`tour.takeResumed()` gives the same once). A `tour_wait_for_interaction` that ended with `navigating` is finished for good, but one called with no arguments while a resume is still looking for its target waits for it, then waits on the resumed highlight as usual.
-- **Full page loads.** An agent embedded in the page restarts, but the highlight still resumes: it does not depend on the agent. If your `navigate` appends its own query string, build it from the URL it is given (it already carries the nonce).
+## What agents get
 
-Agents embedded in the page restart after a full page load, so after **Go** they begin again on the new page. For a single-page app, pass `navigate` (your router's push) so the page does not reload and the agent stays alive. A script-tag build cannot take options; use `window.webmcpTour.definePage(...)`, or import `createTour` from the package, to set pages and `navigate`.
+Four tools, all marked `readOnlyHint`:
 
-## Use with coding agents
+| Tool | What it does |
+|---|---|
+| `tour_list_targets` | The page outline (headings, controls with role, name, context), plus declared targets and pages |
+| `tour_show_step` | Highlights a control (by declared id, visible text or selector) with a card; or suggests another page |
+| `tour_wait_for_interaction` | Resolves when the user clicks it, presses **Got it**, **Go** or dismisses |
+| `tour_dismiss` | Clears the current step |
 
-An [Agent Skill](https://agentskills.io) in [`skills/webmcp-tour`](skills/webmcp-tour) teaches a coding agent (Claude Code, Cursor, Codex and others) to add webmcp-tour to your app: install with SRI, declare targets, pages and resume, write descriptions, and test.
+Details: [tools reference](https://fboldo.github.io/webmcp-tour/tools/).
+
+## Security and accessibility
+
+- Tools only highlight. Navigation happens only when the user presses **Go**.
+- Cards are labelled **From your assistant**, so a page cannot pass text off as its own.
+- Resume uses a one-use random nonce in the URL; the message never travels in it, so crafted links show nothing.
+- The outline never includes field values, attributes, URLs or hidden content; `data-tour-exclude` hides anything else.
+- Announced through a live region, keyboard and Escape friendly, with light/dark, forced-colors and reduced-motion support.
+- Zero dependencies; the page text is set as text, never as HTML.
+
+See [security](https://fboldo.github.io/webmcp-tour/security/) and [accessibility](https://fboldo.github.io/webmcp-tour/accessibility/).
+
+## Agent hosts
+
+Honest status:
+
+| Host | Status |
+|---|---|
+| Chrome with WebMCP (flag `chrome://flags/#enable-webmcp-testing`, or the origin trial) | Works |
+| Playwright MCP with Chrome started with `--enable-features=WebMCP` | Works |
+| In-page agents (on-device or hosted model called from your script) | Works, with the [W3C polyfill](https://github.com/webmachinelearning/webmcp) where the browser has no WebMCP |
+| ChatGPT Desktop, Edge, Brave, others | Untested |
+
+Setup and caveats: [agent hosts](https://fboldo.github.io/webmcp-tour/agent-hosts/).
+
+## Using a coding agent to add it
+
+An [Agent Skill](skills/webmcp-tour) teaches Claude Code, Cursor, Codex and others to add webmcp-tour to your app (declare targets, pages, descriptions, and test):
 
 ```sh
 npx skills add fboldo/webmcp-tour --skill webmcp-tour
 ```
 
-The repository is private for now, so the install needs GitHub access to it (`gh auth login` or an SSH key). It also includes an audit script: `node skills/webmcp-tour/scripts/audit.mjs src/` lists controls that lack `data-tour-id` / `data-tour-description`.
+The repository is private for now, so the install needs GitHub access.
 
-## Documentation
+## Docs
 
-The docs site is built from [`site/`](site) (`pnpm docs:dev` to preview, `pnpm docs:build` for `site/dist`; see [`site/README.md`](site/README.md)). It includes the live demo and an `llms.txt`.
+[Quick start](https://fboldo.github.io/webmcp-tour/quick-start/) · [Concepts](https://fboldo.github.io/webmcp-tour/concepts/) · [Tools](https://fboldo.github.io/webmcp-tour/tools/) · [Engine API](https://fboldo.github.io/webmcp-tour/engine-api/) · [Examples](https://fboldo.github.io/webmcp-tour/examples/) · [FAQ](https://fboldo.github.io/webmcp-tour/faq/)
 
-## Examples
-Three runnable apps in [`examples/`](examples): a script tag, a Vite bundle (a SPA with pages), and an engine embed with your own tool. Start with `pnpm example:script-tag`.
+## Contributing
 
-## Development
-
-Uses **pnpm** (version pinned in `package.json` → `packageManager`; `corepack enable` picks it up) and Node ≥ 22.18.
+Node ≥ 22.18 and pnpm (pinned via `packageManager`; `corepack enable`).
 
 ```sh
 pnpm install
-pnpm exec playwright install chromium   # once: Vitest runs tests in real Chromium
-pnpm typecheck
-pnpm build       # tsup → dist/index.js (ESM), dist/webmcp-tour.js (IIFE, sets window.webmcpTour)
-pnpm test        # Vitest browser mode (Chromium + Firefox); the IIFE test needs the build
-pnpm size        # gzip budget gate: engine-only ≤ 16 KB; script tag ≤ 16 KB
-pnpm check       # all of the above, as CI runs it
-pnpm demo        # build, then serve http://127.0.0.1:4173/demo/ (PORT overrides); see demo/README.md
+pnpm exec playwright install chromium   # once: tests run in real browsers
+pnpm check       # typecheck, build, tests, size budget
+pnpm demo        # http://127.0.0.1:4173/demo/
+pnpm docs:dev    # preview the docs site
+pnpm example:script-tag   # also: example:embed, example:bundled
 ```
 
-CI: the GitHub Actions workflow is manual-only for now; run `pnpm check` locally before merging.
-
-TypeScript is pinned to 6.x: tsup's `.d.ts` build needs the TypeScript compiler API, which TypeScript 7 no longer ships.
+`node scripts/readme-gif.mjs` re-records the GIF above (needs ffmpeg). There is no CI yet; run `pnpm check` before opening a PR.
 
 ## License
 
