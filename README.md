@@ -108,6 +108,10 @@ npx skills add fboldo/webmcp-tour --skill webmcp-tour
 
 The repository is private for now, so the install needs GitHub access to it (`gh auth login` or an SSH key). It also includes an audit script: `node skills/webmcp-tour/scripts/audit.mjs src/` lists controls that lack `data-tour-id` / `data-tour-description`.
 
+## Documentation
+
+The docs site is built from [`site/`](site) (`pnpm docs:dev` to preview, `pnpm docs:build` for `site/dist`; see [`site/README.md`](site/README.md)). It includes the live demo and an `llms.txt`.
+
 ## Examples
 Three runnable apps in [`examples/`](examples): a script tag, a Vite bundle (a SPA with pages), and an engine embed with your own tool. Start with `pnpm example:script-tag`.
 
