@@ -383,15 +383,17 @@ describe("registration with pages", () => {
     expect(JSON.parse(await ctx().executeTool(list, {}))).toMatchObject({ ok: true, count: 0, pages: [{ id: "security" }] });
   });
 
-  it("is registered for off-page targets alone, and follows definePage", async () => {
+  it("is registered with no pages at all, and sees pages defined later", async () => {
     tour.destroy();
     document.body.innerHTML = "<h1>Hi</h1>";
     history.replaceState(null, "", "/billing");
     tour = createTour({ navigate });
     auto = registerAutoTools();
     await auto.ready;
-    expect(await names()).not.toContain("tour_list_targets");
+    expect(await names()).toContain("tour_list_targets");
+    const list = async () => JSON.parse(await ctx().executeTool((await ctx().getTools()).find((t) => t.name === "tour_list_targets")!, {}));
+    expect((await list()).pages).toBeUndefined();
     tour.definePage({ id: "security", url: "/security", title: "Security" });
-    await vi.waitFor(async () => expect(await names()).toContain("tour_list_targets"));
+    expect((await list()).pages).toMatchObject([{ id: "security" }]);
   });
 });

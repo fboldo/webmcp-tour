@@ -7,7 +7,7 @@
 //   "openrouter"  OpenAI-compatible tool calling against OpenRouter (demo/openrouter.js), needs a user key.
 //   "scripted"    no model at all: canned question -> tool-call mappings, labelled as such.
 
-import { runOpenRouter } from "./openrouter.js";
+import { OUTLINE_HINT, runOpenRouter } from "./openrouter.js";
 
 export const FINAL = "final_answer";
 export const MAX_STEPS = 8;
@@ -95,6 +95,7 @@ export function systemPrompt(tools) {
   return [
     "You are a support assistant embedded in a web app. The user asks how to do something in the app.",
     "You help by calling tools that highlight controls on the page; the user clicks them themselves.",
+    OUTLINE_HINT,
     "On every turn reply with JSON { tool, args, answer }. To call a tool, set `tool` to its name and `args` to its arguments as JSON text.",
     `When you are done, set tool to "${FINAL}" and put a short reply for the user in \`answer\`.`,
     "After the user interacts with a highlighted control (a tool result with status \"interacted\"), highlight the next step, or give your final answer if that was the last one.",
@@ -210,16 +211,50 @@ const SCRIPTS = [
   { match: /invoice|receipt/i, call: { tool: "tour_show_step", args: { target: "invoices" } }, say: (r) => (r.ok ? "“Download invoices” (highlighted) gives you a ZIP of every invoice." : null) },
   { match: /two.?factor|2fa|authenticator|mfa/i, call: { tool: "tour_show_step", args: { target: "two-factor" } }, say: (r) => (r.ok ? "Click “Set up two-factor” (highlighted) on the Security page." : null) },
   { match: /digest|summary|email/i, call: { tool: "tour_show_step", args: { target: "email-digest" } }, say: (r) => (r.ok ? "Tick “Daily email digest” (highlighted) to get one summary email a day." : null) },
+  { match: /billing|payment|invoice history/i, nav: "Billing", say: "opens the Billing page: your plan and invoices." },
+  { match: /team|members?|colleagues?/i, nav: "Team", say: "opens the Team page: members and invitations." },
+  { match: /security|password/i, nav: "Security", say: "opens the Security page: password and two-factor." },
+  { match: /notifications?/i, nav: "Notifications", say: "opens the Notifications page: email and alert settings." },
   { match: /help|support|chat/i, call: { tool: "tour_show_step", args: { target: "help-chat" } }, say: (r) => (r.ok ? "The Help button (highlighted) opens the support chat; type your question there." : null) },
   { match: /delete|close (my )?account/i, call: { tool: "tour_show_step", args: { text: "Delete account", message: "This is the control you asked about." } }, say: (r) => (r.ok ? "It is highlighted." : "I cannot point at that one: it is kept off-limits on this page. Contact support to delete your account.") },
   { match: /key|api|revoke/i, call: { tool: "tour_show_step", args: { text: "Revoke", message: "Revoke removes an API key." } }, say: (r) => (r.ok ? "Click Revoke next to the key." : r.error === "ambiguous" ? "There are two keys, so two Revoke buttons: tell me which one (CI deploy or Staging)." : null) },
 ];
 
+/** The outline control named `name` (a link first), or undefined. */
+const outlineControl = (result, name) => {
+  const hits = (result.outline?.controls ?? []).filter((c) => c.name.toLowerCase() === name.toLowerCase());
+  return hits.find((c) => c.role === "link") ?? hits[0];
+};
+
+/** Point at a control found in the page outline, by its visible text. */
+async function pointViaOutline({ find, modelContext, emit, signal }, name, say) {
+  const list = find("tour_list_targets");
+  const show = find("tour_show_step");
+  if (!list || !show) return null;
+  emit({ type: "call", tool: "tour_list_targets", args: {} });
+  const outline = await callTool(modelContext, list, {}, signal);
+  emit({ type: "result", tool: "tour_list_targets", result: outline });
+  const control = outlineControl(outline, name);
+  if (!control) return null;
+  const args = { text: control.name, message: `${control.name} ${say}` };
+  emit({ type: "call", tool: "tour_show_step", args });
+  const result = await callTool(modelContext, show, args, signal);
+  emit({ type: "result", tool: "tour_show_step", result });
+  if (result.ok) return `Use the “${control.name}” ${control.role ?? "control"}${control.context ? ` in ${control.context}` : ""} (highlighted): it ${say}`;
+  return result.error === "ambiguous" ? `There are several “${control.name}” controls; I could not tell which you mean.` : null;
+}
+
 /** Canned agent: matches the question against a few patterns and calls the real tools. Resolves `{ answer }`. */
 export async function runScripted({ modelContext, tools, question, emit, signal }) {
   const find = (name) => tools.find((t) => t.name === name);
   const script = SCRIPTS.find((s) => s.match.test(question));
-  if (script && find(script.call.tool)) {
+  if (script?.nav) {
+    const answer = await pointViaOutline({ find, modelContext, emit, signal }, script.nav, script.say);
+    if (answer) {
+      emit({ type: "answer", text: answer });
+      return { answer };
+    }
+  } else if (script && find(script.call.tool)) {
     emit({ type: "call", tool: script.call.tool, args: script.call.args });
     const result = await callTool(modelContext, find(script.call.tool), script.call.args, signal);
     emit({ type: "result", tool: script.call.tool, result });

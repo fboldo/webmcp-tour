@@ -136,43 +136,24 @@ describe("registration", () => {
   });
 });
 
-describe("list_targets lifecycle", () => {
-  it("is absent with no declared targets and appears and disappears with them", async () => {
+describe("list_targets registration", () => {
+  it("is registered with zero declared targets or pages, and reports the outline", async () => {
     await start(PLAIN);
-    expect(await names()).toEqual(["tour_dismiss", "tour_show_step", "tour_wait_for_interaction"]);
+    expect(await names()).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]);
+    const r = await call("tour_list_targets");
+    expect(r).toMatchObject({ ok: true, targets: [], count: 0 });
+    expect(r.outline.headings).toEqual(["Settings"]);
+    expect(r.outline.controls.map((c: any) => c.name)).toEqual(["Save changes", "Cancel"]);
+  });
 
+  it("sees targets declared later, without re-registering", async () => {
+    await start(PLAIN);
     document.body.insertAdjacentHTML("beforeend", `<button id="t" data-tour-id="late" data-tour-description="d">Late</button>`);
-    await vi.waitFor(async () => expect(await names()).toContain("tour_list_targets"), { timeout: 3000 });
     expect((await call("tour_list_targets")).targets.map((t: any) => t.id)).toEqual(["late"]);
-
-    document.getElementById("t")!.remove();
-    await vi.waitFor(async () => expect(await names()).toEqual(["tour_dismiss", "tour_show_step", "tour_wait_for_interaction"]), { timeout: 3000 });
-  });
-
-  it("follows the attribute too, not only added nodes", async () => {
-    await start(PLAIN);
-    const b = document.getElementById("save")!;
-    b.setAttribute("data-tour-id", "save");
-    await vi.waitFor(async () => expect(await names()).toContain("tour_list_targets"), { timeout: 3000 });
-    b.removeAttribute("data-tour-id");
-    await vi.waitFor(async () => expect(await names()).not.toContain("tour_list_targets"), { timeout: 3000 });
-  });
-
-  it("follows defineTarget without waiting for a DOM change", async () => {
-    await start(PLAIN);
     const off = tour.defineTarget({ id: "save", selector: "#save", description: "Saves." });
-    await vi.waitFor(async () => expect(await names()).toContain("tour_list_targets"));
-    expect((await call("tour_list_targets")).targets[0]).toMatchObject({ id: "save", label: "Save changes", description: "Saves." });
+    expect((await call("tour_list_targets")).targets.map((t: any) => t.id)).toEqual(["save", "late"]);
     off();
-    await vi.waitFor(async () => expect(await names()).not.toContain("tour_list_targets"));
-  });
-
-  it("a burst of changes registers it once", async () => {
-    await start(PLAIN);
-    for (let i = 0; i < 20; i++) document.body.insertAdjacentHTML("beforeend", `<i data-tour-id="t${i}"></i>`);
-    await vi.waitFor(async () => expect(await names()).toContain("tour_list_targets"), { timeout: 3000 });
-    await new Promise((r) => setTimeout(r, 500));
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(await names()).toHaveLength(4);
   });
 });
 
@@ -201,7 +182,7 @@ describe("calling the tools", () => {
 
   it("points by text on a page with zero declared targets", async () => {
     await start(PLAIN);
-    expect(await names()).toEqual(["tour_dismiss", "tour_show_step", "tour_wait_for_interaction"]);
+    expect(await names()).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]);
     const r = await call("tour_show_step", { text: "Save changes", message: "Click this to save." });
     expect(r).toMatchObject({ ok: true, matched: { by: "text", tag: "button", name: "save changes" } });
     expect(r.isError).toBeUndefined();
@@ -348,7 +329,7 @@ describe("getModelContext", () => {
     delete (document as any).modelContext;
     auto = registerAutoTools();
     await auto.ready;
-    expect(await names()).toEqual(["tour_dismiss", "tour_show_step", "tour_wait_for_interaction"]);
+    expect(await names()).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]);
   });
 });
 
@@ -369,6 +350,6 @@ describe("entries", () => {
     await import("../src/auto.js");
     auto = slots[AUTO_KEY] as AutoHandle;
     await auto.ready;
-    expect(await names()).toEqual(["tour_dismiss", "tour_show_step", "tour_wait_for_interaction"]);
+    expect(await names()).toEqual(["tour_dismiss", "tour_list_targets", "tour_show_step", "tour_wait_for_interaction"]);
   });
 });

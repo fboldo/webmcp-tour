@@ -1,15 +1,18 @@
-import { candidateContext, nearNames } from "./context.js";
+import { candidateContext, nearNames, outlineContext } from "./context.js";
+import { INTERACTIVE } from "./interactive.js";
 import { allElements, composedContains, OVERLAY_HOST_ATTR, searchRoots } from "./dom.js";
 import { accName, newCache } from "./name.js";
 import { clip, norm } from "./normalize.js";
 import { reveal } from "./occlusion.js";
 import { textHits } from "./text.js";
-import type { Candidate, LocateResult, Matched, ResolveError, ResolveInput, ResolverOptions, ResolveResult, TargetInfo, TargetSource } from "./types.js";
+import type { Candidate, LocateResult, Matched, Outline, ResolveError, ResolveInput, ResolverOptions, ResolveResult, TargetInfo, TargetSource } from "./types.js";
 import { isVisible } from "./visibility.js";
 
 const MAX_TEXT = 200;
 const MAX_CANDIDATES = 10;
 const MAX_IDS = 50;
+const HEADINGS = "h1,h2,h3,h4,h5,h6,[role=heading]";
+const norm2 = (s: string) => s.replace(/\s+/g, " ").trim();
 const ALWAYS_EXCLUDED =
   `[aria-hidden=true],[inert],script,style,template,noscript,[data-tour-exclude],[${OVERLAY_HOST_ATTR}]`;
 
@@ -174,4 +177,37 @@ export function listTargets(opts: ResolverOptions, max = MAX_IDS): { targets: Ta
     targets.push(info);
   }
   return { targets, total };
+}
+
+const MAX_CONTROLS = 60;
+const MAX_HEADINGS = 30;
+const MAX_SCAN = 1500;
+
+/**
+ * What a person sees on the page, for agents that cannot see it: visible headings and
+ * interactive controls (role, accessible name, nearest landmark or heading). Never values,
+ * attributes, URLs or hidden content. Honours scope and exclusions; capped.
+ */
+export function outline(opts: ResolverOptions): Outline {
+  const { root, allowed, skip } = setup(opts);
+  const cache = newCache(skip);
+  const name = (el: Element) => clip(norm2(accName(el, cache).name), 60);
+  const out: Outline = { headings: [], controls: [] };
+  let scanned = 0;
+  for (const el of allElements(root)) {
+    const isHeading = el.matches(HEADINGS);
+    if ((!isHeading && !el.matches(INTERACTIVE)) || ++scanned > MAX_SCAN || !allowed(el) || !isVisible(el)) continue;
+    const n = name(el);
+    if (!n) continue;
+    if (isHeading) {
+      if (out.headings.length < MAX_HEADINGS) out.headings.push(n);
+      else out.truncated = true;
+    } else if (out.controls.length < MAX_CONTROLS) {
+      const context = outlineContext(el);
+      const role = roleOf(el);
+      out.controls.push({ ...(role ? { role } : {}), name: n, ...(context ? { context } : {}) });
+    } else out.truncated = true;
+  }
+  if (scanned > MAX_SCAN) out.truncated = true;
+  return out;
 }

@@ -1,4 +1,4 @@
-export { describe, domTargets, listTargets, locate, resolve } from "./resolve.js";
+export { describe, domTargets, listTargets, locate, outline, resolve } from "./resolve.js";
 export { locationOf } from "./context.js";
 export { reveal } from "./occlusion.js";
 export { isVisible } from "./visibility.js";

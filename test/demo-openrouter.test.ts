@@ -67,6 +67,8 @@ describe("tool-calling loop", () => {
     // The second request carries the assistant tool_calls and the tool result.
     const roles = second!.body.messages.map((m: any) => m.role);
     expect(roles).toEqual(["system", "user", "assistant", "tool"]);
+    expect(first!.body.messages[0].content).toMatch(/call tour_list_targets first/);
+    expect(first!.body.messages[0].content).toContain("`text`");
     expect(second!.body.messages[3]).toMatchObject({ tool_call_id: "call_1", content: JSON.stringify({ ok: true }) });
   });
 

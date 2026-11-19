@@ -1,7 +1,7 @@
 import { allElements, composedClosest } from "./dom.js";
 import { INTERACTIVE } from "./interactive.js";
 import { accName, newCache } from "./name.js";
-import { clip, norm } from "./normalize.js";
+import { clean, clip, norm } from "./normalize.js";
 import { isVisible } from "./visibility.js";
 import type { Candidate } from "./types.js";
 
@@ -17,24 +17,34 @@ const short = (s: string | undefined | null): string | undefined => (s ? clip(no
  */
 export function candidateContext(el: Element): Pick<Candidate, "heading" | "row" | "landmark"> {
   const row = composedClosest(el, "tr,[role=row],li");
-  let start: Element = el;
-  for (let r = start.getRootNode(); r.nodeType === 11; r = start.getRootNode()) start = (r as ShadowRoot).host;
-  const doc = el.ownerDocument;
-  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT);
-  walker.currentNode = start;
-  let heading: Element | null = null;
-  for (let n = walker.previousNode(), i = 0; n && i < 5000; n = walker.previousNode(), i++) {
-    if ((n as Element).matches(HEADING) && (n as Element).checkVisibility()) {
-      heading = n as Element;
-      break;
-    }
-  }
+  const heading = precedingHeading(el);
   const landmark = composedClosest(el, LANDMARK);
   return {
     ...opt("row", short(row && row !== el ? text(row) : null)),
     ...opt("heading", short(heading && text(heading))),
     ...opt("landmark", landmark ? short(landmark.getAttribute("aria-label") || landmark.tagName.toLowerCase()) : undefined),
   };
+}
+
+function precedingHeading(el: Element): Element | null {
+  let start: Element = el;
+  for (let r = start.getRootNode(); r.nodeType === 11; r = start.getRootNode()) start = (r as ShadowRoot).host;
+  const doc = el.ownerDocument;
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_ELEMENT);
+  walker.currentNode = start;
+  for (let n = walker.previousNode(), i = 0; n && i < 5000; n = walker.previousNode(), i++) {
+    if ((n as Element).matches(HEADING) && (n as Element).checkVisibility()) return n as Element;
+  }
+  return null;
+}
+
+/** Where a control sits, for the page outline: its labelled landmark, else the heading above it, else the bare landmark. Case kept. */
+export function outlineContext(el: Element): string | undefined {
+  const lm = composedClosest(el, LANDMARK);
+  const label = lm?.getAttribute("aria-label");
+  const heading = precedingHeading(el);
+  const v = label || (heading && text(heading)) || lm?.tagName.toLowerCase();
+  return v ? clip(clean(v), 60) || undefined : undefined;
 }
 
 const opt = <K extends string>(k: K, v: string | undefined) => (v === undefined ? {} : ({ [k]: v } as Record<K, string>));
