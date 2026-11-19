@@ -6,7 +6,9 @@ import { watch } from "../../src/tour/wait.js";
 
 const input = commands as unknown as { waitInput(selector: string, action: "press", arg?: number): Promise<void> };
 const ROWS = 3000;
-const BUDGET_MS = 150;
+// Unloaded, a lookup takes 15-120 ms here; shared CI runners and parallel browsers double that. A quadratic
+// scan over 3000 rows takes tens of seconds, so this still catches a regression with a wide margin.
+const BUDGET_MS = 1000;
 
 beforeAll(() => {
   const rows: string[] = [];
