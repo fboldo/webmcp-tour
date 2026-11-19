@@ -11,7 +11,7 @@
 
 > **Experimental (0.x).** The API may change between minor versions, and WebMCP itself is still experimental in browsers.
 
-![An agent is asked "How do I set up two-factor?" on the Billing page. A centred card offers "Go to Security"; after Go, Set up two-factor is highlighted with a "Got it" card.](https://raw.githubusercontent.com/fboldo/webmcp-tour/main/site/content/images/demo.gif)
+![An agent is asked "How do I set up two-factor?" on the Billing page. A centred card offers "Go to Security"; after Go, Set up two-factor is highlighted with a "Got it" card.](site/content/images/demo.gif)
 
 [Live demo](https://fboldo.github.io/webmcp-tour/demo/) · [Docs](https://fboldo.github.io/webmcp-tour/) · [Agent hosts](https://fboldo.github.io/webmcp-tour/agent-hosts/)
 
