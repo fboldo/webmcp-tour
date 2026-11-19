@@ -198,7 +198,7 @@ describe("a target on another page", () => {
     expect(r).toMatchObject({ ok: false, error: "other_page", page: { id: "security", title: "Security" } });
     expect(open("popover")).toBe(true);
     expect(open("spotlight")).toBe(false);
-    expect(q("message").textContent).toBe("Your assistant suggests going to Security");
+    expect(q("message").textContent).toBe("The AI assistant suggests going to Security");
     expect(q("go").textContent).toBe("Go to Security");
     expect(q("notnow").textContent).toBe("Not now");
     expect(visible("go") && visible("notnow") && !visible("gotit") && !visible("goto")).toBe(true);

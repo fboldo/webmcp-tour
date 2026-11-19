@@ -1,6 +1,6 @@
 // Resume after navigation. Only a random nonce travels in the URL; the step itself
 // (target, title, message) stays in this tab's sessionStorage, so a crafted link can
-// never make the page show text "from your assistant".
+// never make the page show text "from the AI assistant".
 
 /** The step to show on the destination page. */
 export interface Pending {

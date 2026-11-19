@@ -10,7 +10,7 @@ The overlay is built to be usable without a mouse or a screen, and it is tested 
 
 - A persistent **live region** (`role="status"`, `aria-live="polite"`, `aria-atomic="true"`) is put in the page at load, before the first step, so assistive technology has registered it by the time something is announced. It is cleared and set again after a short beat so repeated messages are heard.
 - A step is announced as `<message> — <control name>, <landmark>`, for example "Pick a plan and press Confirm. — Change plan, Billing". A page suggestion announces its text.
-- The card is a `role="group"` labelled by the attribution text ("From your assistant"), so it is always clear who is speaking. The × button has its own label (`labels.close`).
+- The card is a `role="group"` labelled by the attribution text ("From the AI assistant"), so it is always clear who is speaking. The × button has its own label (`labels.close`).
 - `describeTarget: true` also points the target's `aria-describedby` at a hidden copy of the message while the step shows, and restores the original on dismiss. Off by default, because it edits the page's own element.
 
 ## Keyboard

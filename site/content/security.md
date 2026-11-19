@@ -14,7 +14,8 @@ The library has one job: draw a highlight and a card. The defaults are built so 
 
 ## It cannot pass text off as the site's own
 
-- The card always says **From your assistant** (configurable through `labels.attribution`, but never removed), and the card's aria label is the same. A page that shows agent text next to its own UI makes clear whose words they are.
+- The card always says **From the AI assistant** (configurable through `labels.attribution`, but never removed), and the card's aria label is the same. A page that shows agent text next to its own UI makes clear whose words they are.
+- **If your site provides the agent**, rename the label to your assistant's name, for example `labels: { attribution: "Acme Assistant" }`. Agents can never set it themselves, so a tool call cannot claim to be "Acme Support".
 - Titles and messages are **plain text**: they are set as `textContent`, never parsed as HTML. Labels the same. Limits are 80 characters for a title, 500 for a message.
 - A resumed step cannot be forged with a link. Only a random nonce travels in the URL; the step is kept in this tab's `sessionStorage` and used once, within 2 minutes. A crafted link with an unknown, expired or used nonce shows nothing ([Concepts](concepts.md)).
 - A custom `renderPopover` hook is your code: you own its escaping.

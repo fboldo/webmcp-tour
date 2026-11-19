@@ -20,7 +20,7 @@ describe("content", () => {
   it("carries the attribution label by default and lets it be overridden", async () => {
     const fx = await openFixture();
     fx.overlay.show(fx.el("t-plain"), { message: "m" });
-    expect(parts(fx).attribution.textContent).toBe("From your assistant");
+    expect(parts(fx).attribution.textContent).toBe("From the AI assistant");
     fx.overlay.destroy();
     const fx2 = await openFixture({ query: "attribution=Acme%20helper" });
     fx2.overlay.show(fx2.el("t-plain"), { message: "m" });

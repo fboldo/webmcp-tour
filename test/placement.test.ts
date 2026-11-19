@@ -66,7 +66,7 @@ describe("center (default)", () => {
     q("popover").focus();
     expect(root().activeElement).toBe(q("popover"));
     await new Promise((r) => setTimeout(r, 120));
-    expect(q("live").textContent).toBe("Your assistant suggests going to Security");
+    expect(q("live").textContent).toBe("The AI assistant suggests going to Security");
   });
 
   it("also applies to a target on another page", async () => {
