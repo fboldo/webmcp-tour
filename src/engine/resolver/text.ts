@@ -1,6 +1,7 @@
 import { allElements, composedClosest, composedContains } from "./dom.js";
 import { INTERACTIVE, interactiveAncestor } from "./interactive.js";
 import { accName, newCache } from "./name.js";
+import type { Skip } from "./name.js";
 import { matchTier, norm } from "./normalize.js";
 import { isVisible } from "./visibility.js";
 
@@ -20,7 +21,7 @@ const squash = (s: string | null): string => norm(s).replace(/\s/g, "");
  * Accessible-name matching over visible, allowed elements. Returns the
  * candidates of the winning tier, or [] for `not_found`. `q` is `norm`ed.
  */
-export function textHits(root: ParentNode, q: string, allowed: (el: Element) => boolean, skip?: (el: Element) => boolean): Hit[] {
+export function textHits(root: ParentNode, q: string, allowed: (el: Element) => boolean, skip?: Skip): Hit[] {
   const cache = newCache(skip);
   const qs = squash(q);
   const hits = new Map<Element, Hit>();

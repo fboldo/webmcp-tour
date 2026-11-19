@@ -21,7 +21,17 @@ export class Targets implements TargetSource {
   readonly #defined = new Map<string, TargetDefinition>();
   readonly #listeners = new Set<() => void>();
 
-  constructor(readonly current: () => string | undefined) {}
+  constructor(
+    readonly current: () => string | undefined,
+    /** Only `[data-tour-id]` elements inside this one are targets. */
+    readonly scope?: Element,
+    /** `false` ignores `[data-tour-id]` markup altogether: only `defineTarget` targets exist. */
+    readonly dom = true,
+  ) {}
+
+  #dom(): TargetSource {
+    return this.dom ? domTargets(document, this.scope) : { get: () => undefined, ids: () => [] };
+  }
 
   /** Called after `defineTarget` adds or removes a definition (DOM targets are read at call time). */
   onChange(fn: () => void): () => void {
@@ -54,13 +64,13 @@ export class Targets implements TargetSource {
       if (this.#away(def.page)) return undefined;
       return el?.isConnected ? { element: el, reveal: def.reveal, description: def.description, label: def.label } : undefined;
     }
-    const dom: Found | null | undefined = domTargets(document).get(id);
+    const dom: Found | null | undefined = this.#dom().get(id);
     if (!dom || this.#away(dom.page)) return undefined;
     return def ? { ...dom, description: dom.description ?? def.description, label: dom.label ?? def.label, reveal: dom.reveal ?? def.reveal } : dom;
   };
 
   ids(): string[] {
-    const dom = domTargets(document);
+    const dom = this.#dom();
     return [...new Set([...this.#defined.keys(), ...dom.ids()])].filter((id) => !this.offPage(id));
   }
 
@@ -68,13 +78,13 @@ export class Targets implements TargetSource {
   offPage(id: string): OffPage | undefined {
     const def = this.#defined.get(id);
     if (def?.page !== undefined && this.#away(def.page)) return { id, page: def.page, label: def.label, description: def.description };
-    const dom = def ? undefined : domTargets(document).get(id);
+    const dom = def ? undefined : this.#dom().get(id);
     if (dom?.page !== undefined && this.#away(dom.page)) return { id, page: dom.page, label: dom.label, description: dom.description };
   }
 
   /** Every off-page target, defined ones first. */
   allOffPage(): OffPage[] {
-    const ids = new Set([...this.#defined.keys(), ...domTargets(document).ids()]);
+    const ids = new Set([...this.#defined.keys(), ...this.#dom().ids()]);
     return [...ids].flatMap((id) => this.offPage(id) ?? []);
   }
 }

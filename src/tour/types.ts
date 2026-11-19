@@ -118,6 +118,11 @@ export interface TourOptions {
   scope?: Element;
   /** CSS selector of elements (and subtrees) that can never be pointed at. Also: `data-tour-exclude`. */
   exclude?: string;
+  /**
+   * `false` ignores `data-tour-*` markup: only `defineTarget` targets exist. Use it on pages that
+   * render user-written HTML, where anyone could add `data-tour-id` (and a description) to an element.
+   */
+  domTargets?: boolean;
   /** Turn a locator off. Both are on by default; `target` is always on. */
   locators?: { selector?: boolean; text?: boolean };
   /** Replace the card's markup; the library keeps positioning and dismissal. */

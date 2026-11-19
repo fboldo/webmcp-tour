@@ -14,7 +14,7 @@ const bundle = (options) => buildSync({ bundle: true, write: false, minify: true
 const budgets = [
   { label: "engine (createTour from dist/index.js)", max: 16 * KB, source: () => bundle({ stdin: { contents: `import { createTour } from "./dist/index.js"; console.log(createTour);`, resolveDir: resolve("."), loader: "js" } }) },
   // Script-tag build, already minified.
-  { label: "full (dist/webmcp-tour.js, IIFE)", max: 16 * KB, source: () => readFileSync("dist/webmcp-tour.js") },
+  { label: "full (dist/webmcp-tour.js, IIFE)", max: 17 * KB, source: () => readFileSync("dist/webmcp-tour.js") },
 ];
 
 let failed = false;

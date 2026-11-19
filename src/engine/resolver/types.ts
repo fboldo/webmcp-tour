@@ -12,7 +12,7 @@ export interface ResolveInput {
 
 /** A declared-target lookup (the default one reads `data-tour-id`). */
 export interface TargetSource {
-  get(id: string): { element: Element; reveal?: string | undefined; description?: string | undefined; label?: string | undefined; page?: string | undefined } | null | undefined;
+  get(id: string): { element: Element; reveal?: string | undefined; description?: string | undefined; label?: string | undefined; page?: string | undefined; duplicates?: Element[] | undefined } | null | undefined;
   ids(): string[];
 }
 
@@ -79,6 +79,7 @@ export type ResolveError =
   | { ok: false; error: "target_not_found"; available: string[] }
   | { ok: false; error: "not_found"; near: string[] }
   | { ok: false; error: "not_visible"; reveal?: string }
+  | { ok: false; error: "ambiguous_target"; candidates: Candidate[]; count: number }
   | { ok: false; error: "ambiguous"; candidates: Candidate[]; count: number };
 
 /** Pure lookup: no scrolling, no DOM mutation. */

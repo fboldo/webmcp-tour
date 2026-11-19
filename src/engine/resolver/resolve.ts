@@ -1,7 +1,8 @@
 import { candidateContext, nearNames, outlineContext } from "./context.js";
 import { INTERACTIVE } from "./interactive.js";
 import { allElements, composedContains, OVERLAY_HOST_ATTR, searchRoots } from "./dom.js";
-import { accName, newCache } from "./name.js";
+import { accName, EDITABLE, newCache } from "./name.js";
+import type { Skip } from "./name.js";
 import { clip, norm } from "./normalize.js";
 import { reveal } from "./occlusion.js";
 import { textHits } from "./text.js";
@@ -13,8 +14,21 @@ const MAX_CANDIDATES = 10;
 const MAX_IDS = 50;
 const HEADINGS = "h1,h2,h3,h4,h5,h6,[role=heading]";
 const norm2 = (s: string) => s.replace(/\s+/g, " ").trim();
-const ALWAYS_EXCLUDED =
-  `[aria-hidden=true],[inert],script,style,template,noscript,[data-tour-exclude],[${OVERLAY_HOST_ATTR}]`;
+const AUTHOR_EXCLUDED = `[data-tour-exclude],[${OVERLAY_HOST_ATTR}]`;
+const ALWAYS_EXCLUDED = `[aria-hidden=true],[inert],script,style,template,noscript,${AUTHOR_EXCLUDED}`;
+const EDITORS = EDITABLE.replace("input,select,", "");
+
+/**
+ * A selector may only say where an element is, never what hidden values it holds:
+ * `:has()` and attribute value operators would turn "found / not found" into a question
+ * the page answers about content that is not visible.
+ */
+function probing(selector: string): boolean {
+  const s = selector
+    .replace(/\\([0-9a-f]{1,6})\s?/gi, (_, h: string) => String.fromCodePoint(Math.min(parseInt(h, 16), 0x10ffff) || 0xfffd))
+    .replace(/\\(.)/gs, "$1");
+  return /:has\(/i.test(s) || /[~|^$*]=/.test(s) || /\[\s*(?:[^\]=|]*\|)?\s*value\s*[\]=~|^$*]/i.test(s);
+}
 
 const invalid = (message: string): ResolveError => ({ ok: false, error: "invalid_input", message });
 
@@ -34,16 +48,32 @@ function roleOf(el: Element): string | undefined {
   return el.tagName === "A" && !el.hasAttribute("href") ? undefined : IMPLICIT[el.tagName];
 }
 
-/** Resolves `[data-tour-id]` in the document, in document order. */
-export function domTargets(doc: Document): TargetSource {
-  const find = (id: string) => doc.querySelector(`[data-tour-id="${CSS.escape(id)}"]`);
+/** Ids already reported as duplicated, so the console warns once per id. */
+const warned = new Set<string>();
+
+/**
+ * Resolves `[data-tour-id]` in the document (or only inside `scope`). An id declared on more
+ * than one element is ambiguous: it comes back with every match in `duplicates` and no
+ * first-wins, so markup earlier in the page cannot take over a declared target.
+ */
+export function domTargets(doc: Document, scope?: Element): TargetSource {
+  const root: ParentNode = scope ?? doc;
+  const find = (id: string): Element[] => {
+    const all = [...root.querySelectorAll(`[data-tour-id="${CSS.escape(id)}"]`)];
+    if (all.length > 1 && !warned.has(id)) {
+      warned.add(id);
+      console.warn(`webmcp-tour: data-tour-id "${id}" is declared on ${all.length} elements; it cannot be pointed at until it is unique.`);
+    }
+    return all;
+  };
   return {
     get(id) {
-      const element = find(id);
-      const attr = (n: string) => element!.getAttribute(`data-tour-${n}`) ?? undefined;
-      return element && { element, reveal: attr("reveal"), description: attr("description"), label: attr("label"), page: attr("page") };
+      const [element, ...rest] = find(id);
+      if (!element) return undefined;
+      const attr = (n: string) => element.getAttribute(`data-tour-${n}`) ?? undefined;
+      return { element, reveal: attr("reveal"), description: attr("description"), label: attr("label"), page: attr("page"), ...(rest.length ? { duplicates: [element, ...rest] } : {}) };
     },
-    ids: () => [...doc.querySelectorAll("[data-tour-id]")].map((e) => e.getAttribute("data-tour-id")!),
+    ids: () => [...new Set([...root.querySelectorAll("[data-tour-id]")].map((e) => e.getAttribute("data-tour-id")!))],
   };
 }
 
@@ -67,7 +97,8 @@ function setup(opts: ResolverOptions) {
     return false;
   };
   const allowed = (el: Element): boolean => !excluded(el) && (!scope || composedContains(scope, el));
-  const skip = (el: Element): boolean => el.matches(excludedSel) || el === overlayHost;
+  const authorSel = AUTHOR_EXCLUDED + extra;
+  const skip: Skip = (el, hard) => el.matches(hard ? authorSel : excludedSel) || el === overlayHost;
   return { doc, root: (scope ?? doc) as ParentNode, allowed, skip };
 }
 
@@ -77,8 +108,9 @@ export function describe(by: Matched["by"], el: Element, opts: ResolverOptions =
   const name = clip(norm(accName(el, cache).name), 80);
   const html = el as HTMLElement;
   // Excluded content inside the element must not leak through its text.
-  const hasExcluded = [...allElements(el)].some((e) => e !== el && skip(e));
-  const text = clip(norm(hasExcluded ? accName(el, cache).name : (html.innerText ?? el.textContent)), 120);
+  // Nor may what a person typed into a field or editor.
+  const guarded = el.matches(EDITORS) || !!el.querySelector(EDITORS) || [...allElements(el)].some((e) => e !== el && skip(e));
+  const text = clip(norm(guarded ? accName(el, cache).name : (html.innerText ?? el.textContent)), 120);
   const role = roleOf(el);
   return { by, tag: el.tagName.toLowerCase(), ...(role ? { role } : {}), name, text, disabled: el.matches(":disabled,[aria-disabled=true]") };
 }
@@ -109,8 +141,18 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
   const { doc, root, allowed, skip } = setup(opts);
 
   if (by === "target") {
-    const src = opts.targets ?? domTargets(doc);
+    const src = opts.targets ?? domTargets(doc, opts.scope);
     const t = src.get(value);
+    const live = t?.duplicates?.filter(allowed);
+    if (live && live.length > 1) {
+      const cache = newCache();
+      const list = live.slice(0, MAX_CANDIDATES).map((el, index): Candidate => {
+        const m = describe("target", el, opts);
+        return { index, tag: m.tag, ...(m.role ? { role: m.role } : {}), name: m.name || clip(norm(accName(el, cache).name), 80), disabled: m.disabled, ...candidateContext(el, skip) };
+      });
+      return { ok: false, error: "ambiguous_target", candidates: list, count: live.length };
+    }
+    if (t && live?.length === 1) t.element = live[0]!;
     if (!t || !allowed(t.element)) {
       const available = src.ids().filter((id) => { const x = src.get(id); return x && allowed(x.element); }).slice(0, MAX_IDS).map((id) => clip(id, 80));
       return { ok: false, error: "target_not_found", available };
@@ -123,6 +165,7 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
   let candidates: Element[];
   let q = "";
   if (by === "selector") {
+    if (probing(value)) return invalid("That selector tests attribute values or uses :has(), which is not allowed. Point with `text` or `target`, or use a plain selector such as #id, .class, tag or [attr=name].");
     try {
       candidates = roots.flatMap((r) => [...r.querySelectorAll(value)]).filter((el) => allowed(el) && isVisible(el));
     } catch {
@@ -145,7 +188,7 @@ export function locate(input: ResolveInput, opts: ResolverOptions = {}): LocateR
     const cache = newCache();
     const list: Candidate[] = candidates.slice(0, MAX_CANDIDATES).map((el, i) => {
       const m = describe(by, el, opts);
-      return { index: i, tag: m.tag, ...(m.role ? { role: m.role } : {}), name: m.name || clip(norm(accName(el, cache).name), 80), disabled: m.disabled, ...candidateContext(el) };
+      return { index: i, tag: m.tag, ...(m.role ? { role: m.role } : {}), name: m.name || clip(norm(accName(el, cache).name), 80), disabled: m.disabled, ...candidateContext(el, skip) };
     });
     return { ok: false, error: "ambiguous", candidates: list, count: candidates.length };
   }
@@ -161,13 +204,15 @@ export function resolve(input: ResolveInput, opts: ResolverOptions = {}): Resolv
 /** Declared targets the tour may point at (not excluded, in scope), capped. `total` counts them all. */
 export function listTargets(opts: ResolverOptions, max = MAX_IDS): { targets: TargetInfo[]; total: number } {
   const { doc, allowed } = setup(opts);
-  const src = opts.targets ?? domTargets(doc);
+  const src = opts.targets ?? domTargets(doc, opts.scope);
   const cache = newCache();
   const targets: TargetInfo[] = [];
   let total = 0;
   for (const id of src.ids()) {
     const t = src.get(id);
-    if (!t || !allowed(t.element) || total++ >= max) continue;
+    const live = t?.duplicates?.filter(allowed);
+    if (!t || (live && live.length > 1) || !allowed(live?.[0] ?? t.element) || total++ >= max) continue;
+    if (live?.length === 1) t.element = live[0]!;
     const text = (s: string | undefined, n: number) => clip((s ?? "").replace(/\s+/g, " ").trim(), n);
     const info: TargetInfo = { id: clip(id, 80), label: text(t.label, 80) || text(accName(t.element, cache).name, 80), visible: isVisible(t.element) };
     const description = text(t.description, 300);
@@ -203,7 +248,7 @@ export function outline(opts: ResolverOptions): Outline {
       if (out.headings.length < MAX_HEADINGS) out.headings.push(n);
       else out.truncated = true;
     } else if (out.controls.length < MAX_CONTROLS) {
-      const context = outlineContext(el);
+      const context = outlineContext(el, skip);
       const role = roleOf(el);
       out.controls.push({ ...(role ? { role } : {}), name: n, ...(context ? { context } : {}) });
     } else out.truncated = true;

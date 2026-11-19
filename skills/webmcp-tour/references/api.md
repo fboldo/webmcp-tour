@@ -19,8 +19,9 @@ All optional.
 
 | Option | Type | Notes |
 |---|---|---|
-| `scope` | `Element` | Only elements inside can be pointed at. |
+| `scope` | `Element` | Only elements inside can be pointed at, and only `data-tour-id` markup inside is read. |
 | `exclude` | CSS selector | Never pointed at. Also `data-tour-exclude`. Invalid selector throws `TypeError`. |
+| `domTargets` | boolean | `false` ignores `data-tour-*` markup; only `defineTarget` targets exist. Use on pages that render user-written HTML. |
 | `locators` | `{ selector?, text? }` booleans | Turn a locator off; `target` is always on. |
 | `labels` | `Partial<Labels>` | `gotIt` "Got it", `takeMeThere` "Take me there", `close` "Dismiss", `attribution` "From your assistant", `goToPage` "Go to {page}", `notNow` "Not now", `otherPage` "Your assistant suggests going to {page}". |
 | `attribution` | string | Deprecated; `labels.attribution` wins. |
