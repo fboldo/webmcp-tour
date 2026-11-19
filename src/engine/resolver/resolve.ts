@@ -203,6 +203,7 @@ export function resolve(input: ResolveInput, opts: ResolverOptions = {}): Resolv
 
 /** Declared targets the tour may point at (not excluded, in scope), capped. `total` counts them all. */
 export function listTargets(opts: ResolverOptions, max = MAX_IDS): { targets: TargetInfo[]; total: number } {
+  if (!opts.document && typeof document === "undefined") return { targets: [], total: 0 };
   const { doc, allowed } = setup(opts);
   const src = opts.targets ?? domTargets(doc, opts.scope);
   const cache = newCache();
@@ -234,6 +235,7 @@ const MAX_SCAN = 1500;
  * attributes, URLs or hidden content. Honours scope and exclusions; capped.
  */
 export function outline(opts: ResolverOptions): Outline {
+  if (!opts.document && typeof document === "undefined") return { headings: [], controls: [] };
   const { root, allowed, skip } = setup(opts);
   const cache = newCache(skip);
   const name = (el: Element) => clip(norm2(accName(el, cache).name), 60);

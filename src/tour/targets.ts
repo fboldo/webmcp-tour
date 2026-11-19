@@ -30,7 +30,7 @@ export class Targets implements TargetSource {
   ) {}
 
   #dom(): TargetSource {
-    return this.dom ? domTargets(document, this.scope) : { get: () => undefined, ids: () => [] };
+    return this.dom && typeof document !== "undefined" ? domTargets(document, this.scope) : { get: () => undefined, ids: () => [] };
   }
 
   /** Called after `defineTarget` adds or removes a definition (DOM targets are read at call time). */
@@ -44,7 +44,7 @@ export class Targets implements TargetSource {
     if (def.page !== undefined && (typeof def.page !== "string" || !def.page.trim())) throw new TypeError("webmcp-tour: defineTarget `page` must be a page id");
     if ((def.selector === undefined) === (def.element === undefined) && (def.page === undefined || def.selector !== undefined))
       throw new TypeError("webmcp-tour: defineTarget needs exactly one of `selector` or `element` (or only `page`)");
-    if (def.selector !== undefined) document.createDocumentFragment().querySelector(def.selector); // throws SyntaxError when invalid
+    if (def.selector !== undefined && typeof document !== "undefined") document.createDocumentFragment().querySelector(def.selector); // throws SyntaxError when invalid
     const copy = { ...def };
     this.#defined.set(def.id, copy);
     this.#listeners.forEach((fn) => fn());
@@ -59,7 +59,7 @@ export class Targets implements TargetSource {
 
   get: TargetSource["get"] = (id) => {
     const def = this.#defined.get(id);
-    const el = def?.element ?? (def?.selector !== undefined ? document.querySelector(def.selector) : null);
+    const el = def?.element ?? (def?.selector !== undefined && typeof document !== "undefined" ? document.querySelector(def.selector) : null);
     if (def && (def.selector !== undefined || def.element)) {
       if (this.#away(def.page)) return undefined;
       return el?.isConnected ? { element: el, reveal: def.reveal, description: def.description, label: def.label } : undefined;
