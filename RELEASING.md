@@ -30,3 +30,7 @@ The job pushes the release commit straight to `ref`. If `main` is protected, all
 If a run fails after the tag was pushed (for example npm publish), run it again with the same tag. An existing tag is never moved or recreated: the job checks the tag out, runs the same gate, then publishes to npm only if that version is not on the registry and creates the GitHub Release only if it does not exist. If both are done it ends with "Nothing to do". To change the contents of a released version, release a new version.
 
 The job fails if the tag differs from `v` + the `package.json` version, or if the README hash differs from the freshly built `dist/webmcp-tour.js`.
+
+## Keeping the README version current
+
+`pnpm check` (and so CI) runs `pnpm pins`, which fails if any pinned CDN snippet in `README.md`, `site/content` or `skills/` names another version than `package.json`, or lacks an `integrity` attribute. The release workflow bumps `package.json` and re-pins the snippets in the same release commit, so the README on `main` and on npm always shows the version just released. The hash itself is checked at release time, against the freshly built file.
